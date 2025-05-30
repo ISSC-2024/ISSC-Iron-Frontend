@@ -13,43 +13,41 @@
    -->
   <div :class="{ 'scrolling-list-container expanded': isExpanded, 'scrolling-list-container': !isExpanded }">
     <!-- 标题栏 -->
-    <div class="graph-header">
-      <div class="graph-title">
-        <div class="title-icon">
-          <svg viewBox="0 0 24 24" width="20" height="20">
-            <path
-              fill="currentColor"
-              d="M19.35,10.04C18.67,6.59 15.64,4 12,4C9.11,4 6.6,5.64 5.35,8.04C2.34,8.36 0,10.91 0,14A6,6 0 0,0 6,20H19A5,5 0 0,0 24,15C24,12.36 21.95,10.22 19.35,10.04Z"
-            />
-          </svg>
-        </div>
-        <span>传感器数据实时监控</span>
-      </div>
-      <!-- 导出按钮，仅在展开状态下显示 -->
-      <div v-if="isExpanded" class="graph-actions">
-        <!-- 时间步控制 -->
-        <div class="timestep-control">
-          <button class="timestep-button" @click="decrementTimestep" :disabled="timestep === 0">
+    <GraphHeader :title="'传感器数据实时监控'">
+      <template #icon>
+        <svg viewBox="0 0 24 24" width="20" height="20">
+          <path
+            fill="currentColor"
+            d="M19.35,10.04C18.67,6.59 15.64,4 12,4C9.11,4 6.6,5.64 5.35,8.04C2.34,8.36 0,10.91 0,14A6,6 0 0,0 6,20H19A5,5 0 0,0 24,15C24,12.36 21.95,10.22 19.35,10.04Z"
+          />
+        </svg>
+      </template>
+      <template #actions>
+        <div v-if="isExpanded" class="graph-actions">
+          <!-- 时间步控制 -->
+          <div class="timestep-control">
+            <button class="timestep-button" @click="decrementTimestep" :disabled="timestep === 0">
+              <svg viewBox="0 0 24 24" width="14" height="14">
+                <path fill="currentColor" d="M20,12H4V13H20V12Z" />
+              </svg>
+            </button>
+            <span class="timestep-value">{{ timestep }}</span>
+            <button class="timestep-button" @click="incrementTimestep" :disabled="timestep === 29">
+              <svg viewBox="0 0 24 24" width="14" height="14">
+                <path fill="currentColor" d="M20,12H13V5H11V12H4V13H11V20H13V13H20V12Z" />
+              </svg>
+            </button>
+          </div>
+          <!-- 导出按钮 -->
+          <button class="export-button" @click="handleExport">
             <svg viewBox="0 0 24 24" width="14" height="14">
-              <path fill="currentColor" d="M20,12H4V13H20V12Z" />
+              <path fill="currentColor" d="M5,20H19V18H5M19,9H15V3H9V9H5L12,16L19,9Z" />
             </svg>
-          </button>
-          <span class="timestep-value">{{ timestep }}</span>
-          <button class="timestep-button" @click="incrementTimestep" :disabled="timestep === 29">
-            <svg viewBox="0 0 24 24" width="14" height="14">
-              <path fill="currentColor" d="M20,12H13V5H11V12H4V13H11V20H13V13H20V12Z" />
-            </svg>
+            <span>导出</span>
           </button>
         </div>
-        <!-- 导出按钮 -->
-        <button class="export-button" @click="handleExport">
-          <svg viewBox="0 0 24 24" width="14" height="14">
-            <path fill="currentColor" d="M5,20H19V18H5M19,9H15V3H9V9H5L12,16L19,9Z" />
-          </svg>
-          <span>导出</span>
-        </button>
-      </div>
-    </div>
+      </template>
+    </GraphHeader>
 
     <!-- 背景效果 -->
     <div class="list-background-effects">
@@ -327,6 +325,7 @@ import { ref, onMounted, computed, inject, watch, onUnmounted, nextTick } from '
 import { message } from 'ant-design-vue' // 添加消息提示组件
 import UnityService from '@/services/UnityService'
 import Algorithm1Api, { type Result } from '@/apis/Algorithm1'
+import GraphHeader from '../common/GraphHeader.vue'
 
 // 1. 定义明确的元组类型和接口
 type RangeTuple = [number, number]
@@ -934,45 +933,6 @@ watch(
   position: relative;
   z-index: 0;
   background: linear-gradient(135deg, rgba(12, 22, 45, 0.95), rgba(15, 28, 55, 0.95));
-}
-
-/* 标题栏 */
-.graph-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 16px;
-  background: linear-gradient(
-    90deg,
-    rgba(12, 24, 48, 0.95) 0%,
-    rgba(20, 40, 80, 0.95) 50%,
-    rgba(12, 24, 48, 0.95) 100%
-  );
-  border-bottom: 1px solid rgba(74, 144, 226, 0.2);
-  position: relative;
-  z-index: 5;
-}
-
-.graph-header::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 1px;
-  background: linear-gradient(90deg, rgba(32, 160, 255, 0), rgba(32, 160, 255, 0.5), rgba(32, 160, 255, 0));
-}
-
-.graph-title {
-  display: flex;
-  flex: 1;
-  align-items: center;
-  gap: 10px;
-  color: rgba(220, 230, 240, 0.95);
-  font-weight: 600;
-  font-size: 16px;
-  text-shadow: 0 0 10px rgba(32, 160, 255, 0.3);
-  letter-spacing: 0.5px;
 }
 
 .graph-actions {

@@ -14,7 +14,15 @@ export interface NodeData {
   sensor_id?: string
   itemStyle?: {
     color: string
+    borderColor?: string
+    borderWidth?: number
+    shadowBlur?: number
+    shadowColor?: string
   }
+  area?: string
+  sensor_type?: string
+  data_item?: string
+  symbol?: string
 }
 
 export interface LinkData {
@@ -24,6 +32,8 @@ export interface LinkData {
   lineStyle?: {
     color: string
     width?: number
+    type?: string
+    shadowBlur?: number
   }
 }
 

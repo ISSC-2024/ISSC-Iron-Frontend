@@ -13,26 +13,22 @@
    *
    -->
   <div class="scrolling-log-container" :class="{ expanded: isExpanded }">
-    <div class="graph-header">
-      <div class="graph-title">
-        <div class="title-icon">
-          <svg viewBox="0 0 24 24" width="20" height="20">
-            <path
-              fill="currentColor"
-              d="M19,3H14.82C14.4,1.84 13.3,1 12,1C10.7,1 9.6,1.84 9.18,3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5A2,2 0 0,0 19,3M12,3A1,1 0 0,1 13,4A1,1 0 0,1 12,5A1,1 0 0,1 11,4A1,1 0 0,1 12,3M7,7H17V5H19V19H5V5H7V7M17,11H7V9H17V11M15,15H7V13H15V15Z"
-            />
-          </svg>
-        </div>
-        <span>系统运行日志</span>
-      </div>
-      <!-- 导出按钮，仅在展开状态下显示 -->
-      <div v-if="isExpanded" class="graph-actions">
-        <button class="export-button" @click="handleExport">
+    <GraphHeader :title="'系统运行日志'">
+      <template #icon>
+        <svg viewBox="0 0 24 24" width="20" height="20">
+          <path
+            fill="currentColor"
+            d="M19,3H14.82C14.4,1.84 13.3,1 12,1C10.7,1 9.6,1.84 9.18,3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5A2,2 0 0,0 19,3M12,3A1,1 0 0,1 13,4A1,1 0 0,1 12,5A1,1 0 0,1 11,4A1,1 0 0,1 12,3M7,7H17V5H19V19H5V5H7V7M17,11H7V9H17V11M15,15H7V13H15V15Z"
+          />
+        </svg>
+      </template>
+      <template #actions>
+        <button v-if="isExpanded" class="export-button" @click="handleExport">
           <download-outlined />
           <span>导出</span>
         </button>
-      </div>
-    </div>
+      </template>
+    </GraphHeader>
 
     <!-- 表头 -->
     <div class="log-header">
@@ -118,6 +114,7 @@ import {
   DownloadOutlined, // 添加下载图标
 } from '@ant-design/icons-vue'
 import Algorithm3Api, { type AlgorithmResult, type DownloadCsvParams } from '@/apis/Algorithm3'
+import GraphHeader from '../common/GraphHeader.vue'
 
 // 日志数据结构接口
 interface LogEntry {
@@ -490,74 +487,53 @@ onUnmounted(() => {
   box-shadow: 0 0 15px rgba(0, 100, 255, 0.1);
 }
 
-/* 标题栏 */
-.graph-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 16px;
-  background: linear-gradient(
-    90deg,
-    rgba(12, 24, 48, 0.95) 0%,
-    rgba(20, 40, 80, 0.95) 50%,
-    rgba(12, 24, 48, 0.95) 100%
-  );
-  border-bottom: 1px solid rgba(74, 144, 226, 0.2);
-  position: relative;
-  z-index: 5;
-}
-
-.graph-header::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 1px;
-  background: linear-gradient(90deg, rgba(32, 160, 255, 0), rgba(32, 160, 255, 0.5), rgba(32, 160, 255, 0));
-}
-
-.graph-title {
+.log-time {
+  flex: 0 0 70px;
+  color: rgba(130, 180, 230, 0.8);
+  font-family: 'Consolas', monospace;
+  text-shadow: 0 0 5px rgba(32, 160, 255, 0.3);
+  font-size: 14px;
   display: flex;
   align-items: center;
-  gap: 10px;
-  color: rgba(220, 230, 240, 0.95);
-  font-weight: 600;
-  font-size: 16px;
-  text-shadow: 0 0 10px rgba(32, 160, 255, 0.3);
+  justify-content: flex-start;
+  gap: 5px;
+}
+
+.log-type {
+  flex: 0 0 70px;
+  font-weight: bold;
   letter-spacing: 0.5px;
-}
-
-.title-icon {
+  text-transform: uppercase;
+  font-size: 14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #20a0ff;
-  filter: drop-shadow(0 0 5px rgba(32, 160, 255, 0.5));
+  gap: 5px;
 }
 
-/* 标题栏 - 添加actions布局支持 */
-.graph-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 16px;
-  background: linear-gradient(
-    90deg,
-    rgba(12, 24, 48, 0.95) 0%,
-    rgba(20, 40, 80, 0.95) 50%,
-    rgba(12, 24, 48, 0.95) 100%
-  );
-  border-bottom: 1px solid rgba(74, 144, 226, 0.2);
+.log-message {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+  padding-left: 10px;
   position: relative;
-  z-index: 5;
-}
-
-/* 标题栏右侧操作区域 */
-.graph-actions {
+  font-size: 14px;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 5px;
+}
+
+.header-message {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
 }
 
 /* 导出按钮样式 */
@@ -617,55 +593,6 @@ onUnmounted(() => {
   justify-content: center;
   gap: 5px;
   margin-left: 5px;
-}
-
-.log-time {
-  flex: 0 0 70px;
-  color: rgba(130, 180, 230, 0.8);
-  font-family: 'Consolas', monospace;
-  text-shadow: 0 0 5px rgba(32, 160, 255, 0.3);
-  font-size: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 5px;
-}
-
-.log-type {
-  flex: 0 0 70px;
-  font-weight: bold;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  font-size: 14px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-}
-
-.log-message {
-  flex: 1;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  max-width: 100%;
-  padding-left: 10px;
-  position: relative;
-  font-size: 14px;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
-.header-message {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
 }
 
 .scrolling-log-body {

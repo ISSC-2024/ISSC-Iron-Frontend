@@ -10,6 +10,7 @@ import { useAlgorithmStore, ModuleType } from '@/stores/algorithmStore'
 import { useGraphStore, type NodeData, type LinkData } from '@/stores/graphStore'
 // 引入Unity通信服务
 import unityService from '@/services/UnityService'
+import GraphHeader from '../common/GraphHeader.vue'
 
 // 获取图表容器展开状态
 const isChartExpanded = inject('isChartExpanded', ref(false))
@@ -46,22 +47,47 @@ const graphData = ref<{
   categories: [],
 })
 
-// 节点类别颜色映射
+// 节点类别颜色映射（每类颜色明显区分）
 const categoryColors = [
   '#5470c6', // 区域 - 蓝色
   '#9a60b4', // 传感器 - 紫色
+  '#00bcd4', // 数据项 - 青色
   '#67C23A', // 安全 - 绿色
-  '#E6A23C', // 警告 - 黄色
+  '#E6A23C', // 警告 - 橙色
   '#F56C6C', // 危险 - 红色
 ]
 
-// 连接线颜色映射
-const linkColors = {
-  areaToArea: '#6782B4', // 区域到区域的连接 - 深蓝色
-  areaToSensor: '#7D48A6', // 区域到传感器的连接 - 深紫色
-  sensorToSafe: '#4FB553', // 传感器到安全节点的连接 - 深绿色
-  sensorToWarning: '#D69D2A', // 传感器到警告节点的连接 - 深黄色
-  sensorToDanger: '#D64541', // 传感器到危险节点的连接 - 深红色
+const nodeShapeMap = {
+  0: 'circle', // 区域
+  1: 'circle', // 传感器
+  2: 'diamond', // 数据项
+  3: 'circle', // 安全
+  4: 'triangle', // 警告
+  5: 'star', // 危险
+}
+const nodeFontColorMap: Record<number, string> = {
+  0: '#1a237e',
+  1: '#4a148c',
+  2: '#006064',
+  3: '#1b5e20',
+  4: '#e65100',
+  5: '#b71c1c',
+}
+const nodeBorderColorMap = {
+  0: '#90caf9',
+  1: '#ce93d8',
+  2: '#80deea',
+  3: '#a5d6a7',
+  4: '#ffe082',
+  5: '#ef9a9a',
+}
+const nodeShadowColorMap = {
+  0: 'rgba(33,150,243,0.4)',
+  1: 'rgba(156,39,176,0.3)',
+  2: 'rgba(0,188,212,0.3)',
+  3: 'rgba(76,175,80,0.3)',
+  4: 'rgba(255,152,0,0.3)',
+  5: 'rgba(244,67,54,0.3)',
 }
 
 // 发送高亮信息到Unity
@@ -135,28 +161,79 @@ const initChart = () => {
   chart = echarts.init(chartRef.value)
 
   // 确保在初始化时，判断展开状态并应用对应的图例样式
-  const expanded = isChartExpanded.value
 
   // 深拷贝节点数据和连接数据，确保不修改原始数据
   const processedNodes = JSON.parse(JSON.stringify(graphData.value.nodes)).map((node: NodeData) => {
-    // 根据节点类别分配颜色
     switch (node.category) {
-      case 0: // 区域节点
-        node.itemStyle = { color: categoryColors[0] }
-        // 增大区域节点的斥力值，使它们相互远离
+      case 0:
+        node.itemStyle = {
+          color: categoryColors[0],
+          borderColor: nodeBorderColorMap[0],
+          borderWidth: 3,
+          shadowBlur: 30,
+          shadowColor: nodeShadowColorMap[0],
+        }
+        node.symbol = nodeShapeMap[0]
         node.value = 800
+        node.symbolSize = 80
         break
-      case 1: // 传感器节点
-        node.itemStyle = { color: categoryColors[1] }
+      case 1:
+        node.itemStyle = {
+          color: categoryColors[1],
+          borderColor: nodeBorderColorMap[1],
+          borderWidth: 3,
+          shadowBlur: 25,
+          shadowColor: nodeShadowColorMap[1],
+        }
+        node.symbol = nodeShapeMap[1]
+        node.symbolSize = 60
         break
-      case 2: // 安全节点
-        node.itemStyle = { color: categoryColors[2] }
+      case 2:
+        node.itemStyle = {
+          color: categoryColors[2],
+          borderColor: nodeBorderColorMap[2],
+          borderWidth: 3,
+          shadowBlur: 20,
+          shadowColor: nodeShadowColorMap[2],
+        }
+        node.symbol = nodeShapeMap[2]
+        node.symbolSize = 50
         break
-      case 3: // 警告节点
-        node.itemStyle = { color: categoryColors[3] }
+      case 3:
+        node.itemStyle = {
+          color: categoryColors[3],
+          borderColor: nodeBorderColorMap[3],
+          borderWidth: 3,
+          shadowBlur: 20,
+          shadowColor: nodeShadowColorMap[3],
+        }
+        node.symbol = nodeShapeMap[3]
+        // 安全：weight越小越大，30~60
+        node.symbolSize = 30 + (60 - 30) * (1 - (typeof node.weight === 'number' ? node.weight : 0))
         break
-      case 4: // 危险节点
-        node.itemStyle = { color: categoryColors[4] }
+      case 4:
+        node.itemStyle = {
+          color: categoryColors[4],
+          borderColor: nodeBorderColorMap[4],
+          borderWidth: 3,
+          shadowBlur: 20,
+          shadowColor: nodeShadowColorMap[4],
+        }
+        node.symbol = nodeShapeMap[4]
+        // 警告：weight=0.5最大，0/1最小，25~50
+        node.symbolSize = 25 + (50 - 25) * (1 - Math.abs((typeof node.weight === 'number' ? node.weight : 0) - 0.5) * 2)
+        break
+      case 5:
+        node.itemStyle = {
+          color: categoryColors[5],
+          borderColor: nodeBorderColorMap[5],
+          borderWidth: 3,
+          shadowBlur: 25,
+          shadowColor: nodeShadowColorMap[5],
+        }
+        node.symbol = nodeShapeMap[5]
+        // 危险：weight越大越大，30~60
+        node.symbolSize = 30 + (60 - 30) * (typeof node.weight === 'number' ? node.weight : 0)
         break
     }
     return node
@@ -165,71 +242,37 @@ const initChart = () => {
   // 保存原始数据以便后续恢复
   originalNodes.value = JSON.parse(JSON.stringify(processedNodes))
 
-  // 处理连接线，设置不同类型连接线的颜色和连接强度
+  // 处理连接线，设置统一颜色和宽度
   const processedLinks = JSON.parse(JSON.stringify(graphData.value.links)).map((link: LinkData) => {
-    const sourceId = link.source
-    const targetId = link.target
-
-    // 判断连接类型并设置相应颜色和连接强度
-    if (sourceId.length <= 3 && targetId.length <= 3) {
-      // 区域到区域的连接 - 统一连接强度为2
-      link.value = 2
-      link.lineStyle = {
-        color: linkColors.areaToArea,
-        width: 2,
-      }
-    } else if (sourceId.length <= 3 && targetId.includes('_')) {
-      // 区域到传感器的连接 - 统一连接强度为2
-      link.value = 2
-      link.lineStyle = {
-        color: linkColors.areaToSensor,
-        width: 2,
-      }
-    } else if (
-      sourceId.includes('_') &&
-      !sourceId.includes('safe') &&
-      !sourceId.includes('warning') &&
-      !sourceId.includes('danger')
-    ) {
-      // 传感器到安全状态节点的连接 - 连接强度在1~4之间
-      let linkValue = 0
-
-      if (targetId.includes('safe')) {
-        // 提取权重并计算连接强度(1-4)
-        const sourceNode = processedNodes.find((node: { id: string }) => node.id === sourceId) as NodeData
-        const weight = sourceNode?.weight || 0.5
-        linkValue = Math.max(1, Math.min(4, Math.round((1 - weight) * 4)))
-
-        link.value = linkValue
-        link.lineStyle = {
-          color: linkColors.sensorToSafe,
-          width: linkValue,
-        }
-      } else if (targetId.includes('warning')) {
-        // 提取权重并计算连接强度(1-4)
-        const sourceNode = processedNodes.find((node: { id: string }) => node.id === sourceId) as NodeData
-        const weight = sourceNode?.weight || 0.5
-        linkValue = Math.max(1, Math.min(4, Math.round(4 * (0.5 - Math.abs(weight - 0.5)) * 2)))
-
-        link.value = linkValue
-        link.lineStyle = {
-          color: linkColors.sensorToWarning,
-          width: linkValue,
-        }
-      } else if (targetId.includes('danger')) {
-        // 提取权重并计算连接强度(1-4)
-        const sourceNode = processedNodes.find((node: { id: string }) => node.id === sourceId) as NodeData
-        const weight = sourceNode?.weight || 0.5
-        linkValue = Math.max(1, Math.min(4, Math.round(weight * 4)))
-
-        link.value = linkValue
-        link.lineStyle = {
-          color: linkColors.sensorToDanger,
-          width: linkValue,
-        }
+    let width = 2,
+      type = 'solid'
+    if (typeof link.source === 'string' && typeof link.target === 'string') {
+      if (link.source.length <= 3 && link.target.length <= 3) {
+        width = 3
+        type = 'dashed'
+      } else if (link.source.length <= 3 && link.target.includes('_')) {
+        width = 2.5
+        type = 'solid'
+      } else if (link.target && link.target.includes('_danger')) {
+        width = 3
+        type = 'solid'
+      } else if (link.target && link.target.includes('_warning')) {
+        width = 2.5
+        type = 'dotted'
+      } else if (link.target && link.target.includes('_safe')) {
+        width = 2.5
+        type = 'dotted'
+      } else if (link.target && link.target.includes('_')) {
+        width = 2
+        type = 'solid'
       }
     }
-
+    link.lineStyle = {
+      color: '#aaa',
+      width,
+      type,
+      shadowBlur: 8,
+    }
     return link
   })
 
@@ -264,78 +307,72 @@ const initChart = () => {
   const option = {
     tooltip: {
       trigger: 'item',
+      backgroundColor: 'rgba(255,255,255,0.95)',
+      borderColor: '#90caf9',
+      borderWidth: 1,
+      textStyle: {
+        color: '#222',
+        fontWeight: 'bold',
+        fontSize: 14,
+        fontFamily: 'Microsoft YaHei',
+        textShadowColor: '#b3c6f7',
+        textShadowBlur: 2,
+      },
+      extraCssText: 'box-shadow:0 4px 24px 0 rgba(33,150,243,0.12);border-radius:10px;',
       formatter: (params: any) => {
+        const iconMap = ['🌐', '��️', '🔷', '🟢', '⚠️', '🔥']
         if (params.dataType === 'node') {
           const data = params.data as NodeData
-
-          // 传感器节点
-          if (data.weight !== undefined && data.category === 1) {
-            return `<div style="text-align:left">
-              <b>${data.name}</b><br/>
-              区域: ${data.area_code}<br/>
-              当前状态: ${data.pred_risk}<br/>
-              风险值: ${(data.weight * 100).toFixed(2)}%
-            </div>`
-          }
-          // 安全状态节点
-          else if (data.category === 2 || data.category === 3 || data.category === 4) {
-            if (data.sensor_id && data.weight !== undefined) {
-              return `<div style="text-align:left">
-                <b>${data.name}</b><br/>
-                传感器: ${data.sensor_id}<br/>
-                风险值: ${(data.weight * 100).toFixed(2)}%
-              </div>`
-            }
-          }
-          // 区域节点
-          return `<div style="text-align:left"><b>${data.name}</b></div>`
+          return `<div style="min-width:120px;padding:2px 0 2px 0;">
+            <span style="font-size:18px;">${iconMap[data.category] || '●'}</span> <b>${data.name}</b><br/>
+            <span style="color:#888;">${['区域', '传感器', '数据项', '安全', '警告', '危险'][data.category]}</span><br/>
+            ${data.area ? `区域: ${data.area}<br/>` : ''}
+            ${data.sensor_type ? `传感器: ${data.sensor_type}<br/>` : ''}
+            ${data.data_item ? `数据项: ${data.data_item}<br/>` : ''}
+            ${typeof data.weight === 'number' ? `风险值: <b style='color:#F56C6C;'>${(data.weight * 100).toFixed(2)}%</b><br/>` : ''}
+          </div>`
         } else if (params.dataType === 'edge') {
-          return `连接强度: ${params.data.value}`
+          return `<div style='color:#1976d2;'>连接强度: ${params.data.value}</div>`
         }
         return ''
-      },
-      backgroundColor: 'rgba(50,50,50,0.8)',
-      borderWidth: 0,
-      textStyle: {
-        color: '#fff',
       },
     },
     legend: {
       type: 'scroll',
       orient: 'vertical',
-      right: expanded ? 10 : 5,
-      top: expanded ? 20 : 10,
+      right: isChartExpanded.value ? 10 : 5,
+      top: isChartExpanded.value ? 20 : 10,
       textStyle: {
-        fontSize: expanded ? 12 : 10,
+        fontSize: isChartExpanded.value ? 12 : 10,
         color: 'rgba(220, 230, 240, 0.9)',
       },
-      itemWidth: expanded ? 25 : 15,
-      itemHeight: expanded ? 14 : 8,
-      itemGap: expanded ? 10 : 5,
-      padding: expanded ? [5, 10] : [2, 5],
+      itemWidth: isChartExpanded.value ? 25 : 15,
+      itemHeight: isChartExpanded.value ? 14 : 8,
+      itemGap: isChartExpanded.value ? 10 : 5,
+      padding: isChartExpanded.value ? [5, 10] : [2, 5],
       backgroundColor: 'rgba(20, 35, 65, 0.8)',
       borderColor: 'rgba(32, 160, 255, 0.3)',
-      borderWidth: expanded ? 1 : 0,
+      borderWidth: isChartExpanded.value ? 1 : 0,
       borderRadius: 4,
       shadowColor: 'rgba(0, 0, 0, 0.3)',
-      shadowBlur: expanded ? 10 : 0,
+      shadowBlur: isChartExpanded.value ? 10 : 0,
       formatter: function (name: any) {
         // 在非展开状态下截断过长的名称
-        if (!expanded && name.length > 6) {
+        if (!isChartExpanded.value && name.length > 6) {
           return name.substring(0, 5) + '...'
         }
         return name
       },
     },
-    animationDuration: 1500,
-    animationEasingUpdate: 'quinticInOut',
+    animationDuration: 1800,
+    animationEasingUpdate: 'cubicOut',
+    backgroundColor: 'transparent',
     series: [
       {
         id: 'knowledge-graph',
         name: '工厂监控点知识图谱',
         type: 'graph',
         layout: 'force',
-        // 使用当前状态下应显示的节点和连接
         data: displayNodes,
         links: displayLinks,
         categories: graphData.value.categories.map((category: { name: string }, index: number) => ({
@@ -344,69 +381,102 @@ const initChart = () => {
             color: categoryColors[index],
           },
         })),
-        roam: true, // 允许缩放和平移
-        // 根据是否聚焦设置缩放级别
+        roam: true,
         zoom: zoomLevel,
-        // 居中显示
         center: ['50%', '50%'],
         label: {
-          show: shouldShowLabels, // 根据当前状态决定是否显示标签
+          show: shouldShowLabels,
           position: 'right',
-          formatter: (params: { data: NodeData }) => {
-            // 根据节点类型返回不同格式的标签
-            const node = params.data
-
-            if (node.category === 0) {
-              // 区域节点
-              return node.name
-            } else if (node.category === 1) {
-              // 传感器节点
-              return node.id
-            } else if ([2, 3, 4].includes(node.category)) {
-              // 安全等级节点
-              return node.name
-            }
-            return params.data.name
-          },
-          color: '#333',
-          backgroundColor: 'rgba(255,255,255,0.7)', // 添加标签背景色，提高可读性
-          padding: [3, 5],
-          borderRadius: 3,
+          fontWeight: 'bold',
+          fontSize: 16,
+          color: (params: any) => nodeFontColorMap[params.data.category] || '#333',
+          textShadowColor: '#fff',
+          textShadowBlur: 4,
+          backgroundColor: 'rgba(255,255,255,0.8)',
+          padding: [4, 8],
+          borderRadius: 4,
         },
-        // 确保节点样式不会被series级别的itemStyle覆盖
         itemStyle: {
           borderColor: '#fff',
-          borderWidth: 1,
+          borderWidth: 2,
           shadowBlur: 10,
-          shadowColor: 'rgba(0, 0, 0, 0.3)',
+          shadowColor: 'rgba(0, 0, 0, 0.15)',
         },
-        // 禁用系列级别的自动颜色分配
         color: categoryColors,
         force: {
-          repulsion: graphStore.focusedArea ? 1500 : [800, 1500], // 根据是否聚焦调整斥力
-          edgeLength: graphStore.focusedArea ? 200 : [100, 300], // 根据是否聚焦调整边长
-          gravity: 0.05, // 降低重力，让节点分散得更开
+          repulsion: graphStore.focusedArea ? 2800 : [2200, 3500],
+          edgeLength: graphStore.focusedArea ? 400 : [250, 500],
+          gravity: 0.02,
           layoutAnimation: true,
-          friction: 0.8, // 增加摩擦系数，使布局更稳定
+          friction: 0.92,
         },
-        edgeSymbol: ['none', 'none'],
+        edgeSymbol: ['none', 'arrow'],
+        edgeSymbolSize: [4, 12],
         edgeLabel: {
           show: false,
         },
         lineStyle: {
-          opacity: 0.8,
-          curveness: 0.2,
+          opacity: 0.85,
+          curveness: 0.25,
+          color: (params: any) => {
+            // 根据source/target动态生成渐变色
+            const { source, target } = params.data
+            let colorFrom = '#b3c6f7',
+              colorTo = '#f7b3b3'
+            if (typeof source === 'string' && typeof target === 'string') {
+              if (source.length <= 3 && target.length <= 3) {
+                colorFrom = '#b3c6f7'
+                colorTo = '#b3e5fc'
+              } else if (source.length <= 3 && target.includes('_')) {
+                colorFrom = '#b3c6f7'
+                colorTo = '#ce93d8'
+              } else if (target && target.includes('_danger')) {
+                colorFrom = '#f7b3b3'
+                colorTo = '#F56C6C'
+              } else if (target && target.includes('_warning')) {
+                colorFrom = '#ffe082'
+                colorTo = '#E6A23C'
+              } else if (target && target.includes('_safe')) {
+                colorFrom = '#a5d6a7'
+                colorTo = '#67C23A'
+              } else if (target && target.includes('_')) {
+                colorFrom = '#80deea'
+                colorTo = '#00bcd4'
+              }
+            }
+            return new echarts.graphic.LinearGradient(0, 0, 1, 0, [
+              { offset: 0, color: colorFrom },
+              { offset: 1, color: colorTo },
+            ])
+          },
         },
         emphasis: {
           focus: 'adjacency',
           lineStyle: {
-            width: 6,
+            width: 8,
+            shadowColor: '#1976d2',
+            shadowBlur: 16,
           },
           scale: true,
+          itemStyle: {
+            borderColor: '#1976d2',
+            borderWidth: 5,
+            shadowBlur: 30,
+            shadowColor: '#1976d2',
+          },
+          label: {
+            fontSize: 20,
+            color: '#1976d2',
+            fontWeight: 'bolder',
+          },
         },
+        focusNodeAdjacency: true,
+        draggable: true,
+        animation: true,
+        animationDurationUpdate: 1200,
+        animationEasingUpdate: 'cubicOut',
       },
     ],
-    backgroundColor: 'transparent',
   }
 
   // 应用选项
@@ -480,44 +550,40 @@ const initChart = () => {
   })
 }
 
-// 获取过滤后的节点和连接数据
-const getFilteredNodesAndLinks = (areaCode: string): { nodes: NodeData[]; links: LinkData[] } => {
+// 获取过滤后的节点和连接数据（适配四级结构）
+const getFilteredNodesAndLinks = (areaId: string): { nodes: NodeData[]; links: LinkData[] } => {
   if (!originalNodes.value.length || !originalLinks.value.length) {
     return { nodes: [], links: [] }
   }
-
   // 找出该区域下的所有传感器节点ID
   const areaSensors = originalNodes.value
-    .filter((node: NodeData) => node.category === 1 && node.area_code === areaCode)
+    .filter((node: NodeData) => node.category === 1 && node.id.startsWith(areaId + '_'))
     .map((node: NodeData) => node.id)
-
+  // 找出该区域下所有数据项节点ID
+  const areaDataItems = originalNodes.value
+    .filter(
+      (node: NodeData) => node.category === 2 && areaSensors.some((sensorId) => node.id.startsWith(sensorId + '_')),
+    )
+    .map((node: NodeData) => node.id)
+  // 找出该区域下所有风险节点ID
+  const areaRiskNodes = originalNodes.value
+    .filter(
+      (node: NodeData) =>
+        [3, 4, 5].includes(node.category) && areaDataItems.some((dataItemId) => node.id.startsWith(dataItemId + '_')),
+    )
+    .map((node: NodeData) => node.id)
   // 添加需要显示的节点ID集合
   const showNodeIds = new Set<string>()
-  showNodeIds.add(areaCode) // 添加区域节点
-
-  // 添加该区域的传感器节点
-  areaSensors.forEach((sensorId) => showNodeIds.add(sensorId))
-
-  // 添加传感器连接的安全等级节点
-  originalLinks.value.forEach((link: LinkData) => {
-    // 确保源节点是我们感兴趣的传感器
-    if (areaSensors.includes(link.source as string)) {
-      const targetId = link.target as string
-      // 确保目标节点是安全等级节点
-      if (targetId.includes('_safe') || targetId.includes('_warning') || targetId.includes('_danger')) {
-        showNodeIds.add(targetId)
-      }
-    }
-  })
-
+  showNodeIds.add(areaId)
+  areaSensors.forEach((id) => showNodeIds.add(id))
+  areaDataItems.forEach((id) => showNodeIds.add(id))
+  areaRiskNodes.forEach((id) => showNodeIds.add(id))
   // 过滤需要显示的节点
   const filteredNodes = originalNodes.value.filter((node: NodeData) => showNodeIds.has(node.id))
-
   // 过滤需要显示的连接
   const filteredLinks = originalLinks.value.filter(
     (link: LinkData) => showNodeIds.has(link.source as string) && showNodeIds.has(link.target as string),
   )
-
   return { nodes: filteredNodes, links: filteredLinks }
 }
 
@@ -567,43 +633,25 @@ const focusOnArea = (areaCode: string): void => {
         links: links,
         zoom: 0.3,
         center: ['50%', '50%'],
-        // 聚焦模式下始终显示标签
         label: {
           show: true,
           position: 'right',
           formatter: (params: { data: NodeData }) => {
-            // 根据节点类型返回不同格式的标签
             const node = params.data
-
-            if (node.category === 0) {
-              // 区域节点
-              return node.name
-            } else if (node.category === 1) {
-              // 传感器节点
-              return node.id
-            } else if ([2, 3, 4].includes(node.category)) {
-              // 安全等级节点
-              return node.name
-            }
-            return params.data.name
+            if (node.category === 0) return node.name
+            if (node.category === 1) return node.name
+            if (node.category === 2) return node.name
+            if ([3, 4, 5].includes(node.category)) return node.name
+            return node.name
           },
           color: '#333',
           backgroundColor: 'rgba(255,255,255,0.7)',
           padding: [3, 5],
           borderRadius: 3,
         },
-      },
-    ],
-  })
-
-  // 调整力布局参数，减少节点聚集
-  chart.setOption({
-    series: [
-      {
-        id: 'knowledge-graph',
         force: {
-          repulsion: 1500,
-          edgeLength: 200,
+          repulsion: 2500,
+          edgeLength: 350,
         },
       },
     ],
@@ -633,12 +681,11 @@ const restoreFullGraph = (): void => {
         zoom: 0.15, // 恢复原始缩放
         center: ['50%', '50%'],
         label: {
-          // 根据全局标签状态决定是否显示标签
           show: graphStore.showLabels,
         },
         force: {
-          repulsion: [800, 1500],
-          edgeLength: [100, 300],
+          repulsion: [2000, 3000],
+          edgeLength: [200, 400],
         },
       },
     ],
@@ -663,40 +710,29 @@ const applyCurrentState = (): void => {
     series: [
       {
         id: 'knowledge-graph',
-        // 使用当前状态下应显示的节点和连接
         data: displayNodes,
         links: displayLinks,
-        // 根据聚焦状态设置缩放级别
         zoom: graphStore.focusedArea ? 0.4 : 0.15,
-        // 根据聚焦状态决定是否显示标签 - 聚焦时始终显示
         label: {
           show: graphStore.focusedArea ? true : graphStore.showLabels,
           position: 'right',
           formatter: (params: { data: NodeData }) => {
             const node = params.data
             if (!node) return ''
-
-            if (node.category === 0) {
-              // 区域节点
-              return node.name
-            } else if (node.category === 1) {
-              // 传感器节点
-              return node.id
-            } else if ([2, 3, 4].includes(node.category)) {
-              // 安全等级节点
-              return node.name
-            }
-            return params.data.name
+            if (node.category === 0) return node.name
+            if (node.category === 1) return node.name
+            if (node.category === 2) return node.name
+            if ([3, 4, 5].includes(node.category)) return node.name
+            return node.name
           },
           color: '#333',
           backgroundColor: 'rgba(255,255,255,0.7)',
           padding: [3, 5],
           borderRadius: 3,
         },
-        // 根据聚焦状态设置力导向参数
         force: {
-          repulsion: graphStore.focusedArea ? 1500 : [800, 1500],
-          edgeLength: graphStore.focusedArea ? 200 : [100, 300],
+          repulsion: graphStore.focusedArea ? 2500 : [2000, 3000],
+          edgeLength: graphStore.focusedArea ? 350 : [200, 400],
         },
       },
     ],
@@ -801,31 +837,30 @@ onUnmounted(() => {
 
 <template>
   <div class="knowledge-graph-container">
-    <div class="graph-header">
-      <div class="graph-title">
-        <div class="title-icon">
-          <svg viewBox="0 0 24 24" width="20" height="20">
-            <path
-              fill="currentColor"
-              d="M12,2C17.5,2 22,6.5 22,12C22,17.5 17.5,22 12,22C6.5,22 2,17.5 2,12C2,6.5 6.5,2 12,2M12,4C7.58,4 4,7.58 4,12C4,16.42 7.58,20 12,20C16.42,20 20,16.42 20,12C20,7.58 16.42,4 12,4M12,6C15.31,6 18,8.69 18,12C18,15.31 15.31,18 12,18C8.69,18 6,15.31 6,12C6,8.69 8.69,6 12,6M12,8C9.79,8 8,9.79 8,12C8,14.21 9.79,16 12,16C14.21,16 16,14.21 16,12C16,9.79 14.21,8 12,8Z"
-            />
-          </svg>
+    <GraphHeader :title="'工厂监控点知识图谱'">
+      <template #icon>
+        <svg viewBox="0 0 24 24" width="20" height="20">
+          <path
+            fill="currentColor"
+            d="M12,2C17.5,2 22,6.5 22,12C22,17.5 17.5,22 12,22C6.5,22 2,17.5 2,12C2,6.5 6.5,2 12,2M12,4C7.58,4 4,7.58 4,12C4,16.42 7.58,20 12,20C16.42,20 20,16.42 20,12C20,7.58 16.42,4 12,4M12,6C15.31,6 18,8.69 18,12C18,15.31 15.31,18 12,18C8.69,18 6,15.31 6,12C6,8.69 8.69,6 12,6M12,8C9.79,8 8,9.79 8,12C8,14.21 9.79,16 12,16C14.21,16 16,14.21 16,12C16,9.79 14.21,8 12,8Z"
+          />
+        </svg>
+      </template>
+      <template #extra>
+        <div v-if="graphStore.focusedArea" class="focus-indicator" :class="{ compact: !isChartExpanded }">
+          <div class="pulse-dot"></div>
+          <span>已聚焦: {{ graphStore.focusedArea }}</span>
+          <button class="clear-focus-btn" @click="restoreFullGraph" title="清除聚焦">
+            <svg viewBox="0 0 24 24" width="14" height="14">
+              <path
+                fill="currentColor"
+                d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"
+              />
+            </svg>
+          </button>
         </div>
-        <span>工厂监控点知识图谱</span>
-      </div>
-      <div v-if="graphStore.focusedArea" class="focus-indicator" :class="{ compact: !isChartExpanded }">
-        <div class="pulse-dot"></div>
-        <span>已聚焦: {{ graphStore.focusedArea }}</span>
-        <button class="clear-focus-btn" @click="restoreFullGraph" title="清除聚焦">
-          <svg viewBox="0 0 24 24" width="14" height="14">
-            <path
-              fill="currentColor"
-              d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"
-            />
-          </svg>
-        </button>
-      </div>
-    </div>
+      </template>
+    </GraphHeader>
 
     <div ref="chartRef" class="chart"></div>
 
@@ -943,478 +978,6 @@ onUnmounted(() => {
   </div>
 </template>
 
-<style scoped>
-.knowledge-graph-container {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  background: linear-gradient(135deg, rgba(11, 19, 43, 0.95), rgba(12, 25, 55, 0.95));
-  border-radius: 8px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
-  overflow: hidden;
-}
-
-/* 标题栏 */
-.graph-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 16px;
-  background: linear-gradient(
-    90deg,
-    rgba(12, 24, 48, 0.95) 0%,
-    rgba(20, 40, 80, 0.95) 50%,
-    rgba(12, 24, 48, 0.95) 100%
-  );
-  border-bottom: 1px solid rgba(74, 144, 226, 0.2);
-  position: relative;
-  z-index: 5;
-}
-
-.graph-header::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 1px;
-  background: linear-gradient(90deg, rgba(32, 160, 255, 0), rgba(32, 160, 255, 0.5), rgba(32, 160, 255, 0));
-}
-
-.graph-title {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  color: rgba(220, 230, 240, 0.95);
-  font-weight: 600;
-  font-size: 16px;
-  text-shadow: 0 0 10px rgba(32, 160, 255, 0.3);
-  letter-spacing: 0.5px;
-}
-
-.title-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #20a0ff;
-  filter: drop-shadow(0 0 5px rgba(32, 160, 255, 0.5));
-}
-
-.focus-indicator {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: rgba(32, 160, 255, 0.15);
-  padding: 5px 12px;
-  border-radius: 16px;
-  border: 1px solid rgba(32, 160, 255, 0.3);
-  color: rgba(220, 230, 240, 0.9);
-  font-size: 13px;
-  margin-left: 15px; /* 与左侧保持一定距离 */
-}
-
-/* 非展开状态下的聚焦提示更紧凑 */
-.focus-indicator.compact {
-  gap: 5px;
-  padding: 3px 8px;
-  font-size: 11px;
-  max-width: 140px; /* 限制最大宽度 */
-  border-radius: 12px;
-}
-
-.focus-indicator.compact .pulse-dot {
-  width: 6px;
-  height: 6px;
-}
-
-/* 在紧凑模式下使区域名称可能会出现省略号 */
-.focus-indicator.compact span {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.pulse-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background-color: #20a0ff;
-  position: relative;
-}
-
-.pulse-dot::after {
-  content: '';
-  position: absolute;
-  top: -4px;
-  left: -4px;
-  right: -4px;
-  bottom: -4px;
-  border-radius: 50%;
-  background-color: rgba(32, 160, 255, 0.5);
-  animation: pulse 1.5s infinite;
-  z-index: -1;
-}
-
-@keyframes pulse {
-  0% {
-    transform: scale(0.9);
-    opacity: 0.7;
-  }
-  50% {
-    transform: scale(1.1);
-    opacity: 0.3;
-  }
-  100% {
-    transform: scale(0.9);
-    opacity: 0.7;
-  }
-}
-
-.clear-focus-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: rgba(220, 230, 240, 0.7);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 3px;
-  margin-left: 4px;
-  border-radius: 50%;
-  transition: all 0.2s ease;
-}
-
-.clear-focus-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: rgba(220, 230, 240, 0.9);
-}
-
-.chart {
-  flex: 1;
-  position: relative;
-  min-height: 0;
-}
-
-.graph-controls {
-  position: absolute;
-  right: 16px;
-  bottom: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  z-index: 10;
-}
-
-.control-btn {
-  padding: 8px 14px;
-  border-radius: 6px;
-  background: rgba(20, 35, 65, 0.85);
-  border: 1px solid rgba(74, 144, 226, 0.3);
-  color: rgba(220, 230, 240, 0.9);
-  font-size: 13px;
-  cursor: pointer;
-  transition: all 0.25s ease;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-}
-
-.control-btn:hover:not(.disabled) {
-  background: rgba(32, 50, 90, 0.9);
-  border-color: rgba(74, 144, 226, 0.5);
-  transform: translateY(-1px);
-}
-
-.control-btn.disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.btn-icon {
-  color: #20a0ff;
-  opacity: 0.9;
-}
-
-.graph-legend {
-  background: rgba(20, 35, 65, 0.85);
-  border: 1px solid rgba(74, 144, 226, 0.3);
-  border-radius: 6px;
-  padding: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-}
-
-.legend-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 12px;
-  color: rgba(220, 230, 240, 0.8);
-}
-
-.legend-color {
-  width: 12px;
-  height: 12px;
-  border-radius: 2px;
-  box-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
-}
-
-.graph-info-panel {
-  position: absolute;
-  left: 16px;
-  bottom: 16px;
-  background: rgba(20, 35, 65, 0.85);
-  border: 1px solid rgba(74, 144, 226, 0.3);
-  border-radius: 6px;
-  padding: 12px;
-  width: 220px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  z-index: 10;
-}
-
-.info-title {
-  font-size: 13px;
-  font-weight: 600;
-  color: rgba(220, 230, 240, 0.9);
-  margin-bottom: 8px;
-  padding-bottom: 6px;
-  border-bottom: 1px solid rgba(74, 144, 226, 0.2);
-}
-
-.info-content {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.info-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 12px;
-  color: rgba(220, 230, 240, 0.8);
-}
-
-.info-icon {
-  color: #20a0ff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* 为图表添加网格背景 */
-.knowledge-graph-container::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image:
-    linear-gradient(rgba(32, 160, 255, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(32, 160, 255, 0.05) 1px, transparent 1px);
-  background-size: 20px 20px;
-  opacity: 0.5;
-  pointer-events: none;
-  z-index: 1;
-}
-
-/* 添加光晕效果 */
-.knowledge-graph-container::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: radial-gradient(circle at 50% 10%, rgba(32, 160, 255, 0.1) 0%, rgba(32, 160, 255, 0) 70%);
-  pointer-events: none;
-  z-index: 2;
-}
-
-/* 响应式调整 */
-@media (max-width: 768px) {
-  .graph-info-panel {
-    display: none;
-  }
-
-  .graph-title {
-    font-size: 14px;
-  }
-
-  .control-btn {
-    padding: 6px 10px;
-    font-size: 12px;
-  }
-}
-
-/* 添加非展开状态下的迷你提示样式 */
-.mini-tip {
-  position: absolute;
-  bottom: 8px;
-  right: 8px;
-  background: rgba(20, 35, 65, 0.85);
-  border: 1px solid rgba(74, 144, 226, 0.2);
-  border-radius: 4px;
-  padding: 4px 8px;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 11px;
-  color: rgba(220, 230, 240, 0.7);
-  opacity: 0.7;
-  transition: opacity 0.2s ease;
-}
-
-.mini-tip:hover {
-  opacity: 1;
-}
-
-.mini-tip-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #20a0ff;
-}
-
-/* Unity聚焦按钮样式 */
-.unity-focus-btn {
-  position: absolute;
-  bottom: 10px;
-  left: 10px;
-  background: linear-gradient(135deg, rgba(20, 35, 65, 0.9), rgba(28, 50, 90, 0.9));
-  border: 1px solid rgba(74, 144, 226, 0.5);
-  border-radius: 6px;
-  padding: 6px;
-  padding-right: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  color: rgba(220, 230, 240, 0.95);
-  cursor: pointer;
-  transition: all 0.25s ease;
-  box-shadow:
-    0 3px 10px rgba(0, 0, 0, 0.25),
-    0 0 5px rgba(32, 160, 255, 0.3);
-  z-index: 11;
-  backdrop-filter: blur(2px);
-  width: 32px;
-  overflow: hidden;
-}
-
-.unity-focus-btn:hover {
-  background: linear-gradient(135deg, rgba(32, 50, 90, 0.95), rgba(42, 70, 120, 0.95));
-  border-color: rgba(74, 144, 226, 0.7);
-  transform: translateY(-1px);
-  box-shadow:
-    0 4px 12px rgba(0, 0, 0, 0.3),
-    0 0 8px rgba(32, 160, 255, 0.4);
-  padding: 6px 12px;
-  width: auto;
-  justify-content: flex-start;
-}
-
-.unity-focus-btn.focused {
-  background: linear-gradient(135deg, rgba(32, 120, 215, 0.25), rgba(32, 160, 255, 0.35));
-  border-color: rgba(32, 160, 255, 0.65);
-  color: rgba(255, 255, 255, 0.98);
-  box-shadow:
-    0 3px 12px rgba(0, 0, 0, 0.3),
-    0 0 15px rgba(32, 160, 255, 0.4),
-    inset 0 0 8px rgba(32, 160, 255, 0.2);
-  text-shadow: 0 0 3px rgba(255, 255, 255, 0.5);
-}
-
-.unity-focus-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: rgba(74, 144, 226, 0.95);
-  filter: drop-shadow(0 0 3px rgba(32, 160, 255, 0.4));
-  width: 20px;
-  height: 20px;
-}
-
-.unity-focus-btn.focused .unity-focus-icon {
-  color: rgba(135, 206, 255, 1);
-  filter: drop-shadow(0 0 5px rgba(135, 206, 255, 0.8));
-  animation: pulse-light 1.5s infinite;
-}
-
-.unity-focus-text {
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.2px;
-  white-space: nowrap;
-  opacity: 0;
-  width: 0;
-  overflow: hidden;
-  transition: all 0.3s ease;
-}
-
-/* 悬停时显示文本 */
-.unity-focus-btn:hover .unity-focus-text {
-  opacity: 1;
-  width: auto;
-  margin-right: 4px;
-}
-
-/* 在聚焦状态下永久显示文本 */
-.unity-focus-btn.focused:hover {
-  padding: 6px 12px;
-}
-
-@keyframes pulse-light {
-  0% {
-    opacity: 0.8;
-    transform: scale(0.92);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.08);
-    filter: drop-shadow(0 0 8px rgba(135, 206, 255, 0.9));
-  }
-  100% {
-    opacity: 0.8;
-    transform: scale(0.92);
-  }
-}
-
-/* 右上角图例文字样式 */
-:deep(.echarts-tooltip) {
-  background: rgba(20, 35, 65, 0.9) !important;
-  border: 1px solid rgba(32, 160, 255, 0.3) !important;
-  border-radius: 4px !important;
-  padding: 8px !important;
-  color: rgba(220, 230, 240, 0.9) !important;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2) !important;
-}
-
-:deep(.echarts-legend) {
-  color: rgba(220, 230, 240, 0.9) !important;
-}
-
-:deep(.echarts-legend-item) {
-  color: rgba(220, 230, 240, 0.9) !important;
-}
-
-:deep(.echarts-legend-text) {
-  color: rgba(220, 230, 240, 0.9) !important;
-}
-
-/* 对ECharts生成的图例进行样式覆盖 */
-:deep(g.echarts-legend text) {
-  fill: rgba(220, 230, 240, 0.9) !important;
-}
-
-/* 对ECharts tooltip内容样式覆盖 */
-:deep(.echarts-tooltip-content) {
-  color: rgba(220, 230, 240, 0.9) !important;
-}
+<style lang="scss" scoped>
+@use '@/assets/styles/ChemicalKnowledgeGraph.scss';
 </style>

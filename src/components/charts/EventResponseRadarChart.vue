@@ -16,6 +16,7 @@
 import { ref, onMounted, inject, computed, watch, onBeforeUnmount } from 'vue'
 import type { Ref } from 'vue'
 import * as echarts from 'echarts'
+import GraphHeader from '../common/GraphHeader.vue'
 
 // 导入所有算法结果文件
 import mappo005 from '@/mock/MAPPO/0.005_1000.json'
@@ -416,19 +417,16 @@ const chartStyle = computed(() => {
 <template>
   <div class="event-response-radar-container">
     <!-- 标题栏 -->
-    <div class="graph-header">
-      <div class="graph-title">
-        <div class="title-icon">
-          <svg viewBox="0 0 24 24" width="20" height="20">
-            <path
-              fill="currentColor"
-              d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4M12,10.5A1.5,1.5 0 0,0 10.5,12A1.5,1.5 0 0,0 12,13.5A1.5,1.5 0 0,0 13.5,12A1.5,1.5 0 0,0 12,10.5M7.5,12A1.5,1.5 0 0,0 6,13.5A1.5,1.5 0 0,0 7.5,15A1.5,1.5 0 0,0 9,13.5A1.5,1.5 0 0,0 7.5,12M16.5,12A1.5,1.5 0 0,0 15,13.5A1.5,1.5 0 0,0 16.5,15A1.5,1.5 0 0,0 18,13.5A1.5,1.5 0 0,0 16.5,12Z"
-            />
-          </svg>
-        </div>
-        <span>系统响应性能分析</span>
-      </div>
-    </div>
+    <GraphHeader :title="'系统响应性能分析'">
+      <template #icon>
+        <svg viewBox="0 0 24 24" width="20" height="20">
+          <path
+            fill="currentColor"
+            d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4M12,10.5A1.5,1.5 0 0,0 10.5,12A1.5,1.5 0 0,0 12,13.5A1.5,1.5 0 0,0 13.5,12A1.5,1.5 0 0,0 12,10.5M7.5,12A1.5,1.5 0 0,0 6,13.5A1.5,1.5 0 0,0 7.5,15A1.5,1.5 0 0,0 9,13.5A1.5,1.5 0 0,0 7.5,12M16.5,12A1.5,1.5 0 0,0 15,13.5A1.5,1.5 0 0,0 16.5,15A1.5,1.5 0 0,0 18,13.5A1.5,1.5 0 0,0 16.5,12Z"
+          />
+        </svg>
+      </template>
+    </GraphHeader>
 
     <!-- 雷达图 -->
     <div class="event-response-radar-chart" ref="chartRef" :style="chartStyle"></div>
@@ -450,52 +448,6 @@ const chartStyle = computed(() => {
     0 4px 20px rgba(0, 0, 0, 0.2),
     0 0 30px rgba(32, 160, 255, 0.07);
   border: 1px solid rgba(32, 160, 255, 0.15);
-}
-
-/* 标题栏 */
-.graph-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 16px;
-  background: linear-gradient(
-    90deg,
-    rgba(12, 24, 48, 0.95) 0%,
-    rgba(20, 40, 80, 0.95) 50%,
-    rgba(12, 24, 48, 0.95) 100%
-  );
-  border-bottom: 1px solid rgba(74, 144, 226, 0.2);
-  position: relative;
-  z-index: 5;
-}
-
-.graph-header::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 1px;
-  background: linear-gradient(90deg, rgba(32, 160, 255, 0), rgba(32, 160, 255, 0.5), rgba(32, 160, 255, 0));
-}
-
-.graph-title {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  color: rgba(220, 230, 240, 0.95);
-  font-weight: 600;
-  font-size: 16px;
-  text-shadow: 0 0 10px rgba(32, 160, 255, 0.3);
-  letter-spacing: 0.5px;
-}
-
-.title-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #20a0ff;
-  filter: drop-shadow(0 0 5px rgba(32, 160, 255, 0.5));
 }
 
 /* 雷达图样式 */
