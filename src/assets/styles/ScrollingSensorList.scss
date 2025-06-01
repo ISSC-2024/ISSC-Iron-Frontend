@@ -1,15 +1,16 @@
-// ScrollingSensorList 组件样式
-
-$primary: rgba(32, 160, 255, 0.8);
-$bg-dark: rgba(12, 22, 45, 0.95);
-$bg-darker: rgba(15, 28, 55, 0.95);
-$border: rgba(32, 160, 255, 0.3);
-$border-hover: rgba(32, 160, 255, 0.5);
-$text-main: rgba(220, 230, 240, 0.9);
-$text-light: rgba(140, 190, 240, 0.9);
-$text-header: rgba(120, 180, 255, 0.95);
+// =====================
+// ScrollingSensorList 变量
+// =====================
+$primary: #20a0ff;
+$bg-dark: #0c162d;
+$bg-darker: #0f1c37;
+$border: #20a0ff;
+$border-hover: #20a0ff;
+$text-main: #dce6f0;
+$text-light: #8cbef0;
+$text-header: #78b4ff;
 $danger: #ff4d4f;
-$warning: rgba(255, 215, 0, 0.9);
+$warning: #ffd700;
 $modal-z: 1500;
 
 .scrolling-list-container {

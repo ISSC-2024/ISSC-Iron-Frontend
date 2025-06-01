@@ -1,0 +1,286 @@
+// =====================
+// StaffDistributionChart 变量
+// =====================
+$chart-bg1: #0f1e3c;
+$chart-bg2: #081f23;
+$chart-primary: #20a0ff;
+$chart-header-bg1: #0c1830;
+$chart-header-bg2: #142850;
+$chart-header-border: #4a90e2;
+$chart-title: #dce6f0;
+$chart-title-shadow: #20a0ff;
+$button-bg: #142850;
+$button-color: #dce6f0;
+$button-active-bg1: #1976d2;
+$button-active-bg2: #1e88e5;
+$button-active-color: #fff;
+$button-shadow: #000000;
+$button-border: #20a0ff;
+$button-active-border: #20a0ff;
+$tooltip-bg: #081428;
+$tooltip-border: #40a9ff;
+$tooltip-color: #fff;
+$chart-gray: #dce6f0;
+
+$chart-bg: linear-gradient(135deg, rgba($chart-bg1, 0.95), rgba($chart-bg2, 0.95));
+$chart-border-radius: 8px;
+$chart-shadow:
+  0 4px 20px rgba($button-shadow, 0.2),
+  0 0 30px rgba($chart-primary, 0.07);
+$chart-border: 1px solid rgba($chart-primary, 0.15);
+$header-bg: linear-gradient(
+  90deg,
+  rgba($chart-header-bg1, 0.95) 0%,
+  rgba($chart-header-bg2, 0.95) 50%,
+  rgba($chart-header-bg1, 0.95) 100%
+);
+$header-border: 1px solid rgba($chart-header-border, 0.2);
+$header-title-color: rgba($chart-title, 0.95);
+$header-title-shadow: 0 0 10px rgba($chart-title-shadow, 0.3);
+$button-bg-gradient: linear-gradient(135deg, rgba($button-active-bg1, 0.8), rgba($button-active-bg2, 0.8));
+$button-shadow-mix:
+  0 2px 8px rgba($button-shadow, 0.2),
+  0 0 4px rgba($chart-primary, 0.1);
+$button-active-shadow:
+  0 3px 10px rgba($button-active-bg1, 0.3),
+  0 0 10px rgba($chart-primary, 0.3);
+$button-border-mix: 1px solid rgba($chart-primary, 0.1);
+$button-active-border-mix: rgba($chart-primary, 0.4);
+$tooltip-bg-mix: rgba($tooltip-bg, 0.9);
+$tooltip-border-mix: 1px solid rgba($tooltip-border, 0.5);
+$tooltip-radius: 6px;
+$tooltip-shadow:
+  0 4px 20px rgba($button-shadow, 0.3),
+  0 0 15px rgba($chart-primary, 0.15);
+
+// =====================
+// 组件样式
+// =====================
+.resource-distribution-chart-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: $chart-bg;
+  border-radius: $chart-border-radius;
+  overflow: hidden;
+  box-shadow: $chart-shadow;
+  border: $chart-border;
+
+  .graph-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background: $header-bg;
+    border-bottom: $header-border;
+    position: relative;
+    z-index: 5;
+
+    &::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(32, 160, 255, 0), rgba(32, 160, 255, 0.5), rgba(32, 160, 255, 0));
+    }
+  }
+
+  .graph-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: $header-title-color;
+    font-weight: 600;
+    font-size: 16px;
+    text-shadow: $header-title-shadow;
+    letter-spacing: 0.5px;
+  }
+
+  .title-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #20a0ff;
+    filter: drop-shadow(0 0 5px rgba(32, 160, 255, 0.5));
+  }
+
+  .resource-distribution-chart {
+    width: 100%;
+    height: calc(100% - 100px);
+    margin-top: 5px;
+    position: relative;
+    backdrop-filter: blur(5px);
+    isolation: isolate;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(to bottom, transparent 49.5%, rgba(32, 160, 255, 0.03) 50%, transparent 50.5%),
+        linear-gradient(90deg, rgba(32, 160, 255, 0.01) 1px, transparent 1px),
+        linear-gradient(rgba(32, 160, 255, 0.01) 1px, transparent 1px);
+      background-size:
+        100% 6px,
+        20px 20px,
+        20px 20px;
+      z-index: -1;
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background:
+        radial-gradient(ellipse at 50% 0%, rgba(64, 120, 255, 0.05) 0%, rgba(64, 120, 255, 0) 70%),
+        radial-gradient(ellipse at 50% 100%, rgba(64, 120, 255, 0.05) 0%, rgba(64, 120, 255, 0) 70%);
+      pointer-events: none;
+      z-index: -1;
+    }
+  }
+
+  .chart-type-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    padding: 0 20px;
+    position: absolute;
+    bottom: 8px;
+    left: 0;
+    right: 0;
+    z-index: 5;
+
+    .chart-type-button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 12px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      font-size: 12px;
+      background: $button-bg;
+      color: $button-color;
+      backdrop-filter: blur(4px);
+      box-shadow: $button-shadow-mix;
+      border: $button-border-mix;
+      position: relative;
+      overflow: hidden;
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow:
+          0 4px 12px rgba(0, 0, 0, 0.25),
+          0 0 8px rgba(32, 160, 255, 0.2);
+        color: rgba(220, 230, 240, 1);
+        border-color: rgba(32, 160, 255, 0.3);
+      }
+
+      &.active {
+        background: $button-bg-gradient;
+        color: $button-active-color;
+        box-shadow: $button-active-shadow;
+        border-color: $button-active-border-mix;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+      }
+
+      &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(to bottom, rgba(255, 255, 255, 0.1), transparent);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      &:hover::before {
+        opacity: 1;
+      }
+
+      &.active::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 10%;
+        width: 80%;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
+      }
+
+      .button-icon {
+        margin-right: 5px;
+        font-size: 14px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .button-label {
+        font-weight: 500;
+        letter-spacing: 0.2px;
+      }
+    }
+  }
+
+  .fade-enter-active,
+  .fade-leave-active {
+    transition:
+      opacity 0.5s ease,
+      transform 0.5s ease;
+  }
+
+  .fade-enter-from,
+  .fade-leave-to {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  @media (max-width: 768px) {
+    .button-label {
+      font-size: 11px;
+    }
+
+    .button-icon {
+      font-size: 13px;
+    }
+
+    .chart-type-button {
+      padding: 5px 8px;
+    }
+  }
+
+  .chart-type-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(32, 160, 255, 0.4);
+  }
+}
+
+// echarts 工具提示样式
+:global(.staff-chart-tooltip:nth-of-type(2)) {
+  background: $tooltip-bg-mix !important;
+  backdrop-filter: blur(10px) !important;
+  border-radius: $tooltip-radius !important;
+  border: $tooltip-border-mix !important;
+  box-shadow: $tooltip-shadow !important;
+  padding: 8px 12px !important;
+  color: $tooltip-color !important;
+  font-family: 'Inter', 'Roboto', sans-serif !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4) !important;
+}

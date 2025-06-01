@@ -1,19 +1,51 @@
+// =====================
 // ChemicalKnowledgeGraph 变量
-$ckg-bg-gradient: linear-gradient(135deg, rgba(11, 19, 43, 0.95), rgba(12, 25, 55, 0.95));
+// =====================
+$ckg-primary: #20a0ff;
+$ckg-bg1: #0b132b;
+$ckg-bg2: #0c1937;
+$ckg-header-bg1: #0c1830;
+$ckg-header-bg2: #142850;
+$ckg-header-border: #4a90e2;
+$ckg-title: #dce6f0;
+$ckg-title-shadow: #20a0ff;
+$ckg-legend-bg: #142341;
+$ckg-legend-border: #4a90e2;
+$ckg-btn-bg: #142341;
+$ckg-btn-border: #4a90e2;
+$ckg-btn-hover-bg: #20325a;
+$ckg-btn-hover-border: #4a90e2;
+$ckg-info-bg: #142341;
+$ckg-info-border: #4a90e2;
+$ckg-focus-dot: #20a0ff;
+$ckg-focus-dot-shadow: #20a0ff;
+$ckg-focus-btn-bg: #142341;
+$ckg-focus-btn-border: #4a90e2;
+$ckg-focus-btn-hover-bg: #20325a;
+$ckg-focus-btn-hover-border: #4a90e2;
+$ckg-focus-btn-focused-bg: #2078d7;
+$ckg-focus-btn-focused-border: #20a0ff;
+$ckg-focus-btn-focused-shadow: #20a0ff;
+$ckg-tooltip-bg: #142341;
+$ckg-tooltip-border: #20a0ff;
+$ckg-tooltip-color: #dce6f0;
+$ckg-scrollbar-thumb: #20a0ff;
+$ckg-scrollbar-track: #0b132b;
+
+$ckg-bg-gradient: linear-gradient(135deg, rgba($ckg-bg1, 0.95), rgba($ckg-bg2, 0.95));
 $ckg-radius: 8px;
-$ckg-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+$ckg-shadow: 0 4px 20px rgba(#000, 0.25);
 $ckg-grid-bg:
-  linear-gradient(rgba(32, 160, 255, 0.05) 1px, transparent 1px),
-  linear-gradient(90deg, rgba(32, 160, 255, 0.05) 1px, transparent 1px);
-$ckg-glow-bg: radial-gradient(circle at 50% 10%, rgba(32, 160, 255, 0.1) 0%, rgba(32, 160, 255, 0) 70%);
+  linear-gradient(rgba($ckg-primary, 0.05) 1px, transparent 1px),
+  linear-gradient(90deg, rgba($ckg-primary, 0.05) 1px, transparent 1px);
+$ckg-glow-bg: radial-gradient(circle at 50% 10%, rgba($ckg-primary, 0.1) 0%, rgba($ckg-primary, 0) 70%);
 $ckg-header-gradient: linear-gradient(
   90deg,
-  rgba(12, 24, 48, 0.95) 0%,
-  rgba(20, 40, 80, 0.95) 50%,
-  rgba(12, 24, 48, 0.95) 100%
+  rgba($ckg-header-bg1, 0.95) 0%,
+  rgba($ckg-header-bg2, 0.95) 50%,
+  rgba($ckg-header-bg1, 0.95) 100%
 );
-$ckg-header-border: rgba(74, 144, 226, 0.2);
-$ckg-header-after: linear-gradient(90deg, rgba(32, 160, 255, 0), rgba(32, 160, 255, 0.5), rgba(32, 160, 255, 0));
+$ckg-header-after: linear-gradient(90deg, rgba($ckg-primary, 0), rgba($ckg-primary, 0.5), rgba($ckg-primary, 0));
 
 // 主体样式
 .knowledge-graph-container {

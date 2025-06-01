@@ -1,0 +1,320 @@
+// =====================
+// ScrollingLogList 变量
+// =====================
+$log-primary: #20a0ff;
+$log-bg: #0b132b;
+$log-header-bg1: #0c1830;
+$log-header-bg2: #142850;
+$log-header-color: #78b4ff;
+$log-info: #52c41a;
+$log-warning: #faad14;
+$log-danger: #f5222d;
+$log-row-alt-bg: #0f1e3c;
+$log-row-hover-bg: #1e325a;
+$log-row-selected-bg: #2057a0;
+$log-row-selected-border: #20a0ff;
+$log-empty-color: #20a0ff;
+$log-no-more-color: #b4c8dc;
+$log-color: #dce6f0;
+$log-shadow: 0 0 15px rgba(#0064ff, 0.1);
+$log-scrollbar-thumb: #20a0ff;
+$log-scrollbar-track: #0b132b;
+
+// =====================
+// 组件样式
+// =====================
+.scrolling-log-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba($log-primary, 0.2);
+  border-radius: 4px;
+  overflow: hidden;
+  padding-top: 0;
+  position: relative;
+  z-index: 0;
+  background-color: $log-bg;
+  color: $log-color;
+  box-shadow: $log-shadow;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    background: linear-gradient(to bottom, transparent 50%, rgba($log-primary, 0.03) 50%);
+    background-size: 100% 4px;
+    z-index: 1;
+  }
+
+  &.expanded {
+    .scrolling-log-body,
+    .log-time,
+    .log-type,
+    .log-message {
+      font-size: 16px;
+    }
+    .header-time,
+    .header-type {
+      margin-left: 11px;
+    }
+  }
+
+  &:not(.expanded) {
+    .scrolling-log-body {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+      &::-webkit-scrollbar {
+        display: none;
+      }
+    }
+  }
+}
+
+.log-time {
+  flex: 0 0 70px;
+  color: rgba(130, 180, 230, 0.8);
+  font-family: 'Consolas', monospace;
+  text-shadow: 0 0 5px rgba($log-primary, 0.3);
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 5px;
+}
+
+.log-type {
+  flex: 0 0 70px;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  font-size: 14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.log-message {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+  padding-left: 10px;
+  position: relative;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+
+  &.expanded {
+    white-space: normal;
+    word-wrap: break-word;
+    overflow: visible;
+    text-overflow: clip;
+    height: auto;
+    line-height: 1.5;
+    font-size: 16px;
+  }
+}
+
+.header-message {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.export-button {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba($log-primary, 0.15);
+  border: 1px solid rgba($log-primary, 0.3);
+  color: $log-color;
+  padding: 5px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  outline: none;
+
+  &:hover {
+    background: rgba($log-primary, 0.25);
+    border-color: rgba($log-primary, 0.5);
+    box-shadow: 0 0 8px rgba($log-primary, 0.4);
+  }
+  &:active {
+    background: rgba($log-primary, 0.35);
+    transform: translateY(1px);
+  }
+}
+
+.log-header {
+  display: flex;
+  background: linear-gradient(
+    90deg,
+    rgba($log-header-bg1, 0.9) 0%,
+    rgba($log-header-bg2, 0.9) 50%,
+    rgba($log-header-bg1, 0.9) 100%
+  );
+  font-weight: 600;
+  padding: 10px;
+  border-bottom: 1px solid rgba($log-primary, 0.15);
+  font-size: 14px;
+  color: $log-header-color;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-shadow: 0 0 8px rgba($log-primary, 0.4);
+}
+
+.header-time {
+  flex: 0 0 70px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-left: 8px;
+}
+
+.header-type {
+  flex: 0 0 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  margin-left: 5px;
+}
+
+.scrolling-log-body {
+  flex: 1;
+  height: calc(100% - 86px);
+  overflow-y: auto;
+  font-size: 14px;
+  font-family: 'Consolas', 'Monaco', monospace;
+  background: radial-gradient(ellipse at center, rgba($log-header-bg1, 0.3) 0%, rgba($log-header-bg2, 0.3) 100%);
+  scrollbar-width: thin; /* Firefox 滚动条样式 */
+  scrollbar-color: $log-scrollbar-thumb $log-scrollbar-track;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  &::-webkit-scrollbar-track {
+    background: $log-scrollbar-track;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: $log-scrollbar-thumb;
+    border-radius: 3px;
+  }
+}
+
+.expanded-chart {
+  .log-type {
+    flex: 0 0 100px;
+  }
+}
+
+.log-row {
+  display: flex;
+  padding: 10px;
+  border-bottom: 1px solid rgba($log-primary, 0.1);
+  transition: all 0.25s ease;
+  align-items: center;
+  cursor: pointer;
+  background-color: $log-row-alt-bg;
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 4px;
+    background: transparent;
+    transition: all 0.2s ease;
+  }
+
+  &.log-row-alt {
+    background-color: $log-row-alt-bg;
+  }
+  &:hover {
+    background-color: $log-row-hover-bg;
+    transform: translateX(2px);
+    box-shadow: -2px 0 8px rgba($log-primary, 0.15);
+  }
+  &.log-selected {
+    background-color: $log-row-selected-bg !important;
+    border-right: 1px solid $log-row-selected-border;
+  }
+}
+
+.log-info {
+  &::before {
+    background: linear-gradient(to bottom, rgba($log-info, 1), rgba($log-info, 0.5));
+    box-shadow: 0 0 10px rgba($log-info, 0.8);
+  }
+  .anticon {
+    color: rgba($log-info, 0.9);
+  }
+}
+
+.log-warning {
+  &::before {
+    background: linear-gradient(to bottom, rgba($log-warning, 1), rgba($log-warning, 0.5));
+    box-shadow: 0 0 10px rgba($log-warning, 0.8);
+  }
+  .anticon {
+    color: rgba($log-warning, 0.9);
+  }
+}
+
+.log-danger {
+  &::before {
+    background: linear-gradient(to bottom, rgba($log-danger, 1), rgba($log-danger, 0.5));
+    box-shadow: 0 0 10px rgba($log-danger, 0.8);
+  }
+  .anticon {
+    color: rgba($log-danger, 0.9);
+  }
+}
+
+.loading-indicator,
+.empty-data {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
+  width: 100%;
+  color: $log-empty-color;
+  font-size: 16px;
+  text-align: center;
+}
+
+.load-more-trigger {
+  padding: 15px;
+  text-align: center;
+  color: rgba($log-primary, 0.7);
+}
+
+.loading-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.no-more-data {
+  font-size: 14px;
+  color: $log-no-more-color;
+  padding: 10px;
+}
