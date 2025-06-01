@@ -518,9 +518,10 @@ onUnmounted(() => {
 
 .scrolling-list-header {
   display: flex;
+  align-items: center;
+  padding: 0 8px;
   background: linear-gradient(90deg, rgba(12, 24, 48, 0.9) 0%, rgba(20, 40, 80, 0.9) 50%, rgba(12, 24, 48, 0.9) 100%);
   font-weight: 600;
-  padding: 10px 8px;
   border-bottom: 1px solid rgba(32, 160, 255, 0.15);
   font-size: 14px;
   position: sticky;
@@ -533,24 +534,32 @@ onUnmounted(() => {
 }
 
 .header-item {
-  flex: 1;
-  text-align: center;
-  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
+  height: 40px;
+  line-height: 1;
   gap: 8px;
+  position: relative;
+  flex: 1;
+  text-align: center;
 }
 
 .header-item::after {
   content: '';
   position: absolute;
-  bottom: -10px;
+  bottom: 4px;
   left: 50%;
   transform: translateX(-50%);
   width: 40%;
   height: 2px;
   background: linear-gradient(90deg, rgba(32, 160, 255, 0), rgba(32, 160, 255, 0.6), rgba(32, 160, 255, 0));
+}
+
+.header-item svg {
+  font-size: 16px;
+  vertical-align: middle;
+  display: inline-block;
 }
 
 .scrolling-list-body {
@@ -919,5 +928,10 @@ onUnmounted(() => {
 .export-button:active {
   background: rgba(32, 160, 255, 0.35);
   transform: translateY(1px);
+}
+
+.graph-header + .scrolling-list-header {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
 }
 </style>
