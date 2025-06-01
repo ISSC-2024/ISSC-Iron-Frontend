@@ -1,0 +1,379 @@
+// =====================
+// LoginView 颜色变量
+// =====================
+$primary: #20a0ff;
+$primary-dark: #0a1428;
+$primary-darker: #0e1a30;
+$primary-bg: #0f1928;
+$primary-bg2: #0e1a30;
+$card-bg: #0f1928;
+$card-border: #20a0ff;
+$card-shadow: #20a0ff;
+$card-shadow-dark: #000000;
+$card-corner: #40a9ff;
+$title-color: #dcf0ff;
+$title-shadow: #40a9ff;
+$title-underline: #40a9ff;
+$switch-bg: #142846;
+$switch-border: #20a0ff;
+$switch-color: #b4dcfa;
+$switch-active-bg: #20a0ff;
+$switch-active-border: #40a9ff;
+$switch-active-color: #dcf0ff;
+$input-bg: #142846;
+$input-border: #20a0ff;
+$input-color: #dcf0ff;
+$input-placeholder: #82b4dc;
+$input-prefix: #50b4ff;
+$button-bg1: #1890ff;
+$button-bg2: #40a9ff;
+$button-shadow: #1890ff;
+$button-border: #20a0ff;
+$button-border2: #40a9ff;
+$btn-text: #fff;
+$btn-shine: #fff;
+$particle: #20a0ff;
+$corner: #40a9ff;
+
+// =====================
+// 组件样式
+// =====================
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, $primary-dark 0%, $primary-darker 100%);
+
+  .tech-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .grid-lines {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image:
+      linear-gradient(rgba($primary, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba($primary, 0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    z-index: 1;
+  }
+  .glow-sphere {
+    position: absolute;
+    width: 800px;
+    height: 800px;
+    border-radius: 50%;
+    background: radial-gradient(
+      circle at center,
+      rgba($primary, 0.05) 0%,
+      rgba($primary, 0.03) 30%,
+      rgba($primary, 0) 70%
+    );
+    left: calc(50% - 400px);
+    top: calc(50% - 400px);
+    filter: blur(40px);
+    animation: pulsate 10s infinite alternate;
+    z-index: 2;
+  }
+  .floating-particles {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 3;
+    .particle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: rgba($primary, 0.5);
+      border-radius: 50%;
+      filter: blur(1px);
+      box-shadow: 0 0 6px rgba($primary, 0.8);
+      animation: float 20s infinite linear;
+    }
+  }
+
+  .login-card {
+    width: 400px;
+    padding: 40px;
+    background: rgba($card-bg, 0.9);
+    border-radius: 10px;
+    border: 1px solid rgba($card-border, 0.3);
+    box-shadow:
+      0 0 30px rgba($card-shadow-dark, 0.3),
+      0 0 15px rgba($card-shadow, 0.2),
+      inset 0 0 15px rgba($card-shadow, 0.05);
+    backdrop-filter: blur(10px);
+    position: relative;
+    z-index: 10;
+    overflow: hidden;
+
+    .card-decoration {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      .corner {
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        z-index: 1;
+        &.top-left {
+          top: 0;
+          left: 0;
+          border-top: 2px solid rgba($corner, 0.7);
+          border-left: 2px solid rgba($corner, 0.7);
+        }
+        &.top-right {
+          top: 0;
+          right: 0;
+          border-top: 2px solid rgba($corner, 0.7);
+          border-right: 2px solid rgba($corner, 0.7);
+        }
+        &.bottom-left {
+          bottom: 0;
+          left: 0;
+          border-bottom: 2px solid rgba($corner, 0.7);
+          border-left: 2px solid rgba($corner, 0.7);
+        }
+        &.bottom-right {
+          bottom: 0;
+          right: 0;
+          border-bottom: 2px solid rgba($corner, 0.7);
+          border-right: 2px solid rgba($corner, 0.7);
+        }
+      }
+    }
+    .login-title {
+      text-align: center;
+      margin-bottom: 15px;
+      color: rgba($title-color, 0.9);
+      font-size: 26px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-shadow: 0 0 10px rgba($title-shadow, 0.5);
+      position: relative;
+      .title-underline {
+        width: 70%;
+        height: 1px;
+        margin: 0 auto 25px;
+        background: linear-gradient(to right, rgba($primary, 0), rgba($title-underline, 0.7) 50%, rgba($primary, 0));
+        position: relative;
+        &::after {
+          content: '';
+          position: absolute;
+          width: 40%;
+          height: 1px;
+          left: 30%;
+          bottom: -3px;
+          background: rgba($title-underline, 0.5);
+          filter: blur(1px);
+        }
+      }
+    }
+    .login-type-switch {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 25px;
+      padding: 5px;
+      background: transparent;
+      border: none;
+      .switch-btn {
+        margin: 0 5px;
+        border-radius: 6px;
+        transition: all 0.3s ease;
+        background: rgba($switch-bg, 0.4) !important;
+        border: 1px solid rgba($switch-border, 0.3) !important;
+        color: rgba($switch-color, 0.8) !important;
+        &.active {
+          background: rgba($switch-active-bg, 0.2) !important;
+          border-color: rgba($switch-active-border, 0.5) !important;
+          color: rgba($switch-active-color, 1) !important;
+          box-shadow: 0 0 10px rgba($primary, 0.2) !important;
+        }
+      }
+    }
+    :deep(.styled-input) {
+      background: rgba($input-bg, 0.5) !important;
+      border: 1px solid rgba($input-border, 0.3) !important;
+      border-radius: 6px !important;
+      color: rgba($input-color, 0.9) !important;
+      box-shadow: inset 0 0 5px rgba($card-shadow-dark, 0.2) !important;
+      transition: all 0.3s ease !important;
+      &:hover,
+      &:focus {
+        border-color: rgba($button-border2, 0.7) !important;
+        box-shadow:
+          0 0 15px rgba($primary, 0.25),
+          inset 0 0 5px rgba($card-shadow-dark, 0.2) !important;
+      }
+      input::placeholder,
+      .ant-input::placeholder {
+        color: rgba($input-placeholder, 0.7) !important;
+        opacity: 1 !important;
+      }
+      input,
+      .ant-input {
+        background: transparent !important;
+        color: rgba($input-color, 0.95) !important;
+      }
+      .ant-input-prefix {
+        color: rgba($input-prefix, 0.9) !important;
+        margin-right: 10px !important;
+        font-size: 16px !important;
+      }
+    }
+    .login-button {
+      position: relative;
+      height: 48px;
+      background: linear-gradient(135deg, $button-bg1, $button-bg2, $button-bg1) !important;
+      background-size: 200% 100% !important;
+      border: none !important;
+      border-radius: 6px !important;
+      overflow: hidden;
+      box-shadow:
+        0 4px 15px rgba($button-shadow, 0.3),
+        0 0 0 1px rgba($button-border, 0.5) inset !important;
+      animation: buttonGradient 3s ease infinite !important;
+      transition: all 0.3s ease !important;
+      &:hover {
+        transform: translateY(-2px);
+        background-size: 200% 100% !important;
+        box-shadow:
+          0 6px 20px rgba($button-shadow, 0.5),
+          0 0 0 1px rgba($button-border2, 0.7) inset,
+          0 0 20px rgba($primary, 0.3) !important;
+        animation: buttonGradientFast 2s ease infinite !important;
+      }
+      &:active {
+        transform: translateY(1px);
+        box-shadow:
+          0 2px 10px rgba($button-shadow, 0.3),
+          0 0 0 1px rgba($button-border2, 0.7) inset !important;
+      }
+      .btn-text {
+        position: relative;
+        z-index: 2;
+        font-weight: 600;
+        letter-spacing: 1.5px;
+        font-size: 16px;
+        text-shadow: 0 0 5px rgba($btn-text, 0.3);
+      }
+      .btn-shine {
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, rgba($btn-shine, 0) 0%, rgba($btn-shine, 0.3) 50%, rgba($btn-shine, 0) 100%);
+        transform: skewX(-25deg);
+        animation: shine 3s infinite;
+        z-index: 1;
+      }
+      &::before,
+      &::after {
+        content: '';
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        z-index: 2;
+        pointer-events: none;
+      }
+      &::before {
+        top: 0;
+        left: 0;
+        border-top: 2px solid rgba($btn-shine, 0.7);
+        border-left: 2px solid rgba($btn-shine, 0.7);
+        border-top-left-radius: 5px;
+      }
+      &::after {
+        bottom: 0;
+        right: 0;
+        border-bottom: 2px solid rgba($btn-shine, 0.7);
+        border-right: 2px solid rgba($btn-shine, 0.7);
+        border-bottom-right-radius: 5px;
+      }
+    }
+  }
+}
+
+@keyframes buttonGradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes buttonGradientFast {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes pulsate {
+  0% {
+    opacity: 0.5;
+    transform: scale(0.9);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0.5;
+    transform: scale(0.9);
+  }
+}
+
+@keyframes float {
+  0% {
+    transform: translate(0, 0);
+  }
+  25% {
+    transform: translate(10px, 10px);
+  }
+  50% {
+    transform: translate(15px, -5px);
+  }
+  75% {
+    transform: translate(-5px, 10px);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+@media (max-width: 500px) {
+  .login-container {
+    .login-card {
+      width: 90%;
+      padding: 30px 20px;
+    }
+    .login-title {
+      font-size: 22px;
+    }
+  }
+}

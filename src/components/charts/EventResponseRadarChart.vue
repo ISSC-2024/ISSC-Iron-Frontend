@@ -433,8 +433,18 @@ const chartStyle = computed(() => {
   </div>
 </template>
 
-<style scoped>
-/* 容器样式 */
+<style lang="scss" scoped>
+// 变量定义
+$primary-color: rgba(32, 160, 255, 0.15);
+$primary-light: rgba(32, 160, 255, 0.07);
+$primary-dark: rgba(32, 160, 255, 0.03);
+$primary-darker: rgba(32, 160, 255, 0.01);
+$blue-gradient: rgba(64, 120, 255, 0.05);
+$tooltip-bg: rgba(8, 20, 40, 0.9);
+$tooltip-border: rgba(64, 169, 255, 0.5);
+$text-color: rgba(220, 230, 240, 0.95);
+
+// 容器样式
 .event-response-radar-container {
   width: 100%;
   height: 100%;
@@ -446,64 +456,64 @@ const chartStyle = computed(() => {
   overflow: hidden;
   box-shadow:
     0 4px 20px rgba(0, 0, 0, 0.2),
-    0 0 30px rgba(32, 160, 255, 0.07);
-  border: 1px solid rgba(32, 160, 255, 0.15);
+    0 0 30px $primary-light;
+  border: 1px solid $primary-color;
 }
 
-/* 雷达图样式 */
+// 雷达图样式
 .event-response-radar-chart {
   width: 100%;
   flex: 1;
   position: relative;
   backdrop-filter: blur(2px);
+
+  // 网格背景效果
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(to bottom, transparent 49.5%, $primary-dark 50%, transparent 50.5%),
+      linear-gradient(90deg, $primary-darker 1px, transparent 1px),
+      linear-gradient($primary-darker 1px, transparent 1px);
+    background-size:
+      100% 6px,
+      20px 20px,
+      20px 20px;
+    z-index: 0;
+  }
+
+  // 全息投影效果
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background:
+      radial-gradient(ellipse at 50% 0%, $blue-gradient 0%, rgba(64, 120, 255, 0) 70%),
+      radial-gradient(ellipse at 50% 100%, $blue-gradient 0%, rgba(64, 120, 255, 0) 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
 }
 
-/* 网格背景效果 */
-.event-response-radar-chart::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  pointer-events: none;
-  background-image:
-    linear-gradient(to bottom, transparent 49.5%, rgba(32, 160, 255, 0.03) 50%, transparent 50.5%),
-    linear-gradient(90deg, rgba(32, 160, 255, 0.01) 1px, transparent 1px),
-    linear-gradient(rgba(32, 160, 255, 0.01) 1px, transparent 1px);
-  background-size:
-    100% 6px,
-    20px 20px,
-    20px 20px;
-  z-index: 0;
-}
-
-/* 全息投影效果 */
-.event-response-radar-chart::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background:
-    radial-gradient(ellipse at 50% 0%, rgba(64, 120, 255, 0.05) 0%, rgba(64, 120, 255, 0) 70%),
-    radial-gradient(ellipse at 50% 100%, rgba(64, 120, 255, 0.05) 0%, rgba(64, 120, 255, 0) 70%);
-  pointer-events: none;
-  z-index: 0;
-}
-
-/* 工具提示样式  */
+// 工具提示样式
 :deep(.event-radar-tooltip) {
-  background: rgba(8, 20, 40, 0.9) !important;
+  background: $tooltip-bg !important;
   backdrop-filter: blur(10px) !important;
   border-radius: 8px !important;
-  border: 1px solid rgba(64, 169, 255, 0.5) !important;
+  border: 1px solid $tooltip-border !important;
   box-shadow:
     0 4px 20px rgba(0, 0, 0, 0.3),
-    0 0 15px rgba(32, 160, 255, 0.15) !important;
+    0 0 15px $primary-light !important;
   padding: 10px 14px !important;
-  color: rgba(220, 230, 240, 0.95) !important;
+  color: $text-color !important;
   font-family: 'Inter', 'Roboto', sans-serif !important;
 }
 

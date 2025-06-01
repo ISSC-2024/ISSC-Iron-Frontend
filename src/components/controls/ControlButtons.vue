@@ -189,7 +189,36 @@ onBeforeUnmount(() => {
   </div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
+// 变量定义
+$primary-color: rgba(64, 169, 255, 0.9);
+$primary-shadow: rgba(32, 160, 255, 0.4);
+$text-color: rgba(220, 230, 240, 0.95);
+$border-color: rgba(64, 169, 255, 0.3);
+$bg-gradient: linear-gradient(135deg, rgba(25, 50, 100, 0.9), rgba(15, 30, 65, 0.9));
+$hover-bg-gradient: linear-gradient(135deg, rgba(30, 60, 120, 0.9), rgba(20, 40, 85, 0.9));
+
+// 混合宏
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin button-shadow {
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.15),
+    0 0 0 1px rgba(255, 255, 255, 0.05),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+@mixin hover-shadow {
+  box-shadow:
+    0 6px 15px rgba(0, 0, 0, 0.2),
+    0 0 10px rgba(32, 160, 255, 0.15),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
 .controls-wrapper {
   display: flex;
   justify-content: center;
@@ -203,50 +232,78 @@ onBeforeUnmount(() => {
     0 4px 20px rgba(0, 0, 0, 0.2),
     0 0 30px rgba(32, 160, 255, 0.07),
     inset 0 0 0 1px rgba(64, 169, 255, 0.2);
-}
 
-.controls-wrapper::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, rgba(32, 160, 255, 0), rgba(64, 169, 255, 0.6), rgba(32, 160, 255, 0));
-  z-index: 5;
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(32, 160, 255, 0), rgba(64, 169, 255, 0.6), rgba(32, 160, 255, 0));
+    z-index: 5;
+  }
 }
 
 .control-btn {
   position: relative;
-  background: linear-gradient(135deg, rgba(25, 50, 100, 0.9), rgba(15, 30, 65, 0.9));
-  color: rgba(220, 230, 240, 0.95);
-  border: 1px solid rgba(64, 169, 255, 0.3);
+  background: $bg-gradient;
+  color: $text-color;
+  border: 1px solid $border-color;
   border-radius: 8px;
   padding: 10px 20px;
   font-size: 14px;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-  box-shadow:
-    0 4px 12px rgba(0, 0, 0, 0.15),
-    0 0 0 1px rgba(255, 255, 255, 0.05),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+  @include button-shadow;
   overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  @include flex-center;
   gap: 8px;
   min-width: 130px;
   font-weight: 500;
   letter-spacing: 0.5px;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+
+  &:hover {
+    background: $hover-bg-gradient;
+    border-color: rgba(64, 169, 255, 0.5);
+    transform: translateY(-2px);
+    @include hover-shadow;
+
+    .btn-glow {
+      opacity: 0.7;
+    }
+
+    &::before {
+      opacity: 1;
+    }
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow:
+      0 2px 8px rgba(0, 0, 0, 0.2),
+      0 0 5px rgba(32, 160, 255, 0.1),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(32, 160, 255, 0), rgba(64, 169, 255, 0.6), rgba(32, 160, 255, 0));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
 }
 
 .btn-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: rgba(64, 169, 255, 0.9);
-  filter: drop-shadow(0 0 4px rgba(32, 160, 255, 0.4));
+  @include flex-center;
+  color: $primary-color;
+  filter: drop-shadow(0 0 4px $primary-shadow);
 }
 
 .btn-glow {
@@ -261,52 +318,13 @@ onBeforeUnmount(() => {
   transition: opacity 0.3s ease;
 }
 
-.control-btn:hover {
-  background: linear-gradient(135deg, rgba(30, 60, 120, 0.9), rgba(20, 40, 85, 0.9));
-  border-color: rgba(64, 169, 255, 0.5);
-  transform: translateY(-2px);
-  box-shadow:
-    0 6px 15px rgba(0, 0, 0, 0.2),
-    0 0 10px rgba(32, 160, 255, 0.15),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.1);
-}
-
-.control-btn:hover .btn-glow {
-  opacity: 0.7;
-}
-
-.control-btn:active {
-  transform: translateY(0);
-  box-shadow:
-    0 2px 8px rgba(0, 0, 0, 0.2),
-    0 0 5px rgba(32, 160, 255, 0.1),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.05);
-}
-
-.control-btn::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, rgba(32, 160, 255, 0), rgba(64, 169, 255, 0.6), rgba(32, 160, 255, 0));
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.control-btn:hover::before {
-  opacity: 1;
-}
-
-/* 消息提示 */
 .message-tip {
   position: fixed;
   top: 80px;
   left: 50%;
   transform: translateX(-50%);
   background: linear-gradient(135deg, rgba(15, 35, 70, 0.95), rgba(10, 25, 50, 0.95));
-  color: rgba(220, 230, 240, 0.95);
+  color: $text-color;
   padding: 12px 20px;
   border-radius: 8px;
   z-index: 1000;
@@ -316,35 +334,32 @@ onBeforeUnmount(() => {
     0 0 15px rgba(32, 160, 255, 0.1),
     inset 0 0 0 1px rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(64, 169, 255, 0.3);
-  display: flex;
-  align-items: center;
+  border: 1px solid $border-color;
+  @include flex-center;
   gap: 10px;
   min-width: 220px;
   letter-spacing: 0.5px;
 }
 
 .message-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: rgba(64, 169, 255, 0.9);
-  filter: drop-shadow(0 0 4px rgba(32, 160, 255, 0.4));
+  @include flex-center;
+  color: $primary-color;
+  filter: drop-shadow(0 0 4px $primary-shadow);
 }
 
-/* 提示动画 */
-.tip-enter-active,
-.tip-leave-active {
-  transition:
-    opacity 0.4s cubic-bezier(0.25, 0.8, 0.25, 1),
-    transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-}
+// 提示动画
+.tip {
+  &-enter-active,
+  &-leave-active {
+    transition:
+      opacity 0.4s cubic-bezier(0.25, 0.8, 0.25, 1),
+      transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  }
 
-.tip-enter-from,
-.tip-leave-to {
-  opacity: 0;
-  transform: translateX(-50%) translateY(-20px);
+  &-enter-from,
+  &-leave-to {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-20px);
+  }
 }
-
-/* 保留其他样式 */
 </style>

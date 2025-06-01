@@ -474,7 +474,7 @@ const initChart = () => {
         draggable: true,
         animation: true,
         animationDurationUpdate: 1200,
-        animationEasingUpdate: 'cubicOut',
+        animationEasingUpdate: 'cubicO1ut',
       },
     ],
   }

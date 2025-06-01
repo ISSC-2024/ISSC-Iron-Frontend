@@ -9,7 +9,7 @@ import router from './router'
 // 导入Ant Design Vue样式
 import 'ant-design-vue/dist/reset.css'
 // 导入全局样式
-import './assets/styles/main.css'
+import './assets/styles/main.scss'
 
 // 在开发环境中导入stagewise工具栏
 if (import.meta.env.DEV) {
