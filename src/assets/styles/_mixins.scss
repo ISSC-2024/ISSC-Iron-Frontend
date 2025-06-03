@@ -49,6 +49,43 @@
   background-size: $size $size;
 }
 
+// dots背景效果
+@mixin tech-dots-background($color1, $color2, $size: 20px) {
+  background-image:
+    radial-gradient(circle at 50% 50%, rgba($color1, 0.08) 2px, transparent 3px),
+    radial-gradient(circle at 20% 80%, rgba($color2, 0.05) 1px, transparent 2px);
+  background-size:
+    $size $size,
+    $size * 1.5 $size * 1.5;
+  background-position:
+    0 0,
+    $size/2 $size/2;
+}
+
+@mixin tech-glow-background($primary-color, $secondary-color, $opacity1: 0.08, $opacity2: 0.05) {
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba($primary-color, $opacity1) 0%, rgba($primary-color, 0) 70%),
+    radial-gradient(ellipse at 50% 100%, rgba($secondary-color, $opacity2) 0%, rgba($secondary-color, 0) 70%);
+}
+
+@mixin futuristic-border($color, $width: 1px, $glow-intensity: 0.15) {
+  border: $width solid rgba($color, 0.5);
+  box-shadow: 0 0 10px rgba($color, $glow-intensity);
+}
+
+@mixin header-underline($color) {
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40%;
+    height: 2px;
+    background: linear-gradient(90deg, rgba($color, 0), rgba($color, 0.6), rgba($color, 0));
+  }
+}
+
 // ===== 动画与过渡 =====
 @mixin transition($property: all, $duration: 0.3s, $timing: ease) {
   transition: $property $duration $timing;

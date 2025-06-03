@@ -29,11 +29,10 @@ $log-scrollbar-thumb: rgba($color-primary, 0.7);
   padding-top: 0;
   position: relative;
   z-index: 0;
-  background-color: $color-bg-primary;
+  background: linear-gradient(135deg, $color-bg-primary, darken($color-bg-primary, 5%));
   color: $color-text-primary;
   box-shadow: $log-shadow;
-  outline: 2px solid rgba($color-primary, 0.25);
-  outline-offset: 0px;
+  @include futuristic-border($color-primary);
 
   /* 已移除脉动边框动画效果，仅保留静态边框 */
 
@@ -41,8 +40,8 @@ $log-scrollbar-thumb: rgba($color-primary, 0.7);
     content: '';
     @include absolute-fill;
     pointer-events: none;
-    @include cyber-grid($color-primary, $color-primary, 20px);
-    opacity: 0.1;
+    @include tech-dots-background($color-primary, $color-secondary);
+    opacity: 0.6;
     z-index: 1;
   }
 
@@ -50,7 +49,7 @@ $log-scrollbar-thumb: rgba($color-primary, 0.7);
     content: '';
     @include absolute-fill;
     pointer-events: none;
-    background: radial-gradient(circle at 50% 10%, rgba($color-primary, 0.1) 0%, rgba($color-primary, 0) 70%);
+    @include tech-glow-background($color-primary, $color-secondary);
     z-index: 2;
   }
 
@@ -135,8 +134,8 @@ $log-scrollbar-thumb: rgba($color-primary, 0.7);
   display: flex;
   align-items: center;
   gap: 5px;
-  background: rgba($color-primary, 0.15);
-  border: 1px solid rgba($color-primary, 0.3);
+  background: rgba($color-primary, $opacity-low);
+  border: 1px solid rgba($color-primary, $opacity-medium);
   color: $color-text-primary;
   padding: 5px 12px;
   border-radius: $border-radius;
@@ -147,14 +146,14 @@ $log-scrollbar-thumb: rgba($color-primary, 0.7);
   outline: none;
 
   &:hover {
-    background: rgba($color-primary, 0.25);
-    border-color: rgba($color-primary, 0.5);
+    background: rgba($color-primary, $opacity-medium);
+    border-color: rgba($color-primary, $opacity-high);
     @include glow-effect($color-primary, 0.4);
     transform: translateY(-1px);
   }
 
   &:active {
-    background: rgba($color-primary, 0.35);
+    background: rgba($color-primary, $opacity-high);
     transform: translateY(1px);
   }
 }
