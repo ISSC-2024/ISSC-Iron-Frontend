@@ -1,31 +1,46 @@
+@use '@/assets/styles/_variables' as *;
+@use '@/assets/styles/_mixins' as *;
+
 // =====================
 // ScrollingRegionList 变量
 // =====================
-$region-primary: #20a0ff;
-$region-bg1: #0f1e3c;
-$region-bg2: #081f23;
-$region-radius: 8px;
-$region-shadow: 0 0 25px rgba(#0064ff, 0.07);
-$region-color: #dce6f0;
-$region-header-bg1: #0c1830;
-$region-header-bg2: #142850;
-$region-header-color: #78b4ff;
-$region-row-alt-bg: #0f1e3c;
-$region-row-hover-bg: #192d55;
-$region-row-selected-bg1: #143c82;
-$region-row-selected-bg2: #1e50a0;
-$region-row-selected-border: #40b4ff;
-$region-row-selected-shadow: 0 0 15px rgba(#20a0ff, 0.2);
-$region-status-safe: #28aa1e;
-$region-status-safe2: #3cc828;
+
+// 组件特定颜色变量
+$region-bg1: $color-bg-primary;
+$region-bg2: darken($color-bg-primary, 5%);
+$region-header-bg1: darken($color-bg-primary, 3%);
+$region-header-bg2: darken($color-bg-primary, 1%);
+$region-header-color: rgba($color-primary, 0.9);
+
+// 行样式变量
+$region-row-alt-bg: rgba($color-primary, 0.03);
+$region-row-hover-bg: rgba($color-primary, 0.08);
+$region-row-selected-bg1: rgba($color-primary, 0.15);
+$region-row-selected-bg2: rgba($color-primary, 0.2);
+$region-row-selected-border: $color-secondary;
+
+// 状态指示器颜色
+$region-status-safe: $color-secondary;
+$region-status-safe2: lighten($color-secondary, 10%);
 $region-status-warning: #fa9600;
 $region-status-warning2: #ffb41e;
-$region-status-danger: #dc140a;
-$region-status-danger2: #ff321e;
-$region-scrollbar-thumb: #20a0ff;
-$region-scrollbar-track: #0b132b;
-$region-empty-color: #20a0ff;
-$region-no-more-color: #b4c8dc;
+$region-status-danger: $color-danger;
+$region-status-danger2: lighten($color-danger, 10%);
+
+// 滚动条样式
+$region-scrollbar-thumb: rgba($color-primary, 0.7);
+$region-scrollbar-track: rgba($color-bg-primary, 0.8);
+
+// 尺寸和间距
+$region-header-height: 40px;
+$region-indicator-height: 24px;
+$region-indicator-height-expanded: 28px;
+$region-grid-size: 20px;
+$region-border-width: 1px;
+
+// 动画和过渡
+$region-transition-speed: $transition-fast;
+$region-pulse-duration: 2.5s;
 
 // =====================
 // 组件样式
@@ -33,17 +48,16 @@ $region-no-more-color: #b4c8dc;
 .scrolling-list-container {
   width: 100%;
   height: 100%;
-  display: flex;
-  flex-direction: column;
-  border: 1px solid $region-primary;
-  border-radius: $region-radius;
+  @include flex-column;
+  border: $region-border-width solid rgba($color-primary, 0.5);
+  border-radius: $border-radius;
   overflow: hidden;
   padding-top: 0;
   position: relative;
   z-index: 0;
-  background: $region-bg1;
-  color: $region-color;
-  box-shadow: $region-shadow;
+  background: linear-gradient(135deg, $region-bg1, $region-bg2);
+  color: $color-text-primary;
+  box-shadow: $panel-shadow;
   isolation: isolate;
 
   &::after {
@@ -54,14 +68,7 @@ $region-no-more-color: #b4c8dc;
     right: 0;
     bottom: 0;
     pointer-events: none;
-    background-image:
-      linear-gradient(to bottom, transparent 49.5%, rgba($region-primary, 0.03) 50%, transparent 50.5%),
-      linear-gradient(90deg, rgba($region-primary, 0.01) 1px, transparent 1px),
-      linear-gradient(rgba($region-primary, 0.01) 1px, transparent 1px);
-    background-size:
-      100% 6px,
-      20px 20px,
-      20px 20px;
+    @include cyber-grid($color-primary, $color-secondary, $region-grid-size);
     z-index: 1;
   }
 
@@ -73,8 +80,8 @@ $region-no-more-color: #b4c8dc;
     right: 0;
     bottom: 0;
     background:
-      radial-gradient(ellipse at 50% 0%, rgba(64, 120, 255, 0.05) 0%, rgba(64, 120, 255, 0) 70%),
-      radial-gradient(ellipse at 50% 100%, rgba(64, 120, 255, 0.05) 0%, rgba(64, 120, 255, 0) 70%);
+      radial-gradient(ellipse at 50% 0%, rgba($color-primary, 0.08) 0%, rgba($color-primary, 0) 70%),
+      radial-gradient(ellipse at 50% 100%, rgba($color-secondary, 0.08) 0%, rgba($color-secondary, 0) 70%);
     pointer-events: none;
     z-index: 0;
   }
@@ -94,15 +101,15 @@ $region-no-more-color: #b4c8dc;
     .list-time,
     .list-region,
     .status-indicator {
-      font-size: 16px;
+      font-size: $font-size-md;
     }
     .status-indicator {
-      height: 28px;
+      height: $region-indicator-height-expanded;
       padding: 4px 14px;
     }
     .item-icon,
     .status-indicator svg {
-      font-size: 16px;
+      font-size: $font-size-md;
     }
   }
 }
@@ -111,24 +118,24 @@ $region-no-more-color: #b4c8dc;
   display: flex;
   align-items: center;
   padding: 0 8px;
-  background: $region-header-bg1;
+  background: linear-gradient(90deg, $region-header-bg1, $region-header-bg2, $region-header-bg1);
   font-weight: 600;
-  border-bottom: 1px solid $region-primary;
-  font-size: 14px;
+  border-bottom: $region-border-width solid rgba($color-primary, 0.5);
+  font-size: $font-size-sm;
   position: sticky;
   top: 0;
   z-index: 5;
   color: $region-header-color;
   text-transform: uppercase;
   letter-spacing: 1px;
-  text-shadow: 0 0 8px rgba($region-primary, 0.4);
+  text-shadow: 0 0 8px rgba($color-primary, 0.4);
 }
 
 .header-item {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 40px;
+  height: $region-header-height;
   line-height: 1;
   gap: 8px;
   position: relative;
@@ -143,11 +150,11 @@ $region-no-more-color: #b4c8dc;
     transform: translateX(-50%);
     width: 40%;
     height: 2px;
-    background: linear-gradient(90deg, rgba($region-primary, 0), rgba($region-primary, 0.6), rgba($region-primary, 0));
+    background: linear-gradient(90deg, rgba($color-primary, 0), rgba($color-primary, 0.6), rgba($color-primary, 0));
   }
 
   svg {
-    font-size: 16px;
+    font-size: $font-size-md;
     vertical-align: middle;
     display: inline-block;
   }
@@ -156,7 +163,7 @@ $region-no-more-color: #b4c8dc;
 .scrolling-list-body {
   flex: 1;
   overflow-y: auto;
-  font-size: 14px;
+  font-size: $font-size-sm;
   font-family: 'Consolas', 'Monaco', monospace;
   background: radial-gradient(ellipse at center, rgba($region-bg1, 0.3) 0%, rgba($region-bg2, 0.3) 100%);
   scrollbar-width: thin; /* Firefox */
@@ -177,11 +184,11 @@ $region-no-more-color: #b4c8dc;
 .list-row {
   display: flex;
   padding: 10px;
-  border-bottom: 1px solid rgba($region-primary, 0.06);
-  transition: all 0.2s ease;
+  border-bottom: 1px solid rgba($color-primary, 0.06);
+  @include transition(all, $region-transition-speed);
   cursor: pointer;
   align-items: center;
-  background-color: $region-row-alt-bg;
+  background-color: transparent;
   position: relative;
 
   &::before {
@@ -192,7 +199,7 @@ $region-no-more-color: #b4c8dc;
     height: 100%;
     width: 3px;
     background: transparent;
-    transition: all 0.2s ease;
+    @include transition(all, $region-transition-speed);
   }
 
   &.row-alt {
@@ -201,13 +208,21 @@ $region-no-more-color: #b4c8dc;
   &:hover {
     background-color: $region-row-hover-bg;
     transform: translateX(2px);
-    box-shadow: -2px 0 8px rgba($region-primary, 0.18);
+    box-shadow: -2px 0 8px rgba($color-primary, 0.18);
     z-index: 2;
+
+    &::before {
+      background: linear-gradient(to bottom, $color-primary, $color-secondary);
+    }
   }
   &.row-selected {
-    background: $region-row-selected-bg1 !important;
+    background: linear-gradient(135deg, $region-row-selected-bg1, $region-row-selected-bg2) !important;
     border-right: 1px solid $region-row-selected-border;
-    box-shadow: $region-row-selected-shadow;
+    box-shadow: 0 0 15px rgba($color-primary, 0.2);
+
+    &::before {
+      background: $color-secondary;
+    }
   }
 }
 
@@ -221,19 +236,19 @@ $region-no-more-color: #b4c8dc;
 }
 
 .list-time {
-  color: rgba(140, 190, 240, 0.85);
+  color: rgba($color-primary, 0.85);
   font-family: 'Consolas', monospace;
-  text-shadow: 0 0 5px rgba($region-primary, 0.3);
+  text-shadow: 0 0 5px rgba($color-primary, 0.3);
   letter-spacing: 0.5px;
-  font-size: 13px;
+  font-size: $font-size-sm;
 }
 
 .list-region {
   font-weight: bold;
   letter-spacing: 0.5px;
   position: relative;
-  text-shadow: 0 0 5px rgba($region-primary, 0.25);
-  font-size: 13px;
+  text-shadow: 0 0 5px rgba($color-primary, 0.25);
+  font-size: $font-size-sm;
 
   &::after {
     content: '';
@@ -243,8 +258,8 @@ $region-no-more-color: #b4c8dc;
     transform: translateX(-50%);
     width: 0;
     height: 1px;
-    background: linear-gradient(90deg, rgba($region-primary, 0), rgba($region-primary, 0.7), rgba($region-primary, 0));
-    transition: width 0.25s ease;
+    background: linear-gradient(90deg, rgba($color-primary, 0), rgba($color-primary, 0.7), rgba($color-primary, 0));
+    @include transition(width, $region-transition-speed);
   }
 }
 
@@ -258,14 +273,14 @@ $region-no-more-color: #b4c8dc;
   justify-content: center;
   padding: 3px 10px;
   border-radius: 10px;
-  font-size: 13px;
+  font-size: $font-size-sm;
   min-width: 90px;
   font-weight: 600;
-  transition: all 0.2s ease;
+  @include transition(all, $region-transition-speed);
   position: relative;
   overflow: hidden;
   letter-spacing: 0.5px;
-  height: 24px;
+  height: $region-indicator-height;
   border: 1px solid rgba(255, 255, 255, 0.15);
   gap: 6px;
 
@@ -277,7 +292,7 @@ $region-no-more-color: #b4c8dc;
     filter: blur(6px);
     opacity: 0.5;
     transform: scale(0.9);
-    transition: all 0.3s ease;
+    @include transition(all, $region-transition-speed);
   }
 
   &::after {
@@ -306,7 +321,7 @@ $region-no-more-color: #b4c8dc;
 .status-safe {
   background: linear-gradient(145deg, rgba($region-status-safe, 0.8), rgba($region-status-safe2, 0.8));
   color: rgba(255, 255, 255, 0.95);
-  box-shadow: 0 1px 6px rgba(82, 196, 26, 0.3);
+  box-shadow: 0 1px 6px rgba($region-status-safe, 0.3);
   text-shadow: 0 1px 1px rgba(0, 80, 0, 0.5);
 
   &::before {
@@ -317,7 +332,7 @@ $region-no-more-color: #b4c8dc;
 .status-warning {
   background: linear-gradient(145deg, rgba($region-status-warning, 0.8), rgba($region-status-warning2, 0.8));
   color: rgba(255, 255, 255, 0.95);
-  box-shadow: 0 1px 6px rgba(250, 173, 20, 0.3);
+  box-shadow: 0 1px 6px rgba($region-status-warning, 0.3);
   text-shadow: 0 1px 1px rgba(120, 60, 0, 0.5);
 
   &::before {
@@ -328,9 +343,9 @@ $region-no-more-color: #b4c8dc;
 .status-danger {
   background: linear-gradient(145deg, rgba($region-status-danger, 0.8), rgba($region-status-danger2, 0.8));
   color: rgba(255, 255, 255, 0.95);
-  box-shadow: 0 1px 6px rgba(245, 34, 45, 0.3);
+  box-shadow: 0 1px 6px rgba($region-status-danger, 0.3);
   text-shadow: 0 1px 1px rgba(100, 0, 0, 0.5);
-  animation: pulse 2.5s infinite;
+  animation: pulse $region-pulse-duration infinite;
 
   &::before {
     background: rgba($region-status-danger, 0.6);
@@ -350,33 +365,33 @@ $region-no-more-color: #b4c8dc;
 }
 
 .item-icon {
-  font-size: 14px;
+  font-size: $font-size-sm;
   display: flex;
   align-items: center;
 }
 
 .status-indicator svg {
-  font-size: 14px;
+  font-size: $font-size-sm;
 }
 
 .row-selected .item-icon,
 .list-row:hover .item-icon {
-  color: rgba(220, 230, 240, 0.9);
+  color: $color-text-primary;
 }
 
 .list-row .status-safe ~ .list-item .item-icon,
 .list-row:has(.status-safe) .item-icon {
-  color: rgba(82, 196, 26, 0.9);
+  color: rgba($region-status-safe, 0.9);
 }
 
 .list-row .status-warning ~ .list-item .item-icon,
 .list-row:has(.status-warning) .item-icon {
-  color: rgba(250, 173, 20, 0.9);
+  color: rgba($region-status-warning, 0.9);
 }
 
 .list-row .status-danger ~ .list-item .item-icon,
 .list-row:has(.status-danger) .item-icon {
-  color: rgba(245, 34, 45, 0.9);
+  color: rgba($region-status-danger, 0.9);
 }
 
 .loading-indicator,
@@ -386,27 +401,27 @@ $region-no-more-color: #b4c8dc;
   align-items: center;
   height: 100px;
   width: 100%;
-  color: $region-empty-color;
-  font-size: 16px;
+  color: rgba($color-primary, 0.8);
+  font-size: $font-size-md;
   text-align: center;
 }
 
 .load-more-trigger {
   padding: 15px;
   text-align: center;
-  color: rgba($region-primary, 0.7);
+  color: rgba($color-primary, 0.7);
 }
 
 .loading-more {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  font-size: 14px;
+  font-size: $font-size-sm;
 }
 
 .no-more-data {
-  font-size: 14px;
-  color: $region-no-more-color;
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
   padding: 10px;
 }
 
@@ -414,24 +429,24 @@ $region-no-more-color: #b4c8dc;
   display: flex;
   align-items: center;
   gap: 5px;
-  background: rgba($region-primary, 0.15);
-  border: 1px solid rgba($region-primary, 0.3);
-  color: rgba(220, 230, 240, 0.9);
+  background: rgba($color-primary, $opacity-low);
+  border: 1px solid rgba($color-primary, $opacity-medium);
+  color: $color-text-primary;
   padding: 5px 12px;
-  border-radius: 4px;
+  border-radius: $border-radius;
   cursor: pointer;
-  font-size: 14px;
+  font-size: $font-size-sm;
   font-weight: 500;
-  transition: all 0.2s ease;
+  @include transition(all, $region-transition-speed);
   outline: none;
 
   &:hover {
-    background: rgba($region-primary, 0.25);
-    border-color: rgba($region-primary, 0.5);
-    box-shadow: 0 0 8px rgba($region-primary, 0.4);
+    background: rgba($color-primary, $opacity-medium);
+    border-color: rgba($color-primary, $opacity-high);
+    @include glow-effect($color-primary, 0.4);
   }
   &:active {
-    background: rgba($region-primary, 0.35);
+    background: rgba($color-primary, $opacity-high);
     transform: translateY(1px);
   }
 }
