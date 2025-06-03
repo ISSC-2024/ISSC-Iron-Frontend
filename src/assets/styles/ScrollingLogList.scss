@@ -1,24 +1,22 @@
+@use '@/assets/styles/_variables' as *;
+@use '@/assets/styles/_mixins' as *;
+@use 'sass:color';
+
 // =====================
 // ScrollingLogList 变量
 // =====================
-$log-primary: #20a0ff;
-$log-bg: #0b132b;
-$log-header-bg1: #0c1830;
-$log-header-bg2: #142850;
-$log-header-color: #78b4ff;
-$log-info: #52c41a;
-$log-warning: #faad14;
-$log-danger: #f5222d;
-$log-row-alt-bg: #0f1e3c;
-$log-row-hover-bg: #1e325a;
-$log-row-selected-bg: #2057a0;
-$log-row-selected-border: #20a0ff;
-$log-empty-color: #20a0ff;
-$log-no-more-color: #b4c8dc;
-$log-color: #dce6f0;
-$log-shadow: 0 0 15px rgba(#0064ff, 0.1);
-$log-scrollbar-thumb: #20a0ff;
-$log-scrollbar-track: #0b132b;
+$log-header-bg1: rgba(18, 15, 30, 0.95);
+$log-header-bg2: rgba(28, 25, 40, 0.95);
+$log-warning: rgba(255, 184, 108, 0.9);
+$log-row-alt-bg: rgba(28, 25, 40, 0.6);
+$log-row-hover-bg: rgba(40, 35, 60, 0.8);
+$log-row-selected-bg: rgba(70, 40, 120, 0.6);
+$log-row-selected-border: rgba($color-primary, 0.7);
+$log-empty-color: rgba($color-primary, 0.7);
+$log-shadow:
+  0 4px 16px rgba(0, 0, 0, 0.3),
+  0 0 20px rgba($color-primary, 0.15);
+$log-scrollbar-thumb: rgba($color-primary, 0.7);
 
 // =====================
 // 组件样式
@@ -26,29 +24,34 @@ $log-scrollbar-track: #0b132b;
 .scrolling-log-container {
   width: 100%;
   height: 100%;
-  display: flex;
-  flex-direction: column;
-  border: 1px solid rgba($log-primary, 0.2);
-  border-radius: 4px;
+  @include flex-column;
+  border-radius: $border-radius;
   overflow: hidden;
   padding-top: 0;
   position: relative;
   z-index: 0;
-  background-color: $log-bg;
-  color: $log-color;
+  background: linear-gradient(135deg, $color-bg-primary, color.adjust($color-bg-primary, $lightness: -5%));
+  color: $color-text-primary;
   box-shadow: $log-shadow;
+  @include futuristic-border($color-primary);
+
+  /* 已移除脉动边框动画效果，仅保留静态边框 */
+
+  &::before {
+    content: '';
+    @include absolute-fill;
+    pointer-events: none;
+    @include tech-dots-background($color-primary, $color-secondary);
+    opacity: 0.6;
+    z-index: 1;
+  }
 
   &::after {
     content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    @include absolute-fill;
     pointer-events: none;
-    background: linear-gradient(to bottom, transparent 50%, rgba($log-primary, 0.03) 50%);
-    background-size: 100% 4px;
-    z-index: 1;
+    @include tech-glow-background($color-primary, $color-secondary);
+    z-index: 2;
   }
 
   &.expanded {
@@ -56,7 +59,7 @@ $log-scrollbar-track: #0b132b;
     .log-time,
     .log-type,
     .log-message {
-      font-size: 16px;
+      font-size: $font-size-md;
     }
     .header-time,
     .header-type {
@@ -77,10 +80,10 @@ $log-scrollbar-track: #0b132b;
 
 .log-time {
   flex: 0 0 70px;
-  color: rgba(130, 180, 230, 0.8);
+  color: rgba($color-primary, 0.8);
   font-family: 'Consolas', monospace;
-  text-shadow: 0 0 5px rgba($log-primary, 0.3);
-  font-size: 14px;
+  text-shadow: 0 0 5px rgba($color-primary, 0.3);
+  font-size: $font-size-sm;
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -92,25 +95,21 @@ $log-scrollbar-track: #0b132b;
   font-weight: bold;
   letter-spacing: 0.5px;
   text-transform: uppercase;
-  font-size: 14px;
+  font-size: $font-size-sm;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  @include flex-center;
   gap: 5px;
 }
 
 .log-message {
   flex: 1;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  @include truncate(1);
   max-width: 100%;
   padding-left: 10px;
   position: relative;
-  font-size: 14px;
+  font-size: $font-size-sm;
   display: flex;
   align-items: center;
   gap: 5px;
@@ -122,15 +121,13 @@ $log-scrollbar-track: #0b132b;
     text-overflow: clip;
     height: auto;
     line-height: 1.5;
-    font-size: 16px;
+    font-size: $font-size-md;
   }
 }
 
 .header-message {
   flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  @include flex-center;
   gap: 5px;
 }
 
@@ -138,44 +135,53 @@ $log-scrollbar-track: #0b132b;
   display: flex;
   align-items: center;
   gap: 5px;
-  background: rgba($log-primary, 0.15);
-  border: 1px solid rgba($log-primary, 0.3);
-  color: $log-color;
+  background: rgba($color-primary, $opacity-low);
+  border: 1px solid rgba($color-primary, $opacity-medium);
+  color: $color-text-primary;
   padding: 5px 12px;
-  border-radius: 4px;
+  border-radius: $border-radius;
   cursor: pointer;
-  font-size: 14px;
+  font-size: $font-size-sm;
   font-weight: 500;
-  transition: all 0.2s ease;
+  @include transition(all, $transition-fast);
   outline: none;
 
   &:hover {
-    background: rgba($log-primary, 0.25);
-    border-color: rgba($log-primary, 0.5);
-    box-shadow: 0 0 8px rgba($log-primary, 0.4);
+    background: rgba($color-primary, $opacity-medium);
+    border-color: rgba($color-primary, $opacity-high);
+    @include glow-effect($color-primary, 0.4);
+    transform: translateY(-1px);
   }
+
   &:active {
-    background: rgba($log-primary, 0.35);
+    background: rgba($color-primary, $opacity-high);
     transform: translateY(1px);
   }
 }
 
 .log-header {
-  display: flex;
-  background: linear-gradient(
-    90deg,
-    rgba($log-header-bg1, 0.9) 0%,
-    rgba($log-header-bg2, 0.9) 50%,
-    rgba($log-header-bg1, 0.9) 100%
-  );
+  @include flex-between;
+  background: linear-gradient(90deg, $log-header-bg1 0%, $log-header-bg2 50%, $log-header-bg1 100%);
   font-weight: 600;
-  padding: 10px;
-  border-bottom: 1px solid rgba($log-primary, 0.15);
-  font-size: 14px;
-  color: $log-header-color;
+  padding: $spacing-sm;
+  border-bottom: 1px solid rgba($color-primary, 0.15);
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
   text-transform: uppercase;
   letter-spacing: 1px;
-  text-shadow: 0 0 8px rgba($log-primary, 0.4);
+  text-shadow: 0 0 8px rgba($color-primary, 0.4);
+  position: relative;
+  overflow: hidden;
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: linear-gradient(90deg, rgba($color-primary, 0), rgba($color-primary, 0.3), rgba($color-primary, 0));
+  }
 }
 
 .header-time {
@@ -188,9 +194,7 @@ $log-scrollbar-track: #0b132b;
 
 .header-type {
   flex: 0 0 70px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  @include flex-center;
   gap: 5px;
   margin-left: 5px;
 }
@@ -199,17 +203,17 @@ $log-scrollbar-track: #0b132b;
   flex: 1;
   height: calc(100% - 86px);
   overflow-y: auto;
-  font-size: 14px;
+  font-size: $font-size-sm;
   font-family: 'Consolas', 'Monaco', monospace;
   background: radial-gradient(ellipse at center, rgba($log-header-bg1, 0.3) 0%, rgba($log-header-bg2, 0.3) 100%);
-  scrollbar-width: thin; /* Firefox 滚动条样式 */
-  scrollbar-color: $log-scrollbar-thumb $log-scrollbar-track;
+  scrollbar-width: thin;
+  scrollbar-color: $log-scrollbar-thumb $color-bg-primary;
 
   &::-webkit-scrollbar {
     width: 6px;
   }
   &::-webkit-scrollbar-track {
-    background: $log-scrollbar-track;
+    background: $color-bg-primary;
   }
   &::-webkit-scrollbar-thumb {
     background-color: $log-scrollbar-thumb;
@@ -224,14 +228,13 @@ $log-scrollbar-track: #0b132b;
 }
 
 .log-row {
-  display: flex;
-  padding: 10px;
-  border-bottom: 1px solid rgba($log-primary, 0.1);
-  transition: all 0.25s ease;
-  align-items: center;
+  @include flex-between;
+  padding: $spacing-sm;
+  border-bottom: 1px solid rgba($color-primary, 0.1);
+  @include transition(all, 0.25s);
   cursor: pointer;
-  background-color: $log-row-alt-bg;
   position: relative;
+  z-index: 3;
 
   &::before {
     content: '';
@@ -241,17 +244,19 @@ $log-scrollbar-track: #0b132b;
     height: 100%;
     width: 4px;
     background: transparent;
-    transition: all 0.2s ease;
+    @include transition(all, $transition-fast);
   }
 
   &.log-row-alt {
     background-color: $log-row-alt-bg;
   }
+
   &:hover {
     background-color: $log-row-hover-bg;
     transform: translateX(2px);
-    box-shadow: -2px 0 8px rgba($log-primary, 0.15);
+    box-shadow: -2px 0 8px rgba($color-primary, 0.15);
   }
+
   &.log-selected {
     background-color: $log-row-selected-bg !important;
     border-right: 1px solid $log-row-selected-border;
@@ -260,61 +265,65 @@ $log-scrollbar-track: #0b132b;
 
 .log-info {
   &::before {
-    background: linear-gradient(to bottom, rgba($log-info, 1), rgba($log-info, 0.5));
-    box-shadow: 0 0 10px rgba($log-info, 0.8);
+    background: linear-gradient(to bottom, $color-secondary, rgba($color-secondary, 0.5));
+    box-shadow: 0 0 10px rgba($color-secondary, 0.8);
   }
+
   .anticon {
-    color: rgba($log-info, 0.9);
+    color: rgba($color-secondary, 0.9);
+    filter: drop-shadow(0 0 3px rgba($color-secondary, 0.4));
   }
 }
 
 .log-warning {
   &::before {
-    background: linear-gradient(to bottom, rgba($log-warning, 1), rgba($log-warning, 0.5));
+    background: linear-gradient(to bottom, $log-warning, rgba($log-warning, 0.5));
     box-shadow: 0 0 10px rgba($log-warning, 0.8);
   }
+
   .anticon {
     color: rgba($log-warning, 0.9);
+    filter: drop-shadow(0 0 3px rgba($log-warning, 0.4));
   }
 }
 
 .log-danger {
   &::before {
-    background: linear-gradient(to bottom, rgba($log-danger, 1), rgba($log-danger, 0.5));
-    box-shadow: 0 0 10px rgba($log-danger, 0.8);
+    background: linear-gradient(to bottom, $color-danger, rgba($color-danger, 0.5));
+    box-shadow: 0 0 10px rgba($color-danger, 0.8);
   }
+
   .anticon {
-    color: rgba($log-danger, 0.9);
+    color: rgba($color-danger, 0.9);
+    filter: drop-shadow(0 0 3px rgba($color-danger, 0.4));
   }
 }
 
 .loading-indicator,
 .empty-data {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  @include flex-center;
   height: 100px;
   width: 100%;
   color: $log-empty-color;
-  font-size: 16px;
+  font-size: $font-size-md;
   text-align: center;
 }
 
 .load-more-trigger {
-  padding: 15px;
+  padding: $spacing-md;
   text-align: center;
-  color: rgba($log-primary, 0.7);
+  color: rgba($color-primary, 0.7);
 }
 
 .loading-more {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  font-size: 14px;
+  font-size: $font-size-sm;
 }
 
 .no-more-data {
-  font-size: 14px;
-  color: $log-no-more-color;
-  padding: 10px;
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  padding: $spacing-sm;
 }

@@ -1,57 +1,54 @@
+@use '@/assets/styles/_variables' as *;
+@use '@/assets/styles/_mixins' as *;
+@use 'sass:color';
+
 // =====================
 // StaffDistributionChart 变量
 // =====================
-$chart-bg1: #0f1e3c;
-$chart-bg2: #081f23;
-$chart-primary: #20a0ff;
-$chart-header-bg1: #0c1830;
-$chart-header-bg2: #142850;
-$chart-header-border: #4a90e2;
-$chart-title: #dce6f0;
-$chart-title-shadow: #20a0ff;
-$button-bg: #142850;
-$button-color: #dce6f0;
-$button-active-bg1: #1976d2;
-$button-active-bg2: #1e88e5;
-$button-active-color: #fff;
-$button-shadow: #000000;
-$button-border: #20a0ff;
-$button-active-border: #20a0ff;
-$tooltip-bg: #081428;
-$tooltip-border: #40a9ff;
-$tooltip-color: #fff;
-$chart-gray: #dce6f0;
 
-$chart-bg: linear-gradient(135deg, rgba($chart-bg1, 0.95), rgba($chart-bg2, 0.95));
-$chart-border-radius: 8px;
-$chart-shadow:
-  0 4px 20px rgba($button-shadow, 0.2),
-  0 0 30px rgba($chart-primary, 0.07);
-$chart-border: 1px solid rgba($chart-primary, 0.15);
-$header-bg: linear-gradient(
+// 背景和基础颜色
+$staff-bg1: $color-bg-primary;
+$staff-bg2: color.adjust($color-bg-primary, $lightness: -5%);
+$staff-header-bg1: color.adjust($color-bg-primary, $lightness: -3%);
+$staff-header-bg2: color.adjust($color-bg-primary, $lightness: -1%);
+
+// 按钮样式
+$staff-button-bg: rgba($color-bg-primary, 0.8);
+$staff-button-active-bg1: rgba($color-primary, 0.6);
+$staff-button-active-bg2: rgba($color-primary, 0.7);
+$staff-button-active-color: $color-white;
+$staff-button-active-border: rgba($color-primary, 0.5);
+
+// 工具提示样式
+$staff-tooltip-bg: rgba($color-bg-primary, 0.9);
+$staff-tooltip-border: rgba($color-primary, 0.5);
+// 图表相关尺寸
+$staff-border-radius: $border-radius;
+$staff-button-radius: 4px;
+$staff-tooltip-radius: 4px;
+
+// 渐变和效果
+$staff-bg-gradient: linear-gradient(135deg, $staff-bg1, $staff-bg2);
+$staff-header-bg: linear-gradient(
   90deg,
-  rgba($chart-header-bg1, 0.95) 0%,
-  rgba($chart-header-bg2, 0.95) 50%,
-  rgba($chart-header-bg1, 0.95) 100%
+  rgba($staff-header-bg1, 0.95) 0%,
+  rgba($staff-header-bg2, 0.95) 50%,
+  rgba($staff-header-bg1, 0.95) 100%
 );
-$header-border: 1px solid rgba($chart-header-border, 0.2);
-$header-title-color: rgba($chart-title, 0.95);
-$header-title-shadow: 0 0 10px rgba($chart-title-shadow, 0.3);
-$button-bg-gradient: linear-gradient(135deg, rgba($button-active-bg1, 0.8), rgba($button-active-bg2, 0.8));
-$button-shadow-mix:
-  0 2px 8px rgba($button-shadow, 0.2),
-  0 0 4px rgba($chart-primary, 0.1);
-$button-active-shadow:
-  0 3px 10px rgba($button-active-bg1, 0.3),
-  0 0 10px rgba($chart-primary, 0.3);
-$button-border-mix: 1px solid rgba($chart-primary, 0.1);
-$button-active-border-mix: rgba($chart-primary, 0.4);
-$tooltip-bg-mix: rgba($tooltip-bg, 0.9);
-$tooltip-border-mix: 1px solid rgba($tooltip-border, 0.5);
-$tooltip-radius: 6px;
-$tooltip-shadow:
-  0 4px 20px rgba($button-shadow, 0.3),
-  0 0 15px rgba($chart-primary, 0.15);
+$staff-button-gradient: linear-gradient(135deg, $staff-button-active-bg1, $staff-button-active-bg2);
+$staff-header-line: linear-gradient(90deg, rgba($color-primary, 0), rgba($color-primary, 0.5), rgba($color-primary, 0));
+
+// 阴影效果
+$staff-shadow: $panel-shadow;
+$staff-button-shadow:
+  0 2px 8px rgba(0, 0, 0, 0.2),
+  0 0 4px rgba($color-primary, 0.1);
+$staff-button-active-shadow:
+  0 3px 10px rgba($color-primary, 0.3),
+  0 0 10px rgba($color-primary, 0.3);
+$staff-tooltip-shadow:
+  0 4px 20px rgba(0, 0, 0, 0.3),
+  0 0 15px rgba($color-primary, 0.15);
 
 // =====================
 // 组件样式
@@ -60,21 +57,20 @@ $tooltip-shadow:
   width: 100%;
   height: 100%;
   position: relative;
-  display: flex;
-  flex-direction: column;
-  background: $chart-bg;
-  border-radius: $chart-border-radius;
+  @include flex-column;
+  background: $staff-bg-gradient;
+  border-radius: $staff-border-radius;
   overflow: hidden;
-  box-shadow: $chart-shadow;
-  border: $chart-border;
+  box-shadow: $staff-shadow;
+  @include futuristic-border($color-primary);
 
   .graph-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 12px 16px;
-    background: $header-bg;
-    border-bottom: $header-border;
+    background: $staff-header-bg;
+    border-bottom: 1px solid rgba($color-primary, 0.15);
     position: relative;
     z-index: 5;
 
@@ -85,7 +81,7 @@ $tooltip-shadow:
       right: 0;
       bottom: 0;
       height: 1px;
-      background: linear-gradient(90deg, rgba(32, 160, 255, 0), rgba(32, 160, 255, 0.5), rgba(32, 160, 255, 0));
+      background: $staff-header-line;
     }
   }
 
@@ -93,19 +89,17 @@ $tooltip-shadow:
     display: flex;
     align-items: center;
     gap: 10px;
-    color: $header-title-color;
+    color: $color-text-primary;
     font-weight: 600;
-    font-size: 16px;
-    text-shadow: $header-title-shadow;
+    font-size: $font-size-md;
+    text-shadow: 0 0 10px rgba($color-primary, 0.2);
     letter-spacing: 0.5px;
   }
 
   .title-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #20a0ff;
-    filter: drop-shadow(0 0 5px rgba(32, 160, 255, 0.5));
+    @include flex-center;
+    color: $color-primary;
+    filter: drop-shadow(0 0 5px rgba($color-primary, 0.3));
   }
 
   .resource-distribution-chart {
@@ -124,14 +118,8 @@ $tooltip-shadow:
       right: 0;
       bottom: 0;
       pointer-events: none;
-      background-image:
-        linear-gradient(to bottom, transparent 49.5%, rgba(32, 160, 255, 0.03) 50%, transparent 50.5%),
-        linear-gradient(90deg, rgba(32, 160, 255, 0.01) 1px, transparent 1px),
-        linear-gradient(rgba(32, 160, 255, 0.01) 1px, transparent 1px);
-      background-size:
-        100% 6px,
-        20px 20px,
-        20px 20px;
+      @include tech-dots-background($color-primary, $color-secondary);
+      opacity: 0.15;
       z-index: -1;
     }
 
@@ -142,9 +130,7 @@ $tooltip-shadow:
       left: 0;
       right: 0;
       bottom: 0;
-      background:
-        radial-gradient(ellipse at 50% 0%, rgba(64, 120, 255, 0.05) 0%, rgba(64, 120, 255, 0) 70%),
-        radial-gradient(ellipse at 50% 100%, rgba(64, 120, 255, 0.05) 0%, rgba(64, 120, 255, 0) 70%);
+      @include tech-glow-background($color-primary, $color-secondary);
       pointer-events: none;
       z-index: -1;
     }
@@ -167,15 +153,15 @@ $tooltip-shadow:
       justify-content: center;
       padding: 6px 12px;
       border: none;
-      border-radius: 6px;
+      border-radius: $staff-button-radius;
       cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-      font-size: 12px;
-      background: $button-bg;
-      color: $button-color;
+      @include transition(all, 0.3s cubic-bezier(0.25, 0.8, 0.25, 1));
+      font-size: $font-size-xs;
+      background: $staff-button-bg;
+      color: $color-text-primary;
       backdrop-filter: blur(4px);
-      box-shadow: $button-shadow-mix;
-      border: $button-border-mix;
+      box-shadow: $staff-button-shadow;
+      border: 1px solid rgba($color-primary, 0.1);
       position: relative;
       overflow: hidden;
 
@@ -183,16 +169,16 @@ $tooltip-shadow:
         transform: translateY(-2px);
         box-shadow:
           0 4px 12px rgba(0, 0, 0, 0.25),
-          0 0 8px rgba(32, 160, 255, 0.2);
-        color: rgba(220, 230, 240, 1);
-        border-color: rgba(32, 160, 255, 0.3);
+          0 0 8px rgba($color-primary, 0.2);
+        color: $color-text-primary;
+        border-color: rgba($color-primary, 0.3);
       }
 
       &.active {
-        background: $button-bg-gradient;
-        color: $button-active-color;
-        box-shadow: $button-active-shadow;
-        border-color: $button-active-border-mix;
+        background: $staff-button-gradient;
+        color: $staff-button-active-color;
+        box-shadow: $staff-button-active-shadow;
+        border-color: $staff-button-active-border;
         text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
       }
 
@@ -205,7 +191,7 @@ $tooltip-shadow:
         height: 100%;
         background: linear-gradient(to bottom, rgba(255, 255, 255, 0.1), transparent);
         opacity: 0;
-        transition: opacity 0.3s ease;
+        @include transition(opacity, 0.3s);
       }
 
       &:hover::before {
@@ -219,15 +205,13 @@ $tooltip-shadow:
         left: 10%;
         width: 80%;
         height: 2px;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
+        background: linear-gradient(90deg, transparent, rgba($color-secondary, 0.8), transparent);
       }
 
       .button-icon {
         margin-right: 5px;
-        font-size: 14px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
+        font-size: $font-size-sm;
+        @include flex-center;
       }
 
       .button-label {
@@ -266,21 +250,21 @@ $tooltip-shadow:
 
   .chart-type-button:focus {
     outline: none;
-    box-shadow: 0 0 0 2px rgba(32, 160, 255, 0.4);
+    box-shadow: 0 0 0 2px rgba($color-primary, 0.4);
   }
 }
 
 // echarts 工具提示样式
 :global(.staff-chart-tooltip:nth-of-type(2)) {
-  background: $tooltip-bg-mix !important;
+  background: $staff-tooltip-bg !important;
   backdrop-filter: blur(10px) !important;
-  border-radius: $tooltip-radius !important;
-  border: $tooltip-border-mix !important;
-  box-shadow: $tooltip-shadow !important;
+  border-radius: $staff-tooltip-radius !important;
+  border: 1px solid $staff-tooltip-border !important;
+  box-shadow: $staff-tooltip-shadow !important;
   padding: 8px 12px !important;
-  color: $tooltip-color !important;
+  color: $color-text-primary !important;
   font-family: 'Inter', 'Roboto', sans-serif !important;
-  font-size: 14px !important;
+  font-size: $font-size-sm !important;
   font-weight: 500 !important;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4) !important;
 }

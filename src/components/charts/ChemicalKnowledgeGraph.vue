@@ -842,14 +842,14 @@ onUnmounted(() => {
         <svg viewBox="0 0 24 24" width="20" height="20">
           <path
             fill="currentColor"
-            d="M12,2C17.5,2 22,6.5 22,12C22,17.5 17.5,22 12,22C6.5,22 2,17.5 2,12C2,6.5 6.5,2 12,2M12,4C7.58,4 4,7.58 4,12C4,16.42 7.58,20 12,20C16.42,20 20,16.42 20,12C20,7.58 16.42,4 12,4M12,6C15.31,6 18,8.69 18,12C18,15.31 15.31,18 12,18C8.69,18 6,15.31 6,12C6,8.69 8.69,6 12,6M12,8C9.79,8 8,9.79 8,12C8,14.21 9.79,16 12,16C14.21,16 16,14.21 16,12C16,9.79 14.21,8 12,8Z"
+            d="M12,2C6.47,2 2,6.47 2,12C2,17.53 6.47,22 12,22C17.53,22 22,17.53 22,12C22,6.47 17.53,2 12,2M15.1,7.07C15.24,7.07 15.38,7.12 15.5,7.23L15.5,7.23L16.77,8.5C17,8.72 17,9.07 16.77,9.28L15.77,10.28L13.72,8.23L14.72,7.23C14.82,7.12 14.96,7.07 15.1,7.07M13.13,8.81L15.19,10.87L9.13,16.93H7.07V14.87L13.13,8.81Z"
           />
         </svg>
       </template>
-      <template #extra>
-        <div v-if="graphStore.focusedArea" class="focus-indicator" :class="{ compact: !isChartExpanded }">
+      <template #actions v-if="focusedArea">
+        <div class="focus-indicator" :class="{ compact: isChartExpanded }">
           <div class="pulse-dot"></div>
-          <span>已聚焦: {{ graphStore.focusedArea }}</span>
+          <span>{{ focusedArea }}</span>
           <button class="clear-focus-btn" @click="restoreFullGraph" title="清除聚焦">
             <svg viewBox="0 0 24 24" width="14" height="14">
               <path
@@ -862,119 +862,46 @@ onUnmounted(() => {
       </template>
     </GraphHeader>
 
-    <div ref="chartRef" class="chart"></div>
+    <div class="graph-header-decoration">
+      <div class="header-corner top-left"></div>
+      <div class="header-corner top-right"></div>
+      <div class="graph-header-glow"></div>
+    </div>
 
-    <!-- 仅在展开状态下显示控制面板 -->
-    <div v-if="isChartExpanded" class="graph-controls">
-      <button
-        class="control-btn toggle-labels-btn"
-        @click="toggleLabels"
-        :disabled="!!graphStore.focusedArea"
-        :class="{ disabled: !!graphStore.focusedArea }"
-      >
-        <svg viewBox="0 0 24 24" width="16" height="16" class="btn-icon">
-          <path
-            fill="currentColor"
-            d="M9.5,7A1.5,1.5 0 0,1 11,8.5A1.5,1.5 0 0,1 9.5,10A1.5,1.5 0 0,1 8,8.5A1.5,1.5 0 0,1 9.5,7M14,4.5A1.5,1.5 0 0,1 15.5,6A1.5,1.5 0 0,1 14,7.5A1.5,1.5 0 0,1 12.5,6A1.5,1.5 0 0,1 14,4.5M17,2A2,2 0 0,1 19,4A2,2 0 0,1 17,6A2,2 0 0,1 15,4A2,2 0 0,1 17,2M19.5,9A1.5,1.5 0 0,1 21,10.5A1.5,1.5 0 0,1 19.5,12A1.5,1.5 0 0,1 18,10.5A1.5,1.5 0 0,1 19.5,9M17,20A2,2 0 0,1 15,18A2,2 0 0,1 17,16A2,2 0 0,1 19,18A2,2 0 0,1 17,20M7,18A2,2 0 0,1 5,16A2,2 0 0,1 7,14A2,2 0 0,1 9,16A2,2 0 0,1 7,18M7,4A2,2 0 0,1 9,6A2,2 0 0,1 7,8A2,2 0 0,1 5,6A2,2 0 0,1 7,4M9.5,17A1.5,1.5 0 0,1 8,15.5A1.5,1.5 0 0,1 9.5,14A1.5,1.5 0 0,1 11,15.5A1.5,1.5 0 0,1 9.5,17M14,12.5A1.5,1.5 0 0,1 15.5,14A1.5,1.5 0 0,1 14,15.5A1.5,1.5 0 0,1 12.5,14A1.5,1.5 0 0,1 14,12.5M9.5,20.5A0.5,0.5 0 0,1 9,20A0.5,0.5 0 0,1 9.5,19.5A0.5,0.5 0 0,1 10,20A0.5,0.5 0 0,1 9.5,20.5M4.5,19.5A0.5,0.5 0 0,1 4,19A0.5,0.5 0 0,1 4.5,18.5A0.5,0.5 0 0,1 5,19A0.5,0.5 0 0,1 4.5,19.5M19.5,19.5A0.5,0.5 0 0,1 19,19A0.5,0.5 0 0,1 19.5,18.5A0.5,0.5 0 0,1 20,19A0.5,0.5 0 0,1 19.5,19.5M14.5,19.5A0.5,0.5 0 0,1 14,19A0.5,0.5 0 0,1 14.5,18.5A0.5,0.5 0 0,1 15,19A0.5,0.5 0 0,1 14.5,19.5M4.5,14.5A0.5,0.5 0 0,1 4,14A0.5,0.5 0 0,1 4.5,13.5A0.5,0.5 0 0,1 5,14A0.5,0.5 0 0,1 4.5,14.5M19.5,14.5A0.5,0.5 0 0,1 19,14A0.5,0.5 0 0,1 19.5,13.5A0.5,0.5 0 0,1 20,14A0.5,0.5 0 0,1 19.5,14.5M4.5,9.5A0.5,0.5 0 0,1 4,9A0.5,0.5 0 0,1 4.5,8.5A0.5,0.5 0 0,1 5,9A0.5,0.5 0 0,1 4.5,9.5M19.5,9.5A0.5,0.5 0 0,1 19,9A0.5,0.5 0 0,1 19.5,8.5A0.5,0.5 0 0,1 20,9A0.5,0.5 0 0,1 19.5,9.5M4.5,4.5A0.5,0.5 0 0,1 4,4A0.5,0.5 0 0,1 4.5,3.5A0.5,0.5 0 0,1 5,4A0.5,0.5 0 0,1 4.5,4.5M14.5,4.5A0.5,0.5 0 0,1 14,4A0.5,0.5 0 0,1 14.5,3.5A0.5,0.5 0 0,1 15,4A0.5,0.5 0 0,1 14.5,4.5M19.5,4.5A0.5,0.5 0 0,1 19,4A0.5,0.5 0 0,1 19.5,3.5A0.5,0.5 0 0,1 20,4A0.5,0.5 0 0,1 19.5,4.5M9.5,4.5A0.5,0.5 0 0,1 9,4A0.5,0.5 0 0,1 9.5,3.5A0.5,0.5 0 0,1 10,4A0.5,0.5 0 0,1 9.5,4.5Z"
-          />
-        </svg>
-        <span>{{ graphStore.focusedArea ? '标签已显示' : graphStore.showLabels ? '隐藏标签' : '显示标签' }}</span>
+    <div class="chart" ref="chartRef"></div>
+
+    <!-- 控制按钮 -->
+    <div class="graph-controls">
+      <button class="control-btn" @click="toggleLabels">
+        <span class="btn-icon">
+          <svg viewBox="0 0 24 24" width="16" height="16">
+            <path
+              fill="currentColor"
+              d="M18.5,4L19.66,8.35L18.7,8.61C18.25,7.74 17.79,6.87 17.26,6.43C16.73,6 16.11,6 15.5,6H13V16.5C13,17 13,17.5 13.33,17.75C13.67,18 14.33,18 15,18V19H9V18C9.67,18 10.33,18 10.67,17.75C11,17.5 11,17 11,16.5V6H8.5C7.89,6 7.27,6 6.74,6.43C6.21,6.87 5.75,7.74 5.3,8.61L4.34,8.35L5.5,4H18.5Z"
+            />
+          </svg>
+        </span>
+        {{ showAllLabels ? '隐藏标签' : '显示标签' }}
       </button>
-
-      <div class="graph-legend">
-        <div class="legend-item" v-for="(category, index) in graphData.categories" :key="category.name">
-          <div class="legend-color" :style="{ backgroundColor: categoryColors[index] }"></div>
-          <div class="legend-label">{{ category.name }}</div>
-        </div>
-      </div>
     </div>
 
-    <!-- 仅在展开状态下显示操作指南 -->
-    <div v-if="isChartExpanded" class="graph-info-panel">
-      <div class="info-title">操作指南</div>
-      <div class="info-content">
-        <div class="info-item">
-          <div class="info-icon">
-            <svg viewBox="0 0 24 24" width="16" height="16">
-              <path fill="currentColor" d="M9,5H15V9H9V5M7,3V11H17V3H7M11,13H13V17H11V13M7,21H17V11H7V21Z" />
-            </svg>
-          </div>
-          <span>双击区域节点以聚焦该区域</span>
-        </div>
-        <div class="info-item">
-          <div class="info-icon">
-            <svg viewBox="0 0 24 24" width="16" height="16">
-              <path
-                fill="currentColor"
-                d="M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M13,7H11V13H17V11H13V7Z"
-              />
-            </svg>
-          </div>
-          <span>双击已聚焦的区域可恢复全图</span>
-        </div>
-        <div class="info-item">
-          <div class="info-icon">
-            <svg viewBox="0 0 24 24" width="16" height="16">
-              <path
-                fill="currentColor"
-                d="M12,9A3,3 0 0,0 9,12A3,3 0 0,0 12,15A3,3 0 0,0 15,12A3,3 0 0,0 12,9M12,17A5,5 0 0,1 7,12A5,5 0 0,1 12,7A5,5 0 0,1 17,12A5,5 0 0,1 12,17M12,4.5C7,4.5 2.73,7.61 1,12C2.73,16.39 7,19.5 12,19.5C17,19.5 21.27,16.39 23,12C21.27,7.61 17,4.5 12,4.5Z"
-              />
-            </svg>
-          </div>
-          <span>悬停在节点上查看详细信息</span>
-        </div>
-        <div class="info-item">
-          <div class="info-icon">
-            <svg viewBox="0 0 24 24" width="16" height="16">
-              <path
-                fill="currentColor"
-                d="M16.56,5.44L15.11,6.89C16.84,7.94 18,9.83 18,12A6,6 0 0,1 12,18A6,6 0 0,1 6,12C6,9.83 7.16,7.94 8.88,6.88L7.44,5.44C5.36,6.88 4,9.28 4,12A8,8 0 0,0 12,20A8,8 0 0,0 20,12C20,9.28 18.64,6.88 16.56,5.44M13,3H11V13H13"
-              />
-            </svg>
-          </div>
-          <span>点击右上角图例可显示/隐藏不同类型节点</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- 非展开状态下的提示  -->
-    <div v-if="!isChartExpanded" class="mini-tip">
-      <div class="mini-tip-icon">
-        <svg viewBox="0 0 24 24" width="14" height="14">
-          <path
-            fill="currentColor"
-            d="M13,9H11V7H13M13,17H11V11H13V17M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"
-          />
-        </svg>
-      </div>
-      <span>展开查看更多</span>
-    </div>
-
-    <!-- 非展开状态下的Unity聚焦按钮 -->
-    <button
-      v-if="!isChartExpanded"
+    <!-- Unity全局聚焦按钮 -->
+    <div
       class="unity-focus-btn"
       :class="{ focused: isUnityGlobalFocused }"
-      @click.stop="toggleUnityGlobalFocus"
+      @click="toggleUnityGlobalFocus"
+      title="Unity全局聚焦"
     >
       <div class="unity-focus-icon">
-        <svg viewBox="0 0 24 24" width="16" height="16">
-          <!-- 根据状态显示不同的图标 -->
+        <svg viewBox="0 0 24 24" width="20" height="20">
           <path
             fill="currentColor"
-            v-if="!isUnityGlobalFocused"
-            d="M12,9A3,3 0 0,1 15,12A3,3 0 0,1 12,15A3,3 0 0,1 9,12A3,3 0 0,1 12,9M12,4.5C17,4.5 21.27,7.61 23,12C21.27,16.39 17,19.5 12,19.5C7,19.5 2.73,16.39 1,12C2.73,7.61 7,4.5 12,4.5Z"
-          />
-          <!-- 已聚焦状态图标 -->
-          <path
-            fill="currentColor"
-            v-else
-            d="M12,9A3,3 0 0,1 15,12A3,3 0 0,1 12,15A3,3 0 0,1 9,12A3,3 0 0,1 12,9M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M13.5,7V5.5C17.33,6.23 20,8.83 20,12C20,15.17 17.33,17.77 13.5,18.5V17C16.25,16.3 18.3,14.25 18.3,12C18.3,9.75 16.25,7.7 13.5,7M6.5,12C6.5,9.75 8.17,7.8 10.5,7.08V5.55C7.11,6.33 5,8.92 5,12C5,15.08 7.11,17.67 10.5,18.45V16.93C8.17,16.2 6.5,14.25 6.5,12Z"
+            d="M12,9A3,3 0 0,0 9,12A3,3 0 0,0 12,15A3,3 0 0,0 15,12A3,3 0 0,0 12,9M19,19H15V21H19A2,2 0 0,0 21,19V15H19M19,3H15V5H19V9H21V5A2,2 0 0,0 19,3M5,5H9V3H5A2,2 0 0,0 3,5V9H5M5,15H3V19A2,2 0 0,0 5,21H9V19H5V15Z"
           />
         </svg>
       </div>
-      <span class="unity-focus-text">{{ isUnityGlobalFocused ? '取消在Unity聚焦' : '在Unity中聚焦' }}</span>
-    </button>
+      <span class="unity-focus-text">{{ isUnityGlobalFocused ? '取消全局聚焦' : '全局聚焦' }}</span>
+    </div>
   </div>
 </template>
 

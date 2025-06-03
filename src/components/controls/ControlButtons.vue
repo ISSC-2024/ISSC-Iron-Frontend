@@ -191,12 +191,14 @@ onBeforeUnmount(() => {
 
 <style lang="scss" scoped>
 // 变量定义
-$primary-color: rgba(64, 169, 255, 0.9);
-$primary-shadow: rgba(32, 160, 255, 0.4);
+$primary-color: rgba(138, 43, 226, 0.9);
+$primary-shadow: rgba(138, 43, 226, 0.4);
+$secondary-color: rgba(80, 250, 123, 0.9);
+$secondary-shadow: rgba(80, 250, 123, 0.4);
 $text-color: rgba(220, 230, 240, 0.95);
-$border-color: rgba(64, 169, 255, 0.3);
-$bg-gradient: linear-gradient(135deg, rgba(25, 50, 100, 0.9), rgba(15, 30, 65, 0.9));
-$hover-bg-gradient: linear-gradient(135deg, rgba(30, 60, 120, 0.9), rgba(20, 40, 85, 0.9));
+$border-color: rgba(138, 43, 226, 0.3);
+$bg-gradient: linear-gradient(135deg, rgba(30, 25, 50, 0.9), rgba(20, 15, 40, 0.9));
+$hover-bg-gradient: linear-gradient(135deg, rgba(40, 30, 70, 0.9), rgba(30, 20, 60, 0.9));
 
 // 混合宏
 @mixin flex-center {
@@ -215,7 +217,7 @@ $hover-bg-gradient: linear-gradient(135deg, rgba(30, 60, 120, 0.9), rgba(20, 40,
 @mixin hover-shadow {
   box-shadow:
     0 6px 15px rgba(0, 0, 0, 0.2),
-    0 0 10px rgba(32, 160, 255, 0.15),
+    0 0 10px rgba(138, 43, 226, 0.15),
     inset 0 0 0 1px rgba(255, 255, 255, 0.1);
 }
 
@@ -226,12 +228,12 @@ $hover-bg-gradient: linear-gradient(135deg, rgba(30, 60, 120, 0.9), rgba(20, 40,
   flex-wrap: wrap;
   padding: 10px 0;
   position: relative;
-  background: linear-gradient(90deg, rgba(12, 24, 48, 0.9), rgba(20, 40, 80, 0.9), rgba(12, 24, 48, 0.9));
+  background: linear-gradient(90deg, rgba(20, 15, 40, 0.9), rgba(30, 25, 50, 0.9), rgba(20, 15, 40, 0.9));
   border-radius: 10px;
   box-shadow:
     0 4px 20px rgba(0, 0, 0, 0.2),
-    0 0 30px rgba(32, 160, 255, 0.07),
-    inset 0 0 0 1px rgba(64, 169, 255, 0.2);
+    0 0 30px rgba(138, 43, 226, 0.07),
+    inset 0 0 0 1px rgba(138, 43, 226, 0.2);
 
   &::before {
     content: '';
@@ -240,7 +242,7 @@ $hover-bg-gradient: linear-gradient(135deg, rgba(30, 60, 120, 0.9), rgba(20, 40,
     left: 0;
     right: 0;
     height: 1px;
-    background: linear-gradient(90deg, rgba(32, 160, 255, 0), rgba(64, 169, 255, 0.6), rgba(32, 160, 255, 0));
+    background: linear-gradient(90deg, rgba(138, 43, 226, 0), rgba(138, 43, 226, 0.6), rgba(138, 43, 226, 0));
     z-index: 5;
   }
 }
@@ -266,16 +268,24 @@ $hover-bg-gradient: linear-gradient(135deg, rgba(30, 60, 120, 0.9), rgba(20, 40,
 
   &:hover {
     background: $hover-bg-gradient;
-    border-color: rgba(64, 169, 255, 0.5);
+    border-color: rgba(138, 43, 226, 0.5);
     transform: translateY(-2px);
     @include hover-shadow;
 
     .btn-glow {
       opacity: 0.7;
+      background: linear-gradient(to bottom, rgba(80, 250, 123, 0.15), rgba(255, 255, 255, 0));
+    }
+
+    .btn-icon {
+      color: $secondary-color;
+      filter: drop-shadow(0 0 4px $secondary-shadow);
+      transform: scale(1.1);
     }
 
     &::before {
       opacity: 1;
+      background: linear-gradient(90deg, rgba(138, 43, 226, 0), rgba(80, 250, 123, 0.6), rgba(138, 43, 226, 0));
     }
   }
 
@@ -283,8 +293,12 @@ $hover-bg-gradient: linear-gradient(135deg, rgba(30, 60, 120, 0.9), rgba(20, 40,
     transform: translateY(0);
     box-shadow:
       0 2px 8px rgba(0, 0, 0, 0.2),
-      0 0 5px rgba(32, 160, 255, 0.1),
+      0 0 5px rgba(138, 43, 226, 0.1),
       inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+
+    .btn-icon {
+      color: rgba(80, 250, 123, 1);
+    }
   }
 
   &::before {
@@ -294,9 +308,32 @@ $hover-bg-gradient: linear-gradient(135deg, rgba(30, 60, 120, 0.9), rgba(20, 40,
     left: 0;
     right: 0;
     height: 1px;
-    background: linear-gradient(90deg, rgba(32, 160, 255, 0), rgba(64, 169, 255, 0.6), rgba(32, 160, 255, 0));
+    background: linear-gradient(90deg, rgba(138, 43, 226, 0), rgba(138, 43, 226, 0.6), rgba(138, 43, 226, 0));
     opacity: 0;
     transition: opacity 0.3s ease;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 7px;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(138, 43, 226, 0.3), rgba(80, 250, 123, 0.3));
+    mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  &:hover::after {
+    opacity: 1;
   }
 }
 
@@ -304,6 +341,7 @@ $hover-bg-gradient: linear-gradient(135deg, rgba(30, 60, 120, 0.9), rgba(20, 40,
   @include flex-center;
   color: $primary-color;
   filter: drop-shadow(0 0 4px $primary-shadow);
+  transition: all 0.3s ease;
 }
 
 .btn-glow {
@@ -312,10 +350,10 @@ $hover-bg-gradient: linear-gradient(135deg, rgba(30, 60, 120, 0.9), rgba(20, 40,
   left: 0;
   width: 100%;
   height: 40%;
-  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0));
+  background: linear-gradient(to bottom, rgba(138, 43, 226, 0.1), rgba(255, 255, 255, 0));
   border-radius: 8px 8px 0 0;
   opacity: 0.5;
-  transition: opacity 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 .message-tip {
@@ -323,7 +361,7 @@ $hover-bg-gradient: linear-gradient(135deg, rgba(30, 60, 120, 0.9), rgba(20, 40,
   top: 80px;
   left: 50%;
   transform: translateX(-50%);
-  background: linear-gradient(135deg, rgba(15, 35, 70, 0.95), rgba(10, 25, 50, 0.95));
+  background: linear-gradient(135deg, rgba(25, 20, 45, 0.95), rgba(15, 12, 30, 0.95));
   color: $text-color;
   padding: 12px 20px;
   border-radius: 8px;
@@ -331,7 +369,7 @@ $hover-bg-gradient: linear-gradient(135deg, rgba(30, 60, 120, 0.9), rgba(20, 40,
   font-size: 14px;
   box-shadow:
     0 8px 20px rgba(0, 0, 0, 0.2),
-    0 0 15px rgba(32, 160, 255, 0.1),
+    0 0 15px rgba(138, 43, 226, 0.1),
     inset 0 0 0 1px rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(10px);
   border: 1px solid $border-color;
