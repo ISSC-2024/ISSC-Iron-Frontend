@@ -3,6 +3,8 @@
  * 包含常用的样式组合和效果
  */
 
+@use 'sass:math';
+
 // ===== 布局相关 =====
 @mixin flex-center {
   display: flex;
@@ -59,7 +61,7 @@
     $size * 1.5 $size * 1.5;
   background-position:
     0 0,
-    $size/2 $size/2;
+    calc($size / 2) calc($size / 2);
 }
 
 @mixin tech-glow-background($primary-color, $secondary-color, $opacity1: 0.08, $opacity2: 0.05) {
@@ -138,5 +140,140 @@
     -webkit-line-clamp: $lines;
     -webkit-box-orient: vertical;
     overflow: hidden;
+  }
+}
+
+// ===== 容器装饰效果 =====
+@mixin tech-container-border($primary-color, $secondary-color) {
+  position: relative;
+  border: 2px solid rgba($primary-color, 0.4);
+  box-shadow:
+    0 0 0 1px rgba($primary-color, 0.15),
+    0 0 15px rgba($primary-color, 0.2),
+    inset 0 0 10px rgba($primary-color, 0.05);
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 6px;
+    padding: 1px;
+    background: linear-gradient(
+      45deg,
+      rgba($primary-color, 0.5),
+      rgba($secondary-color, 0.6),
+      rgba($primary-color, 0.5)
+    );
+    background-size: 200% 200%;
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    z-index: 2;
+    opacity: 0.7;
+    animation: border-gradient 8s infinite linear;
+  }
+}
+
+@mixin corner-decoration($color, $dot-color, $size: 16px, $line-width: 2px, $line-length: 10px) {
+  position: absolute;
+  pointer-events: none;
+  width: $size;
+  height: $size;
+
+  &::after {
+    content: '';
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    background-color: rgba($dot-color, 0.9);
+    border-radius: 50%;
+    box-shadow: 0 0 4px 1px rgba($color, 0.7);
+  }
+
+  &.corner-top-left {
+    top: 3px;
+    left: 3px;
+    background-image:
+      linear-gradient(to right, rgba($color, 0.7) $line-width, transparent $line-width),
+      linear-gradient(to bottom, rgba($color, 0.7) $line-width, transparent $line-width);
+    background-position:
+      0 0,
+      0 0;
+    background-size:
+      $line-length $line-width,
+      $line-width $line-length;
+    background-repeat: no-repeat;
+    filter: drop-shadow(0 0 3px rgba($color, 0.4));
+
+    &::after {
+      top: -1px;
+      left: -1px;
+    }
+  }
+
+  &.corner-top-right {
+    top: 3px;
+    right: 3px;
+    background-image:
+      linear-gradient(to left, rgba($color, 0.7) $line-width, transparent $line-width),
+      linear-gradient(to bottom, rgba($color, 0.7) $line-width, transparent $line-width);
+    background-position:
+      100% 0,
+      100% 0;
+    background-size:
+      $line-length $line-width,
+      $line-width $line-length;
+    background-repeat: no-repeat;
+    filter: drop-shadow(0 0 3px rgba($color, 0.4));
+
+    &::after {
+      top: -1px;
+      right: -1px;
+    }
+  }
+
+  &.corner-bottom-left {
+    bottom: 3px;
+    left: 3px;
+    background-image:
+      linear-gradient(to right, rgba($color, 0.7) $line-width, transparent $line-width),
+      linear-gradient(to top, rgba($color, 0.7) $line-width, transparent $line-width);
+    background-position:
+      0 100%,
+      0 100%;
+    background-size:
+      $line-length $line-width,
+      $line-width $line-length;
+    background-repeat: no-repeat;
+    filter: drop-shadow(0 0 3px rgba($color, 0.4));
+
+    &::after {
+      bottom: -1px;
+      left: -1px;
+    }
+  }
+
+  &.corner-bottom-right {
+    bottom: 3px;
+    right: 3px;
+    background-image:
+      linear-gradient(to left, rgba($color, 0.7) $line-width, transparent $line-width),
+      linear-gradient(to top, rgba($color, 0.7) $line-width, transparent $line-width);
+    background-position:
+      100% 100%,
+      100% 100%;
+    background-size:
+      $line-length $line-width,
+      $line-width $line-length;
+    background-repeat: no-repeat;
+    filter: drop-shadow(0 0 3px rgba($color, 0.4));
+
+    &::after {
+      bottom: -1px;
+      right: -1px;
+    }
   }
 }

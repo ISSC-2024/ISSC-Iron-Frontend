@@ -436,6 +436,7 @@ const chartStyle = computed(() => {
 <style lang="scss" scoped>
 @use '@/assets/styles/_variables' as *;
 @use '@/assets/styles/_mixins' as *;
+@use 'sass:color';
 
 // =====================
 // EventResponseRadarChart 变量
@@ -443,7 +444,7 @@ const chartStyle = computed(() => {
 
 // 背景和基础颜色
 $radar-bg1: $color-bg-primary;
-$radar-bg2: darken($color-bg-primary, 5%);
+$radar-bg2: color.adjust($color-bg-primary, $lightness: -5%);
 $radar-grid-color: rgba($color-primary, 0.05);
 $radar-grid-highlight: rgba($color-primary, 0.1);
 

@@ -1,5 +1,6 @@
 @use '@/assets/styles/_variables' as *;
 @use '@/assets/styles/_mixins' as *;
+@use 'sass:color';
 
 // =====================
 // ScrollingRegionList 变量
@@ -7,9 +8,9 @@
 
 // 组件特定颜色变量
 $region-bg1: $color-bg-primary;
-$region-bg2: darken($color-bg-primary, 5%);
-$region-header-bg1: darken($color-bg-primary, 3%);
-$region-header-bg2: darken($color-bg-primary, 1%);
+$region-bg2: color.adjust($color-bg-primary, $lightness: -5%);
+$region-header-bg1: color.adjust($color-bg-primary, $lightness: -3%);
+$region-header-bg2: color.adjust($color-bg-primary, $lightness: -1%);
 $region-header-color: rgba($color-primary, 0.9);
 
 // 行样式变量
@@ -21,11 +22,11 @@ $region-row-selected-border: $color-secondary;
 
 // 状态指示器颜色
 $region-status-safe: $color-secondary;
-$region-status-safe2: lighten($color-secondary, 10%);
+$region-status-safe2: color.adjust($color-secondary, $lightness: 10%);
 $region-status-warning: #fa9600;
 $region-status-warning2: #ffb41e;
 $region-status-danger: $color-danger;
-$region-status-danger2: lighten($color-danger, 10%);
+$region-status-danger2: color.adjust($color-danger, $lightness: 10%);
 
 // 滚动条样式
 $region-scrollbar-thumb: rgba($color-primary, 0.7);

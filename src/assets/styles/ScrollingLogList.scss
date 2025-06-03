@@ -1,5 +1,6 @@
 @use '@/assets/styles/_variables' as *;
 @use '@/assets/styles/_mixins' as *;
+@use 'sass:color';
 
 // =====================
 // ScrollingLogList 变量
@@ -29,7 +30,7 @@ $log-scrollbar-thumb: rgba($color-primary, 0.7);
   padding-top: 0;
   position: relative;
   z-index: 0;
-  background: linear-gradient(135deg, $color-bg-primary, darken($color-bg-primary, 5%));
+  background: linear-gradient(135deg, $color-bg-primary, color.adjust($color-bg-primary, $lightness: -5%));
   color: $color-text-primary;
   box-shadow: $log-shadow;
   @include futuristic-border($color-primary);

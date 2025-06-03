@@ -1,5 +1,6 @@
 @use '@/assets/styles/_variables' as *;
 @use '@/assets/styles/_mixins' as *;
+@use 'sass:color';
 
 // =====================
 // StaffDistributionChart 变量
@@ -7,9 +8,9 @@
 
 // 背景和基础颜色
 $staff-bg1: $color-bg-primary;
-$staff-bg2: darken($color-bg-primary, 5%);
-$staff-header-bg1: darken($color-bg-primary, 3%);
-$staff-header-bg2: darken($color-bg-primary, 1%);
+$staff-bg2: color.adjust($color-bg-primary, $lightness: -5%);
+$staff-header-bg1: color.adjust($color-bg-primary, $lightness: -3%);
+$staff-header-bg2: color.adjust($color-bg-primary, $lightness: -1%);
 
 // 按钮样式
 $staff-button-bg: rgba($color-bg-primary, 0.8);

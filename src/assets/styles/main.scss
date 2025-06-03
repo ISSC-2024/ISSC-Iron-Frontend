@@ -6,6 +6,8 @@
 // 引入变量和Mixins
 @use 'variables' as *;
 @use 'mixins' as *;
+@use 'sass:math';
+@use 'sass:color';
 
 // ===== CSS变量（用于运行时主题切换）=====
 :root {
@@ -48,7 +50,11 @@ body {
   @include flex-column;
   width: 100%;
   height: 100vh;
-  background: linear-gradient(135deg, rgba($color-bg-primary, 0.97), rgba(darken($color-bg-primary, 5%), 0.97));
+  background: linear-gradient(
+    135deg,
+    rgba($color-bg-primary, 0.97),
+    rgba(color.adjust($color-bg-primary, $lightness: -5%), 0.97)
+  );
   position: relative;
 
   &::before {
@@ -77,13 +83,13 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(darken($color-bg-primary, 5%), 0.3);
-  border-radius: $spacing-xs / 2;
+  background: rgba(color.adjust($color-bg-primary, $lightness: -5%), 0.3);
+  border-radius: calc($spacing-xs / 2);
 }
 
 ::-webkit-scrollbar-thumb {
   background: rgba($color-primary, 0.4);
-  border-radius: $spacing-xs / 2;
+  border-radius: calc($spacing-xs / 2);
 
   &:hover {
     background: rgba($color-secondary, 0.6);
