@@ -288,6 +288,30 @@
   position: relative;
   pointer-events: auto;
   overflow: hidden;
+
+  /* 恢复脉动边框动画，与非展开状态一致 */
+  animation: expanded-border-pulse 4s ease-in-out infinite;
+}
+
+@keyframes expanded-border-pulse {
+  0% {
+    outline-color: rgba($color-primary, 0.3);
+    box-shadow:
+      0 10px 30px rgba(0, 0, 0, 0.4),
+      0 0 30px rgba($color-primary, 0.15);
+  }
+  50% {
+    outline-color: rgba($color-secondary, 0.5);
+    box-shadow:
+      0 10px 30px rgba(0, 0, 0, 0.4),
+      0 0 35px rgba($color-secondary, 0.25);
+  }
+  100% {
+    outline-color: rgba($color-primary, 0.3);
+    box-shadow:
+      0 10px 30px rgba(0, 0, 0, 0.4),
+      0 0 30px rgba($color-primary, 0.15);
+  }
 }
 
 /* 展开容器背景特效 */
