@@ -4,20 +4,20 @@
  */
 
 // ===== 颜色系统 =====
-$color-primary: rgba(138, 43, 226, 1) !default; // 紫色主色
-$color-secondary: rgba(80, 250, 123, 1) !default; // 绿色辅助色
+$color-primary: rgba(138, 43, 226, 0.85) !default; // 紫色主色
+$color-secondary: rgba(80, 250, 123, 0.9) !default; // 绿色辅助色
 $color-bg-primary: rgba(18, 15, 30, 0.97) !default; // 主背景色
 $color-bg-panel: rgba(28, 25, 40, 0.8) !default; // 面板背景色
-$color-border: rgba($color-primary, 0.3) !default; // 边框颜色
+$color-border: rgba($color-primary, 0.25) !default; // 边框颜色
 $color-text-primary: rgba(230, 235, 245, 1) !default; // 主文本颜色
 $color-text-secondary: rgba(180, 190, 210, 0.8) !default; // 次要文本颜色
 $color-danger: rgba(255, 85, 85, 1) !default; // 危险/错误颜色
 $color-white: rgba(255, 255, 255, 1) !default; // 白色
 
 // ===== 透明度变量 =====
-$opacity-high: 0.8 !default;
-$opacity-medium: 0.5 !default;
-$opacity-low: 0.2 !default;
+$opacity-high: 0.7 !default;
+$opacity-medium: 0.4 !default;
+$opacity-low: 0.15 !default;
 
 // ===== 尺寸与间距 =====
 $header-height: 3.75rem !default; // 60px
