@@ -4,111 +4,106 @@
 // =====================
 // ChemicalKnowledgeGraph 变量
 // =====================
-$ckg-primary: $color-primary;
-$ckg-secondary: $color-secondary;
+// 只保留特殊定制的变量，其他直接使用全局变量
 $ckg-bg1: rgba(18, 15, 30, 0.97);
 $ckg-bg2: rgba(28, 25, 40, 0.8);
 $ckg-header-bg1: rgba(18, 15, 30, 0.95);
 $ckg-header-bg2: rgba(28, 25, 40, 0.95);
-$ckg-header-border: rgba($color-primary, 0.15);
-$ckg-title: $color-text-primary;
-$ckg-title-shadow: $color-primary;
-$ckg-legend-bg: rgba(20, 15, 35, 0.9);
-$ckg-legend-border: rgba($color-primary, 0.25);
-$ckg-btn-bg: rgba(20, 15, 35, 0.9);
-$ckg-btn-border: rgba($color-primary, 0.25);
-$ckg-btn-hover-bg: rgba($color-primary, 0.15);
-$ckg-btn-hover-border: rgba($color-primary, 0.4);
-$ckg-info-bg: rgba(20, 15, 35, 0.9);
-$ckg-info-border: rgba($color-primary, 0.25);
-$ckg-focus-dot: $color-primary;
-$ckg-focus-dot-shadow: $color-primary;
-$ckg-focus-btn-bg: rgba(20, 15, 35, 0.9);
-$ckg-focus-btn-border: rgba($color-primary, 0.25);
-$ckg-focus-btn-hover-bg: rgba($color-primary, 0.15);
-$ckg-focus-btn-hover-border: rgba($color-primary, 0.4);
-$ckg-focus-btn-focused-bg: rgba($color-primary, 0.25);
-$ckg-focus-btn-focused-border: rgba($color-primary, 0.5);
-$ckg-focus-btn-focused-shadow: $color-primary;
-$ckg-tooltip-bg: rgba(20, 15, 35, 0.9);
-$ckg-tooltip-border: rgba($color-primary, 0.25);
-$ckg-tooltip-color: $color-text-primary;
-$ckg-scrollbar-thumb: $color-primary;
-$ckg-scrollbar-track: $ckg-bg1;
 
+// 透明度变量
+$ckg-opacity-low: 0.1;
+$ckg-opacity-medium: 0.25;
+$ckg-opacity-high: 0.5;
+$ckg-opacity-border: 0.15;
+$ckg-opacity-hover-border: 0.4;
+
+// 尺寸变量
+$ckg-corner-size: 12px;
+$ckg-dot-size: 8px;
+$ckg-icon-size: 20px;
+$ckg-panel-width: 220px;
+$ckg-grid-size: 20px;
+$ckg-btn-padding: 8px 14px;
+$ckg-indicator-padding: 5px 12px;
+
+// 边框和阴影
+$ckg-header-border: rgba($color-primary, $ckg-opacity-border);
+$ckg-legend-bg: rgba(20, 15, 35, 0.9);
+$ckg-legend-border: rgba($color-primary, $ckg-opacity-medium);
+$ckg-btn-bg: rgba(20, 15, 35, 0.9);
+$ckg-btn-border: rgba($color-primary, $ckg-opacity-medium);
+$ckg-btn-hover-bg: rgba($color-primary, $ckg-opacity-low);
+$ckg-btn-hover-border: rgba($color-primary, $ckg-opacity-hover-border);
+$ckg-info-bg: rgba(20, 15, 35, 0.9);
+$ckg-info-border: rgba($color-primary, $ckg-opacity-medium);
+$ckg-focus-btn-bg: rgba(20, 15, 35, 0.9);
+$ckg-focus-btn-border: rgba($color-primary, $ckg-opacity-medium);
+$ckg-focus-btn-hover-bg: rgba($color-primary, $ckg-opacity-low);
+$ckg-focus-btn-hover-border: rgba($color-primary, $ckg-opacity-hover-border);
+$ckg-focus-btn-focused-bg: rgba($color-primary, $ckg-opacity-medium);
+$ckg-focus-btn-focused-border: rgba($color-primary, $ckg-opacity-high);
+$ckg-tooltip-bg: rgba(20, 15, 35, 0.9);
+$ckg-tooltip-border: rgba($color-primary, $ckg-opacity-medium);
+
+// 渐变和效果
 $ckg-bg-gradient: linear-gradient(135deg, $ckg-bg1, $ckg-bg2);
-$ckg-radius: $border-radius;
 $ckg-shadow:
   0 4px 20px rgba(0, 0, 0, 0.25),
-  0 0 20px rgba($color-primary, 0.15);
+  0 0 20px rgba($color-primary, $ckg-opacity-low);
 $ckg-grid-bg:
   linear-gradient(rgba($color-primary, 0.03) 1px, transparent 1px),
   linear-gradient(90deg, rgba($color-primary, 0.03) 1px, transparent 1px);
-$ckg-glow-bg: radial-gradient(circle at 50% 10%, rgba($color-primary, 0.1) 0%, rgba($color-primary, 0) 70%);
+$ckg-glow-bg: radial-gradient(
+  circle at 50% 10%,
+  rgba($color-primary, $ckg-opacity-low) 0%,
+  rgba($color-primary, 0) 70%
+);
 $ckg-header-gradient: linear-gradient(90deg, $ckg-header-bg1 0%, $ckg-header-bg2 50%, $ckg-header-bg1 100%);
 $ckg-header-after: linear-gradient(90deg, rgba($color-primary, 0), rgba($color-primary, 0.3), rgba($color-primary, 0));
+$ckg-btn-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+$ckg-btn-hover-shadow: 0 2px 8px rgba($color-primary, $ckg-opacity-low);
+$ckg-focus-btn-shadow:
+  0 3px 10px rgba(0, 0, 0, 0.25),
+  0 0 5px rgba($color-primary, 0.2);
+$ckg-focus-btn-hover-shadow:
+  0 4px 12px rgba(0, 0, 0, 0.3),
+  0 0 8px rgba($color-primary, $ckg-opacity-medium);
+$ckg-focus-btn-focused-shadow:
+  0 3px 12px rgba(0, 0, 0, 0.3),
+  0 0 15px rgba($color-primary, 0.3),
+  inset 0 0 8px rgba($color-primary, $ckg-opacity-low);
 
 // 主体样式
 .knowledge-graph-container {
   width: 100%;
   height: 100%;
-  display: flex;
-  flex-direction: column;
+  @include flex-column;
   position: relative;
   background: $ckg-bg-gradient;
-  border-radius: $ckg-radius;
+  border-radius: $border-radius;
   box-shadow: $ckg-shadow;
   overflow: hidden;
-  outline: 2px solid rgba($color-primary, 0.25);
+  outline: 2px solid rgba($color-primary, $ckg-opacity-medium);
   outline-offset: 0px;
 
   /* 已移除脉动边框动画效果，仅保留静态边框 */
 
   &::before {
     content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    @include absolute-fill;
     background-image: $ckg-grid-bg;
-    background-size: 20px 20px;
-    opacity: 0.5;
+    background-size: $ckg-grid-size $ckg-grid-size;
+    opacity: $ckg-opacity-high;
     pointer-events: none;
     z-index: 1;
   }
 
   &::after {
     content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    @include absolute-fill;
     background: $ckg-glow-bg;
     pointer-events: none;
     z-index: 2;
-  }
-}
-
-@keyframes kg-border-pulse {
-  0% {
-    outline-color: rgba($color-primary, 0.25);
-    box-shadow:
-      0 4px 16px rgba(0, 0, 0, 0.3),
-      0 0 20px rgba($color-primary, 0.15);
-  }
-  50% {
-    outline-color: rgba($color-secondary, 0.4);
-    box-shadow:
-      0 4px 16px rgba(0, 0, 0, 0.3),
-      0 0 25px rgba($color-secondary, 0.2);
-  }
-  100% {
-    outline-color: rgba($color-primary, 0.25);
-    box-shadow:
-      0 4px 16px rgba(0, 0, 0, 0.3),
-      0 0 20px rgba($color-primary, 0.15);
   }
 }
 
@@ -147,8 +142,8 @@ $ckg-header-after: linear-gradient(90deg, rgba($color-primary, 0), rgba($color-p
 
 .header-corner {
   position: absolute;
-  width: 12px;
-  height: 12px;
+  width: $ckg-corner-size;
+  height: $ckg-corner-size;
   z-index: 2;
 
   &::after {
@@ -165,9 +160,10 @@ $ckg-header-after: linear-gradient(90deg, rgba($color-primary, 0), rgba($color-p
     top: 0;
     left: 0;
     background:
-      linear-gradient(45deg, transparent 50%, rgba($color-primary, 0.5) 50%) no-repeat 0 0 / 8px 8px,
-      linear-gradient(to right, rgba($color-primary, 0.5) 2px, transparent 2px) no-repeat 7px 0 / 10px 2px,
-      linear-gradient(to bottom, rgba($color-primary, 0.5) 2px, transparent 2px) no-repeat 0 7px / 2px 10px;
+      linear-gradient(45deg, transparent 50%, rgba($color-primary, $ckg-opacity-high) 50%) no-repeat 0 0 / 8px 8px,
+      linear-gradient(to right, rgba($color-primary, $ckg-opacity-high) 2px, transparent 2px) no-repeat 7px 0 / 10px 2px,
+      linear-gradient(to bottom, rgba($color-primary, $ckg-opacity-high) 2px, transparent 2px) no-repeat 0 7px / 2px
+        10px;
     filter: drop-shadow(0 0 3px rgba($color-primary, 0.2));
 
     &::after {
@@ -180,9 +176,10 @@ $ckg-header-after: linear-gradient(90deg, rgba($color-primary, 0), rgba($color-p
     top: 0;
     right: 0;
     background:
-      linear-gradient(135deg, transparent 50%, rgba($color-primary, 0.5) 50%) no-repeat 100% 0 / 8px 8px,
-      linear-gradient(to left, rgba($color-primary, 0.5) 2px, transparent 2px) no-repeat 0 0 / 10px 2px,
-      linear-gradient(to bottom, rgba($color-primary, 0.5) 2px, transparent 2px) no-repeat 100% 7px / 2px 10px;
+      linear-gradient(135deg, transparent 50%, rgba($color-primary, $ckg-opacity-high) 50%) no-repeat 100% 0 / 8px 8px,
+      linear-gradient(to left, rgba($color-primary, $ckg-opacity-high) 2px, transparent 2px) no-repeat 0 0 / 10px 2px,
+      linear-gradient(to bottom, rgba($color-primary, $ckg-opacity-high) 2px, transparent 2px) no-repeat 100% 7px / 2px
+        10px;
     filter: drop-shadow(0 0 3px rgba($color-primary, 0.2));
 
     &::after {
@@ -199,7 +196,11 @@ $ckg-header-after: linear-gradient(90deg, rgba($color-primary, 0), rgba($color-p
   transform: translateX(-50%);
   width: 150px;
   height: 60px;
-  background: radial-gradient(ellipse at center, rgba($color-primary, 0.1) 0%, rgba($color-primary, 0) 70%);
+  background: radial-gradient(
+    ellipse at center,
+    rgba($color-primary, $ckg-opacity-low) 0%,
+    rgba($color-primary, 0) 70%
+  );
   z-index: 0;
 }
 
@@ -207,7 +208,7 @@ $ckg-header-after: linear-gradient(90deg, rgba($color-primary, 0), rgba($color-p
   display: flex;
   align-items: center;
   gap: 10px;
-  color: $ckg-title;
+  color: $color-text-primary;
   font-weight: 600;
   font-size: $font-size-md;
   text-shadow: 0 0 10px rgba($color-primary, 0.2);
@@ -230,10 +231,10 @@ $ckg-header-after: linear-gradient(90deg, rgba($color-primary, 0), rgba($color-p
   display: flex;
   align-items: center;
   gap: 10px;
-  background: rgba($color-primary, 0.1);
-  padding: 5px 12px;
+  background: rgba($color-primary, $ckg-opacity-low);
+  padding: $ckg-indicator-padding;
   border-radius: 16px;
-  border: 1px solid rgba($color-primary, 0.25);
+  border: 1px solid rgba($color-primary, $ckg-opacity-medium);
   color: $color-text-primary;
   font-size: 13px;
   margin-left: 15px;
@@ -259,8 +260,8 @@ $ckg-header-after: linear-gradient(90deg, rgba($color-primary, 0), rgba($color-p
 }
 
 .pulse-dot {
-  width: 8px;
-  height: 8px;
+  width: $ckg-dot-size;
+  height: $ckg-dot-size;
   border-radius: 50%;
   background-color: $color-primary;
   position: relative;
@@ -299,16 +300,14 @@ $ckg-header-after: linear-gradient(90deg, rgba($color-primary, 0), rgba($color-p
   border: none;
   cursor: pointer;
   color: rgba($color-text-primary, 0.7);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  @include flex-center;
   padding: 3px;
   margin-left: 4px;
   border-radius: 50%;
   transition: all 0.2s ease;
 
   &:hover {
-    background: rgba($color-primary, 0.1);
+    background: rgba($color-primary, $ckg-opacity-low);
     color: $color-text-primary;
   }
 }
@@ -330,7 +329,7 @@ $ckg-header-after: linear-gradient(90deg, rgba($color-primary, 0), rgba($color-p
 }
 
 .control-btn {
-  padding: 8px 14px;
+  padding: $ckg-btn-padding;
   border-radius: $border-radius;
   background: $ckg-btn-bg;
   border: 1px solid $ckg-btn-border;
@@ -341,13 +340,13 @@ $ckg-header-after: linear-gradient(90deg, rgba($color-primary, 0), rgba($color-p
   display: flex;
   align-items: center;
   gap: 8px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  box-shadow: $ckg-btn-shadow;
 
   &:hover:not(.disabled) {
     background: $ckg-btn-hover-bg;
     border-color: $ckg-btn-hover-border;
     transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba($color-primary, 0.15);
+    box-shadow: $ckg-btn-hover-shadow;
   }
 
   &.disabled {
@@ -374,7 +373,7 @@ $ckg-header-after: linear-gradient(90deg, rgba($color-primary, 0), rgba($color-p
   display: flex;
   flex-direction: column;
   gap: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: $ckg-btn-shadow;
 }
 
 .legend-item {
@@ -400,8 +399,8 @@ $ckg-header-after: linear-gradient(90deg, rgba($color-primary, 0), rgba($color-p
   border: 1px solid $ckg-info-border;
   border-radius: $border-radius;
   padding: 12px;
-  width: 220px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  width: $ckg-panel-width;
+  box-shadow: $ckg-btn-shadow;
   z-index: 10;
 
   @media (max-width: 768px) {
@@ -415,7 +414,7 @@ $ckg-header-after: linear-gradient(90deg, rgba($color-primary, 0), rgba($color-p
   color: $color-text-primary;
   margin-bottom: 8px;
   padding-bottom: 6px;
-  border-bottom: 1px solid rgba($color-primary, 0.1);
+  border-bottom: 1px solid rgba($color-primary, $ckg-opacity-low);
 }
 
 .info-content {
@@ -434,9 +433,7 @@ $ckg-header-after: linear-gradient(90deg, rgba($color-primary, 0), rgba($color-p
 
 .info-icon {
   color: $color-primary;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  @include flex-center;
 }
 
 .mini-tip {
@@ -461,9 +458,7 @@ $ckg-header-after: linear-gradient(90deg, rgba($color-primary, 0), rgba($color-p
 }
 
 .mini-tip-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  @include flex-center;
   color: $color-primary;
 }
 
@@ -476,59 +471,48 @@ $ckg-header-after: linear-gradient(90deg, rgba($color-primary, 0), rgba($color-p
   border-radius: $border-radius;
   padding: 6px;
   padding-right: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  @include flex-center;
   gap: 8px;
   color: $color-text-primary;
   cursor: pointer;
   @include transition(all, $transition-fast);
-  box-shadow:
-    0 3px 10px rgba(0, 0, 0, 0.25),
-    0 0 5px rgba($color-primary, 0.2);
+  box-shadow: $ckg-focus-btn-shadow;
   z-index: 11;
   backdrop-filter: blur(2px);
   width: 32px;
   overflow: hidden;
 
   &:hover {
-    background: linear-gradient(135deg, rgba($color-primary, 0.15), rgba($color-primary, 0.1));
+    background: linear-gradient(135deg, rgba($color-primary, $ckg-opacity-low), rgba($color-primary, $ckg-opacity-low));
     border-color: $ckg-focus-btn-hover-border;
     transform: translateY(-1px);
-    box-shadow:
-      0 4px 12px rgba(0, 0, 0, 0.3),
-      0 0 8px rgba($color-primary, 0.25);
+    box-shadow: $ckg-focus-btn-hover-shadow;
     padding: 6px 12px;
     width: auto;
     justify-content: flex-start;
   }
 
   &.focused {
-    background: linear-gradient(135deg, rgba($color-primary, 0.2), rgba($color-primary, 0.25));
+    background: linear-gradient(135deg, rgba($color-primary, 0.2), rgba($color-primary, $ckg-opacity-medium));
     border-color: $ckg-focus-btn-focused-border;
     color: $color-white;
-    box-shadow:
-      0 3px 12px rgba(0, 0, 0, 0.3),
-      0 0 15px rgba($color-primary, 0.3),
-      inset 0 0 8px rgba($color-primary, 0.15);
-    text-shadow: 0 0 3px rgba($color-white, 0.5);
+    box-shadow: $ckg-focus-btn-focused-shadow;
+    text-shadow: 0 0 3px rgba($color-white, $ckg-opacity-high);
   }
 
   &.focused .unity-focus-icon {
     color: $color-secondary;
-    filter: drop-shadow(0 0 5px rgba($color-primary, 0.5));
+    filter: drop-shadow(0 0 5px rgba($color-primary, $ckg-opacity-high));
     animation: pulse-light 1.5s infinite;
   }
 }
 
 .unity-focus-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  @include flex-center;
   color: rgba($color-primary, 0.8);
   filter: drop-shadow(0 0 3px rgba($color-primary, 0.3));
-  width: 20px;
-  height: 20px;
+  width: $ckg-icon-size;
+  height: $ckg-icon-size;
 }
 
 .unity-focus-text {
@@ -571,7 +555,7 @@ $ckg-header-after: linear-gradient(90deg, rgba($color-primary, 0), rgba($color-p
   border: 1px solid $ckg-tooltip-border !important;
   border-radius: $border-radius !important;
   padding: 8px !important;
-  color: $ckg-tooltip-color !important;
+  color: $color-text-primary !important;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2) !important;
 }
 
