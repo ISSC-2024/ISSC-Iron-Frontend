@@ -14,7 +14,3 @@ const isLoginPage = () => route.path === '/login'
     </main>
   </div>
 </template>
-
-<style>
-/* 全局样式已移至 assets/styles/main.css */
-</style>
