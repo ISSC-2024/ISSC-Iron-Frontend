@@ -434,30 +434,51 @@ const chartStyle = computed(() => {
 </template>
 
 <style lang="scss" scoped>
-// 变量定义
-$primary-color: rgba(32, 160, 255, 0.15);
-$primary-light: rgba(32, 160, 255, 0.07);
-$primary-dark: rgba(32, 160, 255, 0.03);
-$primary-darker: rgba(32, 160, 255, 0.01);
-$blue-gradient: rgba(64, 120, 255, 0.05);
-$tooltip-bg: rgba(8, 20, 40, 0.9);
-$tooltip-border: rgba(64, 169, 255, 0.5);
-$text-color: rgba(220, 230, 240, 0.95);
+@use '@/assets/styles/_variables' as *;
+@use '@/assets/styles/_mixins' as *;
 
-// 容器样式
+// =====================
+// EventResponseRadarChart 变量
+// =====================
+
+// 背景和基础颜色
+$radar-bg1: $color-bg-primary;
+$radar-bg2: darken($color-bg-primary, 5%);
+$radar-grid-color: rgba($color-primary, 0.05);
+$radar-grid-highlight: rgba($color-primary, 0.1);
+
+// 工具提示样式
+$radar-tooltip-bg: rgba($color-bg-primary, 0.9);
+$radar-tooltip-border: rgba($color-primary, 0.5);
+
+// 图表相关尺寸
+$radar-border-radius: $border-radius;
+$radar-tooltip-radius: 4px;
+
+// 渐变和效果
+$radar-bg-gradient: linear-gradient(135deg, $radar-bg1, $radar-bg2);
+$radar-glow1: rgba($color-primary, 0.05);
+$radar-glow2: rgba($color-secondary, 0.05);
+
+// 阴影效果
+$radar-shadow: $panel-shadow;
+$radar-tooltip-shadow:
+  0 4px 20px rgba(0, 0, 0, 0.3),
+  0 0 15px rgba($color-primary, 0.15);
+
+// =====================
+// 组件样式
+// =====================
 .event-response-radar-container {
   width: 100%;
   height: 100%;
-  display: flex;
-  flex-direction: column;
+  @include flex-column;
   position: relative;
-  background: linear-gradient(135deg, rgba(15, 30, 60, 0.95), rgba(8, 15, 35, 0.95));
-  border-radius: 8px;
+  background: $radar-bg-gradient;
+  border-radius: $radar-border-radius;
   overflow: hidden;
-  box-shadow:
-    0 4px 20px rgba(0, 0, 0, 0.2),
-    0 0 30px $primary-light;
-  border: 1px solid $primary-color;
+  box-shadow: $radar-shadow;
+  @include futuristic-border($color-primary);
 }
 
 // 雷达图样式
@@ -466,59 +487,48 @@ $text-color: rgba(220, 230, 240, 0.95);
   flex: 1;
   position: relative;
   backdrop-filter: blur(2px);
+  isolation: isolate;
 
   // 网格背景效果
   &::before {
     content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    @include absolute-fill;
     pointer-events: none;
     background-image:
-      linear-gradient(to bottom, transparent 49.5%, $primary-dark 50%, transparent 50.5%),
-      linear-gradient(90deg, $primary-darker 1px, transparent 1px),
-      linear-gradient($primary-darker 1px, transparent 1px);
+      linear-gradient(to bottom, transparent 49.5%, $radar-grid-color 50%, transparent 50.5%),
+      linear-gradient(90deg, $radar-grid-highlight 1px, transparent 1px),
+      linear-gradient($radar-grid-color 1px, transparent 1px);
     background-size:
       100% 6px,
       20px 20px,
       20px 20px;
-    z-index: 0;
+    z-index: -1;
   }
 
   // 全息投影效果
   &::after {
     content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background:
-      radial-gradient(ellipse at 50% 0%, $blue-gradient 0%, rgba(64, 120, 255, 0) 70%),
-      radial-gradient(ellipse at 50% 100%, $blue-gradient 0%, rgba(64, 120, 255, 0) 70%);
+    @include absolute-fill;
+    @include tech-glow-background($color-primary, $color-secondary);
     pointer-events: none;
-    z-index: 0;
+    z-index: -1;
   }
 }
 
 // 工具提示样式
 :deep(.event-radar-tooltip) {
-  background: $tooltip-bg !important;
+  background: $radar-tooltip-bg !important;
   backdrop-filter: blur(10px) !important;
-  border-radius: 8px !important;
-  border: 1px solid $tooltip-border !important;
-  box-shadow:
-    0 4px 20px rgba(0, 0, 0, 0.3),
-    0 0 15px $primary-light !important;
-  padding: 10px 14px !important;
-  color: $text-color !important;
+  border-radius: $radar-tooltip-radius !important;
+  border: 1px solid $radar-tooltip-border !important;
+  box-shadow: $radar-tooltip-shadow !important;
+  padding: $spacing-sm $spacing-md !important;
+  color: $color-text-primary !important;
   font-family: 'Inter', 'Roboto', sans-serif !important;
 }
 
 :deep(.radar-indicator-name) {
   font-weight: bold !important;
-  text-shadow: 0 0 5px rgba(32, 160, 255, 0.2) !important;
+  text-shadow: 0 0 5px rgba($color-primary, 0.2) !important;
 }
 </style>
