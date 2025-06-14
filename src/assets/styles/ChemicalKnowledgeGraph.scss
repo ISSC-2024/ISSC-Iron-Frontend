@@ -325,6 +325,12 @@ $ckg-focus-btn-focused-shadow:
   flex-direction: column;
   gap: 12px;
   z-index: 10;
+
+  // 非展开状态下的位置
+  &.compact-controls {
+    right: 10px;
+    bottom: 10px;
+  }
 }
 
 .control-btn {
@@ -357,11 +363,68 @@ $ckg-focus-btn-focused-shadow:
     padding: 6px 10px;
     font-size: 12px;
   }
+
+  // 非展开状态下的样式
+  &.compact-btn {
+    background: linear-gradient(135deg, rgba(20, 15, 35, 0.9), rgba(28, 25, 40, 0.9));
+    border: 1px solid $ckg-focus-btn-border;
+    border-radius: $border-radius;
+    padding: 6px;
+    padding-right: 0;
+    @include flex-center;
+    gap: 8px;
+    box-shadow: $ckg-focus-btn-shadow;
+    backdrop-filter: blur(2px);
+    width: 32px;
+    overflow: hidden;
+
+    .btn-icon {
+      @include flex-center;
+      color: rgba($color-primary, 0.8);
+      filter: drop-shadow(0 0 3px rgba($color-primary, 0.3));
+      width: $ckg-icon-size;
+      height: $ckg-icon-size;
+    }
+
+    .btn-text {
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.2px;
+      white-space: nowrap;
+      opacity: 0;
+      width: 0;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    &:hover {
+      background: linear-gradient(
+        135deg,
+        rgba($color-primary, $ckg-opacity-low),
+        rgba($color-primary, $ckg-opacity-low)
+      );
+      border-color: $ckg-focus-btn-hover-border;
+      transform: translateY(-1px);
+      box-shadow: $ckg-focus-btn-hover-shadow;
+      padding: 6px 12px;
+      width: auto;
+      justify-content: flex-start;
+
+      .btn-text {
+        opacity: 1;
+        width: auto;
+        margin-right: 4px;
+      }
+    }
+  }
 }
 
 .btn-icon {
   color: $color-primary;
   opacity: 0.9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .graph-legend {
