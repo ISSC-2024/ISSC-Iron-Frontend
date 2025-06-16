@@ -24,9 +24,10 @@ const humanResources = [
 
 // 物料资源数据，更新name以匹配Unity要求
 const materialResources = [
-  { id: 1, name: 'RawMaterialInventory', displayName: '原料库存', description: '乙烯 (900吨)', icon: '🧪' },
-  { id: 2, name: 'Catalyst', displayName: '催化剂', description: '钯碳催化剂 (400kg)', icon: '⚗️' },
-  { id: 3, name: 'TankCapacity', displayName: '储罐容量', description: '液化气储罐 (400吨)', icon: '🔋' },
+  { id: 1, name: 'RawMaterialInventory', displayName: '铁矿石', description: '(900吨)', icon: '🧪' },
+  { id: 2, name: 'Catalyst', displayName: '石灰石', description: '(400kg)', icon: '⚗️' },
+  { id: 3, name: 'TankCapacity', displayName: '煤炭', description: '(400吨)', icon: '🔋' },
+  { id: 4, name: 'TankCapacity', displayName: '焦炭', description: '(400吨)', icon: '🔋' },
 ]
 
 const businessInfo = [

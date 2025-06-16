@@ -76,14 +76,40 @@
             <span>{{ formatTime(log.timestamp) }}</span>
           </div>
           <!-- 区域 -->
-          <div class="log-type">
+          <div class="log-type" :title="log.region">
             <environment-outlined />
-            <span>{{ log.region }}</span>
+            <!-- 展开状态下处理可能的多区域情况，显示完整区域名称 -->
+            <span :class="{ 'wrap-text': isExpanded }">
+              {{ isExpanded && log.affectedAreas ? log.affectedAreas : log.region }}
+            </span>
           </div>
           <!-- 消息 -->
           <div class="log-message" :class="{ expanded: isExpanded }" :title="log.message">
             <message-outlined />
             {{ log.message }}
+          </div>
+
+          <!-- 场景详情（只在展开状态下显示） -->
+          <div v-if="isExpanded && log.scenarios && log.scenarios.length > 0" class="scenario-details">
+            <div v-for="(scenario, sIndex) in log.scenarios" :key="sIndex" class="scenario-item">
+              <div class="scenario-header">
+                <span class="scenario-title">风险场景 {{ sIndex + 1 }}: {{ scenario.name }}</span>
+              </div>
+              <div class="scenario-content">
+                <div class="scenario-row">
+                  <span class="scenario-label">场景描述:</span>
+                  <span class="scenario-value">{{ scenario.description }}</span>
+                </div>
+                <div class="scenario-row">
+                  <span class="scenario-label">可能影响:</span>
+                  <span class="scenario-value">{{ scenario.impact }}</span>
+                </div>
+                <div class="scenario-row">
+                  <span class="scenario-label">推荐操作:</span>
+                  <span class="scenario-value">{{ scenario.action }}</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -106,15 +132,20 @@
 import { ref, onMounted, computed, inject, onUnmounted, watch, nextTick } from 'vue'
 import unityService from '@/services/UnityService'
 import { message } from 'ant-design-vue'
-import { useAlgorithmStore, ModuleType, AlgorithmType } from '@/stores/algorithmStore'
 import {
   ClockCircleOutlined,
   EnvironmentOutlined,
   MessageOutlined,
   DownloadOutlined, // 添加下载图标
 } from '@ant-design/icons-vue'
-import Algorithm3Api, { type AlgorithmResult, type DownloadCsvParams } from '@/apis/Algorithm3'
 import GraphHeader from '../common/GraphHeader.vue'
+
+// 使用全局对象，先通过script标签引入
+declare global {
+  interface Window {
+    Papa: any
+  }
+}
 
 // 日志数据结构接口
 interface LogEntry {
@@ -122,10 +153,17 @@ interface LogEntry {
   region: string
   risk_level: 'safe' | 'warning' | 'danger'
   message: string
+  affectedAreas?: string // 受影响区域
+  anomalyFeatures?: string // 异常特征
+  scenarioCount?: number // 场景数量
+  scenarios?: Array<{
+    feature: string
+    name: string
+    description: string
+    impact: string
+    action: string
+  }> // 风险场景详情
 }
-
-// 使用算法数据 store
-const algorithmStore = useAlgorithmStore()
 
 // 定义有效区域常量
 const VALID_REGIONS = ['RMS', 'REA', 'SEP', 'PRO', 'UTL']
@@ -152,15 +190,15 @@ const logBody = ref<HTMLElement | null>(null)
 let scrollObserver: IntersectionObserver | null = null
 const loadTriggerRef = ref<HTMLDivElement | null>(null)
 
-// 将API返回的数据转换为日志条目
-const convertToLogEntries = (results: AlgorithmResult[]): LogEntry[] => {
-  return results.map((result) => ({
-    timestamp: result.timestamp,
-    region: result.region,
-    risk_level: result.risk_level as 'safe' | 'warning' | 'danger',
-    message: result.message,
-  }))
-}
+// 将API返回的数据转换为日志条目（保留但不使用，以后可能需要）
+// const convertToLogEntries = (results: AlgorithmResult[]): LogEntry[] => {
+//   return results.map((result) => ({
+//     timestamp: result.timestamp,
+//     region: result.region,
+//     risk_level: result.risk_level as 'safe' | 'warning' | 'danger',
+//     message: result.message,
+//   }))
+// }
 
 // 加载日志数据
 const loadLogData = async (reset = true) => {
@@ -174,48 +212,117 @@ const loadLogData = async (reset = true) => {
       isLoadingMore.value = true
     }
 
-    // 获取当前选中的算法类型
-    const selectedAlgorithm = algorithmStore.getModuleSelectedAlgorithm(ModuleType.Module3)
-
-    // 获取当前算法的参数
-    const params = algorithmStore.getAlgorithmParams(selectedAlgorithm)
-
-    // 构建请求参数
-    const requestParams = {
-      algorithm: selectedAlgorithm,
-      learning_rate: Number(params.learning_rate) || 0.1,
-      max_depth:
-        selectedAlgorithm === AlgorithmType.xgboost || selectedAlgorithm === AlgorithmType.lightGBM
-          ? Number(params.max_depth)
-          : null,
-      max_epochs: selectedAlgorithm === AlgorithmType.TabNet ? Number(params.max_epochs) : null,
-      skip: currentSkip.value,
-      limit: pageSize,
-    }
-
-    // 调用API获取数据（带分页）
-    const response = await Algorithm3Api.getResultsWithPagination(requestParams)
-
-    // 更新分页信息
-    hasMore.value = response.pagination.has_more
-
-    // 转换数据格式并添加到当前列表
-    if (reset) {
-      logs.value = convertToLogEntries(response.data)
-    } else {
-      logs.value = [...logs.value, ...convertToLogEntries(response.data)]
-    }
-
-    // 更新下一页的偏移量
-    currentSkip.value += response.data.length
+    // 加载模拟数据 (steel_anomaly_decision_results.csv)
+    await loadCsvData(reset)
   } catch (error) {
-    console.error(`加载模块3日志数据失败:`, error)
+    console.error(`加载日志数据失败:`, error)
     message.error('加载日志数据失败，请稍后再试')
     if (reset) logs.value = [] // 重置时才清空日志
   } finally {
     isLoading.value = false
     isLoadingMore.value = false
   }
+}
+
+// 从CSV文件加载数据
+const loadCsvData = async (reset = true) => {
+  try {
+    // 获取CSV文件
+    const response = await fetch('/src/mock/steel_anomaly_decision_results.csv')
+    const csvText = await response.text()
+    // 使用Papa Parse解析CSV
+    const results = window.Papa.parse(csvText, {
+      header: true,
+      skipEmptyLines: true,
+      dynamicTyping: true, // 自动转换数字类型
+    })
+
+    if (!results.data || results.data.length === 0) {
+      console.error('CSV数据为空')
+      return
+    }
+
+    // 分页处理数据
+    const allData = results.data as any[]
+    const startIndex = reset ? 0 : currentSkip.value
+    const endIndex = startIndex + pageSize
+    const pageData = allData.slice(startIndex, endIndex)
+
+    // 更新分页信息
+    hasMore.value = endIndex < allData.length
+
+    // 转换数据格式
+    const convertedData = convertCsvToLogEntries(pageData)
+
+    // 更新数据
+    if (reset) {
+      logs.value = convertedData
+    } else {
+      logs.value = [...logs.value, ...convertedData]
+    }
+
+    // 更新下一页的偏移量
+    currentSkip.value += pageData.length
+  } catch (error) {
+    console.error('解析CSV文件失败:', error)
+    throw error
+  }
+}
+
+// 将CSV数据转换为日志条目
+const convertCsvToLogEntries = (csvData: any[]): LogEntry[] => {
+  return csvData.map((row) => {
+    // 获取区域信息，如果affected_areas为空，使用"全厂"作为默认值
+    const region =
+      row.affected_areas && row.affected_areas !== '无'
+        ? row.affected_areas.split(';')[0].trim() // 取第一个受影响区域
+        : '全厂'
+
+    // 映射风险等级
+    let riskLevel: 'safe' | 'warning' | 'danger' = 'safe'
+    if (row.risk_level === '警告') riskLevel = 'warning'
+    else if (row.risk_level === '危险') riskLevel = 'danger'
+
+    // 构建消息内容
+    let message = row.is_anomaly ? `检测到${row.risk_level}等级异常` : '系统运行正常'
+    if (row.anomaly_features && row.anomaly_features !== '无') {
+      message += `，异常特征: ${row.anomaly_features}`
+    }
+
+    // 构建场景详情
+    const scenarios: Array<{
+      feature: string
+      name: string
+      description: string
+      impact: string
+      action: string
+    }> = []
+
+    // 添加所有风险场景
+    const scenarioCount = row.scenario_count || 0
+    for (let i = 1; i <= scenarioCount; i++) {
+      if (row[`scenario_${i}_name`]) {
+        scenarios.push({
+          feature: row[`scenario_${i}_feature`] || '',
+          name: row[`scenario_${i}_name`] || '',
+          description: row[`scenario_${i}_description`] || '',
+          impact: row[`scenario_${i}_impact`] || '',
+          action: row[`scenario_${i}_action`] || '',
+        })
+      }
+    }
+
+    return {
+      timestamp: row.timestamp,
+      region,
+      risk_level: riskLevel,
+      message,
+      affectedAreas: row.affected_areas === '无' ? undefined : row.affected_areas,
+      anomalyFeatures: row.anomaly_features === '无' ? undefined : row.anomaly_features,
+      scenarioCount: scenarioCount,
+      scenarios: scenarioCount > 0 ? scenarios : undefined,
+    }
+  })
 }
 
 // 加载更多数据
@@ -372,33 +479,15 @@ const handleLogClick = (log: LogEntry) => {
  */
 const handleExport = async () => {
   try {
-    // 获取当前选中的算法类型
-    const selectedAlgorithm = algorithmStore.getModuleSelectedAlgorithm(ModuleType.Module3)
-
-    // 获取当前算法的参数
-    const params = algorithmStore.getAlgorithmParams(selectedAlgorithm)
-
-    // 构建下载参数
-    const downloadParams: DownloadCsvParams = {
-      algorithm: selectedAlgorithm,
-      learning_rate: Number(params.learning_rate) || 0.1,
-      max_depth:
-        selectedAlgorithm === AlgorithmType.xgboost || selectedAlgorithm === AlgorithmType.lightGBM
-          ? Number(params.max_depth)
-          : null,
-      max_epochs: selectedAlgorithm === AlgorithmType.TabNet ? Number(params.max_epochs) : null,
-      localize: true,
-      filename: `${selectedAlgorithm}_log`,
-    }
-
-    // 下载CSV文件
-    const blobData = await Algorithm3Api.downloadResultsCsv(downloadParams)
+    // 直接获取CSV文件并下载
+    const response = await fetch('/src/mock/steel_anomaly_decision_results.csv')
+    const blobData = await response.blob()
 
     // 创建下载链接并触发下载
     const url = window.URL.createObjectURL(blobData)
     const link = document.createElement('a')
     link.href = url
-    link.download = `${downloadParams.filename || 'algorithm_results'}.csv`
+    link.download = 'steel_anomaly_decision_results.csv'
     document.body.appendChild(link)
     link.click()
 
@@ -440,19 +529,18 @@ onMounted(async () => {
   scrollTimer = setInterval(scrollList, 2000)
 })
 
-// 监听模块3的任何变化（包括算法选择和参数）
+// 监听模块3的任何变化（简化处理，我们只关心CSV数据）
 watch(
-  () => [
-    algorithmStore.selectedAlgorithms[ModuleType.Module3],
-    algorithmStore.algorithms[algorithmStore.selectedAlgorithms[ModuleType.Module3]]?.params,
-  ],
+  () => isExpanded.value,
   async () => {
-    console.log('模块3配置已更新，重新加载数据')
-    await loadLogData()
+    console.log('展开状态已更新，重新加载数据')
+    if (isExpanded.value) {
+      // 展开时重新加载更多数据
+      await loadLogData()
+    }
     // 重置开始索引
     startIndex.value = 0
   },
-  { deep: true },
 )
 
 onUnmounted(() => {
@@ -470,6 +558,388 @@ onUnmounted(() => {
 })
 </script>
 
-<style lang="scss" scoped>
-@use '@/assets/styles/ScrollingLogList.scss';
+<style scoped>
+.scrolling-log-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(32, 160, 255, 0.2);
+  border-radius: 4px;
+  overflow: hidden;
+  padding-top: 0;
+  position: relative;
+  z-index: 0;
+  background-color: rgba(11, 19, 43, 0.95);
+  color: rgba(220, 230, 240, 0.9);
+  box-shadow: 0 0 15px rgba(0, 100, 255, 0.1);
+}
+
+.log-time {
+  flex: 0 0 90px; /* 微调宽度，让时间戳显示更清晰 */
+  color: rgba(130, 180, 230, 0.8);
+  font-family: 'Consolas', monospace;
+  text-shadow: 0 0 5px rgba(32, 160, 255, 0.3);
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 5px;
+  padding-left: 5px; /* 添加左侧内边距 */
+}
+
+.log-type {
+  flex: 0 0 150px; /* 增加宽度，从70px改为150px */
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  font-size: 14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start; /* 修改为左对齐，更容易阅读长文本 */
+  padding-left: 10px; /* 添加左侧内边距 */
+  gap: 5px;
+}
+
+.log-message {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: calc(100% - 240px); /* 减去区域和时间戳所占空间 */
+  padding-left: 10px;
+  position: relative;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.header-message {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+/* 导出按钮样式 */
+.export-button {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(32, 160, 255, 0.15);
+  border: 1px solid rgba(32, 160, 255, 0.3);
+  color: rgba(220, 230, 240, 0.9);
+  padding: 5px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.export-button:hover {
+  background: rgba(32, 160, 255, 0.25);
+  border-color: rgba(32, 160, 255, 0.5);
+  box-shadow: 0 0 8px rgba(32, 160, 255, 0.4);
+}
+
+.export-button:active {
+  background: rgba(32, 160, 255, 0.35);
+  transform: translateY(1px);
+}
+
+/* 表头样式 */
+.log-header {
+  display: flex;
+  background: linear-gradient(90deg, rgba(12, 24, 48, 0.9) 0%, rgba(20, 40, 80, 0.9) 50%, rgba(12, 24, 48, 0.9) 100%);
+  font-weight: 600;
+  padding: 10px;
+  border-bottom: 1px solid rgba(32, 160, 255, 0.15);
+  font-size: 14px;
+  color: rgba(120, 180, 255, 0.95);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-shadow: 0 0 8px rgba(32, 160, 255, 0.4);
+}
+
+.header-time {
+  flex: 0 0 90px; /* 与log-time保持一致 */
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding-left: 5px; /* 添加左侧内边距，与log-time保持一致 */
+}
+
+.header-type {
+  flex: 0 0 150px; /* 增加宽度，与log-type保持一致 */
+  display: flex;
+  align-items: center;
+  justify-content: flex-start; /* 修改为左对齐 */
+  gap: 5px;
+  padding-left: 10px; /* 添加左侧内边距 */
+}
+
+.scrolling-log-body {
+  flex: 1;
+  height: calc(100% - 86px);
+  overflow-y: auto;
+  font-size: 14px;
+  font-family: 'Consolas', 'Monaco', monospace;
+  background: radial-gradient(ellipse at center, rgba(20, 40, 80, 0.3) 0%, rgba(8, 15, 35, 0.3) 100%);
+  scrollbar-width: thin; /* Firefox 滚动条样式 */
+  scrollbar-color: rgba(32, 160, 255, 0.6) rgba(11, 19, 43, 0.3);
+}
+
+/* WebKit/Chrome滚动条样式 */
+.scrolling-log-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scrolling-log-body::-webkit-scrollbar-track {
+  background: rgba(11, 19, 43, 0.3);
+}
+
+.scrolling-log-body::-webkit-scrollbar-thumb {
+  background-color: rgba(32, 160, 255, 0.6);
+  border-radius: 3px;
+}
+
+/* 非展开状态时隐藏滚动条 */
+.scrolling-log-container:not(.expanded) .scrolling-log-body {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.scrolling-log-container:not(.expanded) .scrolling-log-body::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+/* 在展开状态下显示滚动条 */
+.expanded .scrolling-log-body {
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: rgba(32, 160, 255, 0.6) rgba(11, 19, 43, 0.3);
+  -ms-overflow-style: auto; /* IE and Edge */
+}
+
+.expanded .scrolling-log-body::-webkit-scrollbar {
+  display: block; /* Chrome, Safari, Opera */
+}
+
+.log-row {
+  display: flex;
+  flex-wrap: wrap; /* 允许换行，以便展开详情时正确显示 */
+  padding: 10px;
+  border-bottom: 1px solid rgba(32, 160, 255, 0.1);
+  transition: all 0.25s ease;
+  align-items: center;
+  cursor: pointer;
+  background-color: rgba(12, 20, 40, 0.75);
+  position: relative;
+}
+
+.log-row::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 4px;
+  background: transparent;
+  transition: all 0.2s ease;
+}
+
+.log-row-alt {
+  background-color: rgba(15, 30, 60, 0.75);
+}
+
+.log-row:hover {
+  background-color: rgba(30, 50, 90, 0.8);
+  transform: translateX(2px);
+  box-shadow: -2px 0 8px rgba(32, 160, 255, 0.15);
+}
+
+.log-info::before {
+  background: linear-gradient(to bottom, #52c41a, #52c41a80);
+  box-shadow: 0 0 10px rgba(82, 196, 26, 0.8);
+}
+
+.log-warning::before {
+  background: linear-gradient(to bottom, #faad14, #faad1480);
+  box-shadow: 0 0 10px rgba(250, 173, 20, 0.8);
+}
+
+.log-danger::before {
+  background: linear-gradient(to bottom, #f5222d, #f5222d80);
+  box-shadow: 0 0 10px rgba(245, 34, 45, 0.8);
+}
+
+.log-selected {
+  background-color: rgba(32, 87, 160, 0.4) !important;
+  border-right: 1px solid rgba(32, 160, 255, 0.3);
+}
+
+.expanded .scrolling-log-body {
+  font-size: 15px;
+}
+
+.expanded .log-time,
+.expanded .log-type,
+.expanded .log-message {
+  font-size: 15px;
+  padding: 5px 0; /* 增加上下内边距，让内容更加分明 */
+}
+
+/* 调整展开状态下表头的样式 */
+.expanded .header-time,
+.expanded .header-type,
+.expanded .header-message {
+  font-size: 15px;
+  padding: 5px 0; /* 与内容区域保持一致 */
+  font-weight: 600;
+}
+
+.log-message.expanded {
+  white-space: normal;
+  word-wrap: break-word;
+  overflow: visible;
+  text-overflow: clip;
+  height: auto;
+  line-height: 1.5;
+  font-size: 16px;
+}
+
+.expanded-chart .log-type,
+.expanded .log-type {
+  flex: 0 0 200px; /* 展开状态下进一步增加区域名称宽度 */
+  font-size: 15px; /* 略微调大字体 */
+}
+
+.log-info .anticon {
+  color: rgba(82, 196, 26, 0.9);
+}
+
+.log-warning .anticon {
+  color: rgba(250, 173, 20, 0.9);
+}
+
+.log-danger .anticon {
+  color: rgba(245, 34, 45, 0.9);
+}
+
+/* 轻微扫描线效果 */
+.scrolling-log-container::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  background: linear-gradient(to bottom, transparent 50%, rgba(32, 160, 255, 0.03) 50%);
+  background-size: 100% 4px;
+  z-index: 1;
+}
+
+/* 加载状态和空数据状态 */
+.loading-indicator,
+.empty-data {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
+  width: 100%;
+  color: rgba(32, 160, 255, 0.7);
+  font-size: 16px;
+  text-align: center;
+}
+
+/* 加载更多相关样式 */
+.load-more-trigger {
+  padding: 15px;
+  text-align: center;
+  color: rgba(32, 160, 255, 0.7);
+}
+
+.loading-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.no-more-data {
+  font-size: 14px;
+  color: rgba(180, 200, 220, 0.5);
+  padding: 10px;
+}
+
+/* 场景详情样式 */
+.scenario-details {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-top: 10px;
+  padding: 5px 10px;
+  background: rgba(20, 40, 80, 0.3);
+  border-radius: 4px;
+  border-left: 3px solid rgba(32, 160, 255, 0.5);
+}
+
+.scenario-item {
+  margin-bottom: 8px;
+  padding: 5px;
+  border-bottom: 1px dashed rgba(32, 160, 255, 0.2);
+}
+
+.scenario-item:last-child {
+  border-bottom: none;
+}
+
+.scenario-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+
+.scenario-title {
+  font-weight: bold;
+  color: rgba(100, 200, 255, 0.9);
+}
+
+.scenario-content {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding-left: 10px;
+}
+
+.scenario-row {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 3px;
+}
+
+.scenario-label {
+  flex: 0 0 80px;
+  font-weight: 500;
+  color: rgba(180, 220, 255, 0.8);
+}
+
+.scenario-value {
+  flex: 1;
+  word-break: break-word;
+}
+
+/* 展开状态下允许区域文本换行显示 */
+.wrap-text {
+  white-space: normal;
+  word-break: break-word;
+  display: inline-block;
+  line-height: 1.2;
+}
 </style>

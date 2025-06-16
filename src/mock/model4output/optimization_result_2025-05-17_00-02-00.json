@@ -1,0 +1,2152 @@
+{
+  "timestamp": "2025-05-17 00:02:00",
+  "system_overview": {
+    "risk_level": 0,
+    "affected_areas": [],
+    "optimization_status": "completed",
+    "system_performance_score": 0.9096265244442309
+  },
+  "resource_flow_data": {
+    "material_transfers": [
+      {
+        "source_area": "原料与采购物流区",
+        "destination_area": "烧结/球团区",
+        "material_type": "iron_ore_mix",
+        "transfer_amount": 221.76000000000005,
+        "transfer_efficiency": 0.9,
+        "transport_mode": "conveyor",
+        "transfer_time": 0.9476274704388519,
+        "quality_maintained": 0.9358615793094378
+      },
+      {
+        "source_area": "烧结/球团区",
+        "destination_area": "炼铁区",
+        "material_type": "sinter_pellets",
+        "transfer_amount": 112.2,
+        "transfer_efficiency": 0.9,
+        "transport_mode": "conveyor",
+        "transfer_time": 1.1893976927390033,
+        "quality_maintained": 0.9709470747308305
+      },
+      {
+        "source_area": "炼焦区",
+        "destination_area": "炼铁区",
+        "material_type": "coke",
+        "transfer_amount": 50,
+        "transfer_efficiency": 0.9,
+        "transport_mode": "conveyor",
+        "transfer_time": 0.8537480021809387,
+        "quality_maintained": 0.9812768858257985
+      },
+      {
+        "source_area": "炼铁区",
+        "destination_area": "炼钢区",
+        "material_type": "hot_metal",
+        "transfer_amount": 114.0,
+        "transfer_efficiency": 0.9,
+        "transport_mode": "conveyor",
+        "transfer_time": 1.4906625803010756,
+        "quality_maintained": 0.9293772187659918
+      },
+      {
+        "source_area": "炼钢区",
+        "destination_area": "连铸区",
+        "material_type": "liquid_steel",
+        "transfer_amount": 50,
+        "transfer_efficiency": 0.9,
+        "transport_mode": "conveyor",
+        "transfer_time": 1.3629272567502522,
+        "quality_maintained": 0.9638675702966523
+      },
+      {
+        "source_area": "连铸区",
+        "destination_area": "轧制区",
+        "material_type": "steel_slabs",
+        "transfer_amount": 50,
+        "transfer_efficiency": 0.9,
+        "transport_mode": "conveyor",
+        "transfer_time": 1.9364175349512165,
+        "quality_maintained": 0.9560110963896261
+      },
+      {
+        "source_area": "轧制区",
+        "destination_area": "热处理区",
+        "material_type": "rolled_products",
+        "transfer_amount": 50,
+        "transfer_efficiency": 0.9,
+        "transport_mode": "conveyor",
+        "transfer_time": 1.0351655334942644,
+        "quality_maintained": 0.9637849796524474
+      }
+    ],
+    "flow_efficiency": {
+      "原料与采购物流区": {
+        "input_efficiency": 0.9137372173075533,
+        "output_efficiency": 0.9028397947992806,
+        "processing_efficiency": 0.8689216651003385,
+        "overall_throughput": 103.29398133842955
+      },
+      "烧结/球团区": {
+        "input_efficiency": 0.9476093205953212,
+        "output_efficiency": 0.8925969934778445,
+        "processing_efficiency": 0.861463857169096,
+        "overall_throughput": 114.40441210366347
+      },
+      "炼焦区": {
+        "input_efficiency": 0.900237144756934,
+        "output_efficiency": 0.9201446650997355,
+        "processing_efficiency": 0.9391224124898456,
+        "overall_throughput": 81.64255955839658
+      },
+      "炼铁区": {
+        "input_efficiency": 0.9328717597179942,
+        "output_efficiency": 0.8923980805563231,
+        "processing_efficiency": 0.8266129088127674,
+        "overall_throughput": 81.4831811307423
+      },
+      "炼钢区": {
+        "input_efficiency": 0.8692049096142348,
+        "output_efficiency": 0.9283598141533894,
+        "processing_efficiency": 0.8546785300352818,
+        "overall_throughput": 103.40980310319333
+      },
+      "连铸区": {
+        "input_efficiency": 0.8811469390093702,
+        "output_efficiency": 0.9229785370863113,
+        "processing_efficiency": 0.8804734163345368,
+        "overall_throughput": 104.1814817590996
+      },
+      "轧制区": {
+        "input_efficiency": 0.8950026310565815,
+        "output_efficiency": 0.9050087253011412,
+        "processing_efficiency": 0.8793280518929749,
+        "overall_throughput": 112.7300065145504
+      },
+      "热处理区": {
+        "input_efficiency": 0.9283529162168402,
+        "output_efficiency": 0.9149174497554445,
+        "processing_efficiency": 0.9160144684547358,
+        "overall_throughput": 86.91776982521908
+      }
+    },
+    "bottleneck_analysis": {},
+    "inventory_changes": {
+      "原料与采购物流区": {
+        "raw_materials": {
+          "iron_ore": 1.614471280607905,
+          "limestone": 13.912902061815355,
+          "coal": 1.8089857810434253,
+          "coke": 6.084010843685149
+        },
+        "intermediate_products": 7.514010935971667,
+        "finished_products": 10.703161212167878,
+        "safety_stock_level": 1.0804530743789131
+      },
+      "烧结/球团区": {
+        "raw_materials": {
+          "iron_ore": -14.721840248401834,
+          "limestone": 11.201634611426883,
+          "coal": 19.768279408080957,
+          "coke": -4.8010849003544145
+        },
+        "intermediate_products": 8.402824178026531,
+        "finished_products": 18.101607708439904,
+        "safety_stock_level": 0.840018395087559
+      },
+      "炼焦区": {
+        "raw_materials": {
+          "iron_ore": 12.640520068207309,
+          "limestone": -9.579757074971347,
+          "coal": 12.153385207236624,
+          "coke": 8.0042003520144
+        },
+        "intermediate_products": -3.3329268514361865,
+        "finished_products": 24.350292752661304,
+        "safety_stock_level": 1.1236943098392846
+      },
+      "炼铁区": {
+        "raw_materials": {
+          "iron_ore": -17.565211546557855,
+          "limestone": -9.570198356996881,
+          "coal": -13.715181913462455,
+          "coke": -4.004235596732612
+        },
+        "intermediate_products": 7.544592788093819,
+        "finished_products": -4.994765309687257,
+        "safety_stock_level": 1.1380451377951155
+      },
+      "炼钢区": {
+        "raw_materials": {
+          "iron_ore": 13.487843561139535,
+          "limestone": 8.472550187334534,
+          "coal": 13.03281893853428,
+          "coke": 3.997363024452179
+        },
+        "intermediate_products": 3.575112981378348,
+        "finished_products": -9.818902272292911,
+        "safety_stock_level": 1.088204173883387
+      },
+      "连铸区": {
+        "raw_materials": {
+          "iron_ore": 15.462044683667123,
+          "limestone": 9.33474628711,
+          "coal": -11.410169047395389,
+          "coke": 5.094539570537766
+        },
+        "intermediate_products": -4.564017959039632,
+        "finished_products": 18.888710132099256,
+        "safety_stock_level": 1.0160942252176461
+      },
+      "轧制区": {
+        "raw_materials": {
+          "iron_ore": -0.997929208720393,
+          "limestone": 6.000753925358563,
+          "coal": 8.955551086829246,
+          "coke": -6.823288944061676
+        },
+        "intermediate_products": -3.2760963046937297,
+        "finished_products": -9.658933225401507,
+        "safety_stock_level": 1.09710713383391
+      },
+      "热处理区": {
+        "raw_materials": {
+          "iron_ore": -2.967234835204078,
+          "limestone": -5.617232220598053,
+          "coal": -11.854467101578727,
+          "coke": 0.5626549441440307
+        },
+        "intermediate_products": -1.0991065810166778,
+        "finished_products": 11.091965489733543,
+        "safety_stock_level": 1.191978968242723
+      }
+    }
+  },
+  "agent_game_theory_data": {
+    "negotiation_rounds": [
+      {
+        "round_number": 1,
+        "participating_agents": [
+          "resource_8",
+          "logistics_30",
+          "logistics_18",
+          "resource_12",
+          "logistics_22"
+        ],
+        "negotiation_topic": "production_scheduling",
+        "initial_positions": {
+          "resource_8": {
+            "resource_demand": 0.9971958898970634,
+            "quality_requirement": 0.8431816941400136,
+            "cost_constraint": 0.8408489217981293,
+            "urgency_level": 0.6165184792373766
+          },
+          "logistics_30": {
+            "resource_demand": 0.861848888693582,
+            "quality_requirement": 0.8449262259330691,
+            "cost_constraint": 0.8767636984776618,
+            "urgency_level": 0.3469142189239028
+          },
+          "logistics_18": {
+            "resource_demand": 0.8055518157706947,
+            "quality_requirement": 0.8011580785099591,
+            "cost_constraint": 0.842110101516612,
+            "urgency_level": 0.6134015440890694
+          },
+          "resource_12": {
+            "resource_demand": 0.7889941670879678,
+            "quality_requirement": 0.849380428704481,
+            "cost_constraint": 0.8399788253981209,
+            "urgency_level": 0.3776585257822096
+          },
+          "logistics_22": {
+            "resource_demand": 0.9145959646014549,
+            "quality_requirement": 0.8119814489517323,
+            "cost_constraint": 0.7890168007283155,
+            "urgency_level": 0.5500921763306897
+          }
+        },
+        "final_agreement": {
+          "resource_8": {
+            "allocated_resources": 0.8392811985687711,
+            "quality_target": 0.8614710702691539,
+            "cost_sharing": 0.20449169711257095,
+            "satisfaction_score": 0.9000337304001282
+          },
+          "logistics_30": {
+            "allocated_resources": 0.860169187496157,
+            "quality_target": 0.8882456536564534,
+            "cost_sharing": 0.23906819163885806,
+            "satisfaction_score": 0.8017388183116008
+          },
+          "logistics_18": {
+            "allocated_resources": 0.7554423459973907,
+            "quality_target": 0.8815888511216335,
+            "cost_sharing": 0.1894749665023478,
+            "satisfaction_score": 0.7562648152796196
+          },
+          "resource_12": {
+            "allocated_resources": 0.877300914191526,
+            "quality_target": 0.9044037319881639,
+            "cost_sharing": 0.25683411205812734,
+            "satisfaction_score": 0.8708165920018842
+          },
+          "logistics_22": {
+            "allocated_resources": 0.7204398926302812,
+            "quality_target": 0.8896274828776585,
+            "cost_sharing": 0.28818316233882224,
+            "satisfaction_score": 0.7402403120099603
+          }
+        },
+        "convergence_time": 2.4046447507377517,
+        "agreement_satisfaction": 0.9179225846091811
+      },
+      {
+        "round_number": 2,
+        "participating_agents": [
+          "energy_27",
+          "resource_24",
+          "energy_11",
+          "production_13",
+          "production_17"
+        ],
+        "negotiation_topic": "quality_targets",
+        "initial_positions": {
+          "energy_27": {
+            "resource_demand": 0.8121855224696164,
+            "quality_requirement": 0.8323600999216759,
+            "cost_constraint": 0.8372226486033945,
+            "urgency_level": 0.6171773999425965
+          },
+          "resource_24": {
+            "resource_demand": 0.7528997923287148,
+            "quality_requirement": 0.8612839840937379,
+            "cost_constraint": 0.7831328220812165,
+            "urgency_level": 0.7183917323136401
+          },
+          "energy_11": {
+            "resource_demand": 0.8285251638463506,
+            "quality_requirement": 0.8142909656156718,
+            "cost_constraint": 0.7662312653273449,
+            "urgency_level": 0.4973473422282456
+          },
+          "production_13": {
+            "resource_demand": 0.9350923390098895,
+            "quality_requirement": 0.8437910817561467,
+            "cost_constraint": 0.7086042788482608,
+            "urgency_level": 0.5148707418062362
+          },
+          "production_17": {
+            "resource_demand": 0.8643487619298964,
+            "quality_requirement": 0.8174791789262038,
+            "cost_constraint": 0.71349136390767,
+            "urgency_level": 0.7876033920274553
+          }
+        },
+        "final_agreement": {
+          "energy_27": {
+            "allocated_resources": 0.7308030431342061,
+            "quality_target": 0.855862908523019,
+            "cost_sharing": 0.15670092135493546,
+            "satisfaction_score": 0.7576833626625685
+          },
+          "resource_24": {
+            "allocated_resources": 0.7321465008752184,
+            "quality_target": 0.9122922162169217,
+            "cost_sharing": 0.1587725971950738,
+            "satisfaction_score": 0.8887399817763444
+          },
+          "energy_11": {
+            "allocated_resources": 0.7569784789731138,
+            "quality_target": 0.8800567014335506,
+            "cost_sharing": 0.16337673963900745,
+            "satisfaction_score": 0.7910989230302623
+          },
+          "production_13": {
+            "allocated_resources": 0.8231064802339342,
+            "quality_target": 0.8697142626260477,
+            "cost_sharing": 0.14229178006624968,
+            "satisfaction_score": 0.8446736833571811
+          },
+          "production_17": {
+            "allocated_resources": 0.7179742498792838,
+            "quality_target": 0.8944481260216122,
+            "cost_sharing": 0.21610644157044306,
+            "satisfaction_score": 0.8645797091659584
+          }
+        },
+        "convergence_time": 0.7360478295116847,
+        "agreement_satisfaction": 0.8256496806958615
+      },
+      {
+        "round_number": 3,
+        "participating_agents": [
+          "energy_31",
+          "logistics_10",
+          "production_9",
+          "production_29",
+          "resource_20",
+          "resource_4"
+        ],
+        "negotiation_topic": "production_scheduling",
+        "initial_positions": {
+          "energy_31": {
+            "resource_demand": 0.7291730173712834,
+            "quality_requirement": 0.8724411835070361,
+            "cost_constraint": 0.8514617769636834,
+            "urgency_level": 0.3310082475123122
+          },
+          "logistics_10": {
+            "resource_demand": 0.652833543395009,
+            "quality_requirement": 0.9374375459420607,
+            "cost_constraint": 0.7909045859181908,
+            "urgency_level": 0.39778075903399507
+          },
+          "production_9": {
+            "resource_demand": 0.717268077297235,
+            "quality_requirement": 0.8065848985631643,
+            "cost_constraint": 0.8050528452852999,
+            "urgency_level": 0.7423221423384123
+          },
+          "production_29": {
+            "resource_demand": 0.8242096251870968,
+            "quality_requirement": 0.8443481579565748,
+            "cost_constraint": 0.7798313294466156,
+            "urgency_level": 0.5131966161966843
+          },
+          "resource_20": {
+            "resource_demand": 0.8793526971706387,
+            "quality_requirement": 0.943222999559368,
+            "cost_constraint": 0.7183646665983185,
+            "urgency_level": 0.33720077053268616
+          },
+          "resource_4": {
+            "resource_demand": 0.6094093303074617,
+            "quality_requirement": 0.9427136467421232,
+            "cost_constraint": 0.7516859688448657,
+            "urgency_level": 0.647197329411519
+          }
+        },
+        "final_agreement": {
+          "energy_31": {
+            "allocated_resources": 0.8993520465242774,
+            "quality_target": 0.8814166882587897,
+            "cost_sharing": 0.26000965274957283,
+            "satisfaction_score": 0.7438796651514157
+          },
+          "logistics_10": {
+            "allocated_resources": 0.9395703389844863,
+            "quality_target": 0.9100831863507133,
+            "cost_sharing": 0.1919888754652301,
+            "satisfaction_score": 0.8174271921249642
+          },
+          "production_9": {
+            "allocated_resources": 0.8513720269239647,
+            "quality_target": 0.9148475791456954,
+            "cost_sharing": 0.28459390477805746,
+            "satisfaction_score": 0.850521694067165
+          },
+          "production_29": {
+            "allocated_resources": 0.7525522849615156,
+            "quality_target": 0.9103743727766793,
+            "cost_sharing": 0.1512319327572409,
+            "satisfaction_score": 0.8333479718857567
+          },
+          "resource_20": {
+            "allocated_resources": 0.7234358304933308,
+            "quality_target": 0.8636327299613293,
+            "cost_sharing": 0.13721056731326947,
+            "satisfaction_score": 0.7464339549614692
+          },
+          "resource_4": {
+            "allocated_resources": 0.8657796302618839,
+            "quality_target": 0.9022213315142764,
+            "cost_sharing": 0.268765726934088,
+            "satisfaction_score": 0.8118084918534733
+          }
+        },
+        "convergence_time": 2.78274082304575,
+        "agreement_satisfaction": 0.7292721244200577
+      },
+      {
+        "round_number": 4,
+        "participating_agents": [
+          "resource_20",
+          "production_5",
+          "logistics_2",
+          "production_17",
+          "production_29",
+          "resource_0"
+        ],
+        "negotiation_topic": "energy_distribution",
+        "initial_positions": {
+          "resource_20": {
+            "resource_demand": 0.9740655663466441,
+            "quality_requirement": 0.8758341423135338,
+            "cost_constraint": 0.8069669278282936,
+            "urgency_level": 0.5181015961835392
+          },
+          "production_5": {
+            "resource_demand": 0.8910798348300654,
+            "quality_requirement": 0.8241992052724345,
+            "cost_constraint": 0.7441566291219239,
+            "urgency_level": 0.6404813569374277
+          },
+          "logistics_2": {
+            "resource_demand": 0.8055658224326875,
+            "quality_requirement": 0.9230991916967838,
+            "cost_constraint": 0.7356222600450647,
+            "urgency_level": 0.44721070235412985
+          },
+          "production_17": {
+            "resource_demand": 0.863283265273445,
+            "quality_requirement": 0.9489843611782542,
+            "cost_constraint": 0.7812506098064793,
+            "urgency_level": 0.675597394459363
+          },
+          "production_29": {
+            "resource_demand": 0.7626426816985852,
+            "quality_requirement": 0.8134584086362033,
+            "cost_constraint": 0.8032033262612721,
+            "urgency_level": 0.5585425990852291
+          },
+          "resource_0": {
+            "resource_demand": 0.6783558798972004,
+            "quality_requirement": 0.8344198475623198,
+            "cost_constraint": 0.8098666627829935,
+            "urgency_level": 0.37379805836970126
+          }
+        },
+        "final_agreement": {
+          "resource_20": {
+            "allocated_resources": 0.8792390432354873,
+            "quality_target": 0.8629930037726685,
+            "cost_sharing": 0.2652242882108621,
+            "satisfaction_score": 0.7143923947010091
+          },
+          "production_5": {
+            "allocated_resources": 0.7564203705374201,
+            "quality_target": 0.9102339668913277,
+            "cost_sharing": 0.11509112074244339,
+            "satisfaction_score": 0.8173968808853499
+          },
+          "logistics_2": {
+            "allocated_resources": 0.7964404061301014,
+            "quality_target": 0.8536977879833291,
+            "cost_sharing": 0.26154319540742677,
+            "satisfaction_score": 0.7199975404602303
+          },
+          "production_17": {
+            "allocated_resources": 0.8766800052215575,
+            "quality_target": 0.8843182217169724,
+            "cost_sharing": 0.11607005221668046,
+            "satisfaction_score": 0.7933574805114083
+          },
+          "production_29": {
+            "allocated_resources": 0.9269973728606564,
+            "quality_target": 0.8715193573501959,
+            "cost_sharing": 0.23809176107105348,
+            "satisfaction_score": 0.8488114314406469
+          },
+          "resource_0": {
+            "allocated_resources": 0.8016457399402102,
+            "quality_target": 0.8914853616402031,
+            "cost_sharing": 0.19087606745582153,
+            "satisfaction_score": 0.8476607968819263
+          }
+        },
+        "convergence_time": 2.267296912413272,
+        "agreement_satisfaction": 0.9295416499226457
+      },
+      {
+        "round_number": 5,
+        "participating_agents": [
+          "production_13",
+          "resource_4",
+          "logistics_6",
+          "production_5",
+          "energy_31"
+        ],
+        "negotiation_topic": "production_scheduling",
+        "initial_positions": {
+          "production_13": {
+            "resource_demand": 0.7211609442488928,
+            "quality_requirement": 0.8503455135872496,
+            "cost_constraint": 0.797532572029755,
+            "urgency_level": 0.6937361746657676
+          },
+          "resource_4": {
+            "resource_demand": 0.8943681395971713,
+            "quality_requirement": 0.85588172799306,
+            "cost_constraint": 0.7974030585958641,
+            "urgency_level": 0.5854907041725204
+          },
+          "logistics_6": {
+            "resource_demand": 0.8756355233379165,
+            "quality_requirement": 0.8761782535408176,
+            "cost_constraint": 0.8509626980457154,
+            "urgency_level": 0.6435125628430574
+          },
+          "production_5": {
+            "resource_demand": 0.9665514043650896,
+            "quality_requirement": 0.8347828690751765,
+            "cost_constraint": 0.7959038977706481,
+            "urgency_level": 0.49960910389568153
+          },
+          "energy_31": {
+            "resource_demand": 0.9857759961907069,
+            "quality_requirement": 0.8515045143027383,
+            "cost_constraint": 0.8997611205396447,
+            "urgency_level": 0.761752257413558
+          }
+        },
+        "final_agreement": {
+          "production_13": {
+            "allocated_resources": 0.7157756814389605,
+            "quality_target": 0.8535684736368966,
+            "cost_sharing": 0.22491480520083137,
+            "satisfaction_score": 0.8108187087990981
+          },
+          "resource_4": {
+            "allocated_resources": 0.8202439106057346,
+            "quality_target": 0.8866034642103703,
+            "cost_sharing": 0.24307547145334876,
+            "satisfaction_score": 0.8873743149568818
+          },
+          "logistics_6": {
+            "allocated_resources": 0.7283794438172102,
+            "quality_target": 0.8610984387316719,
+            "cost_sharing": 0.22464733803315007,
+            "satisfaction_score": 0.7886294323776835
+          },
+          "production_5": {
+            "allocated_resources": 0.7783044833645161,
+            "quality_target": 0.8767204354083978,
+            "cost_sharing": 0.17153312921612301,
+            "satisfaction_score": 0.9304379503852795
+          },
+          "energy_31": {
+            "allocated_resources": 0.856446922750373,
+            "quality_target": 0.8876936277239799,
+            "cost_sharing": 0.2930074000496291,
+            "satisfaction_score": 0.8504564073723251
+          }
+        },
+        "convergence_time": 1.3700825389757987,
+        "agreement_satisfaction": 0.9117536448035075
+      },
+      {
+        "round_number": 6,
+        "participating_agents": [
+          "production_1",
+          "energy_23",
+          "production_29",
+          "production_13",
+          "logistics_14"
+        ],
+        "negotiation_topic": "resource_allocation",
+        "initial_positions": {
+          "production_1": {
+            "resource_demand": 0.7658678534456491,
+            "quality_requirement": 0.8622004786436713,
+            "cost_constraint": 0.8027810068459023,
+            "urgency_level": 0.6388453780359418
+          },
+          "energy_23": {
+            "resource_demand": 0.6277136748207072,
+            "quality_requirement": 0.8368641905212996,
+            "cost_constraint": 0.890700178040933,
+            "urgency_level": 0.6345059835223995
+          },
+          "production_29": {
+            "resource_demand": 0.7787588697302245,
+            "quality_requirement": 0.9148427144621628,
+            "cost_constraint": 0.8049238968067399,
+            "urgency_level": 0.4572737185390166
+          },
+          "production_13": {
+            "resource_demand": 0.944679705095989,
+            "quality_requirement": 0.9456004662690412,
+            "cost_constraint": 0.7777736349587798,
+            "urgency_level": 0.4507342229823439
+          },
+          "logistics_14": {
+            "resource_demand": 0.9662369265692562,
+            "quality_requirement": 0.8504724653573144,
+            "cost_constraint": 0.7577991630365148,
+            "urgency_level": 0.6244270600532529
+          }
+        },
+        "final_agreement": {
+          "production_1": {
+            "allocated_resources": 0.7008544036988519,
+            "quality_target": 0.9156466914116945,
+            "cost_sharing": 0.13745255865717437,
+            "satisfaction_score": 0.9261194799366435
+          },
+          "energy_23": {
+            "allocated_resources": 0.826986571782824,
+            "quality_target": 0.8527903194662753,
+            "cost_sharing": 0.1696482540346638,
+            "satisfaction_score": 0.9186207669112874
+          },
+          "production_29": {
+            "allocated_resources": 0.8497239809780736,
+            "quality_target": 0.8626975962012132,
+            "cost_sharing": 0.28687672627211747,
+            "satisfaction_score": 0.8890568903615905
+          },
+          "production_13": {
+            "allocated_resources": 0.7910353955032646,
+            "quality_target": 0.8877166730663454,
+            "cost_sharing": 0.13114533181735116,
+            "satisfaction_score": 0.8304391564463192
+          },
+          "logistics_14": {
+            "allocated_resources": 0.8060902049964188,
+            "quality_target": 0.9004410598270438,
+            "cost_sharing": 0.2372125758671971,
+            "satisfaction_score": 0.9016420986593232
+          }
+        },
+        "convergence_time": 1.6819786682324904,
+        "agreement_satisfaction": 0.8479271787969785
+      },
+      {
+        "round_number": 7,
+        "participating_agents": [
+          "logistics_14",
+          "production_9",
+          "production_5",
+          "resource_28",
+          "logistics_6"
+        ],
+        "negotiation_topic": "resource_allocation",
+        "initial_positions": {
+          "logistics_14": {
+            "resource_demand": 0.9820119652635846,
+            "quality_requirement": 0.927701356158708,
+            "cost_constraint": 0.8871803295485245,
+            "urgency_level": 0.46991711493612104
+          },
+          "production_9": {
+            "resource_demand": 0.7710835700087249,
+            "quality_requirement": 0.8193580935210102,
+            "cost_constraint": 0.8158021225556307,
+            "urgency_level": 0.33124110520780164
+          },
+          "production_5": {
+            "resource_demand": 0.6049472255471725,
+            "quality_requirement": 0.8204610792716364,
+            "cost_constraint": 0.8689431199496797,
+            "urgency_level": 0.7402402153390975
+          },
+          "resource_28": {
+            "resource_demand": 0.9174745565014639,
+            "quality_requirement": 0.8590782799487294,
+            "cost_constraint": 0.8042851400102777,
+            "urgency_level": 0.5719130186222054
+          },
+          "logistics_6": {
+            "resource_demand": 0.6502813369586145,
+            "quality_requirement": 0.9312667888363158,
+            "cost_constraint": 0.870747364647422,
+            "urgency_level": 0.3545772155835388
+          }
+        },
+        "final_agreement": {
+          "logistics_14": {
+            "allocated_resources": 0.8385634917203444,
+            "quality_target": 0.8891569552721663,
+            "cost_sharing": 0.2417849779156693,
+            "satisfaction_score": 0.7508629931679327
+          },
+          "production_9": {
+            "allocated_resources": 0.886668969800376,
+            "quality_target": 0.8948455321020236,
+            "cost_sharing": 0.14526500466348816,
+            "satisfaction_score": 0.8097541966690642
+          },
+          "production_5": {
+            "allocated_resources": 0.8453230119720239,
+            "quality_target": 0.9140511538810409,
+            "cost_sharing": 0.21826967286556487,
+            "satisfaction_score": 0.85758320768593
+          },
+          "resource_28": {
+            "allocated_resources": 0.8797558859153212,
+            "quality_target": 0.8831417987293181,
+            "cost_sharing": 0.1885946836949291,
+            "satisfaction_score": 0.8377335982537769
+          },
+          "logistics_6": {
+            "allocated_resources": 0.7338760478223472,
+            "quality_target": 0.9050135876411743,
+            "cost_sharing": 0.25337038519613897,
+            "satisfaction_score": 0.7419608211129491
+          }
+        },
+        "convergence_time": 1.2545282229434147,
+        "agreement_satisfaction": 0.8329387960838583
+      }
+    ],
+    "coalition_formations": [
+      {
+        "coalition_id": "coalition_1",
+        "members": [
+          "energy_11",
+          "logistics_26",
+          "energy_7",
+          "production_1",
+          "production_9"
+        ],
+        "formation_reason": "risk_mitigation",
+        "coalition_strength": 0.8039337357679246,
+        "stability_index": 0.9351179600821972,
+        "joint_objectives": {
+          "primary_goal": "cost_minimization",
+          "success_probability": 0.8239481486793172,
+          "expected_benefit": 0.29460019075722516
+        },
+        "resource_pooling": {
+          "shared_resources": [
+            "limestone",
+            "iron_ore",
+            "coke"
+          ],
+          "pooling_efficiency": 0.8256665786529708
+        }
+      },
+      {
+        "coalition_id": "coalition_2",
+        "members": [
+          "resource_8",
+          "production_5",
+          "resource_20",
+          "resource_24",
+          "energy_11"
+        ],
+        "formation_reason": "cost_reduction",
+        "coalition_strength": 0.8400832831926384,
+        "stability_index": 0.845906483587106,
+        "joint_objectives": {
+          "primary_goal": "cost_minimization",
+          "success_probability": 0.9260940214877503,
+          "expected_benefit": 0.2541251177357081
+        },
+        "resource_pooling": {
+          "shared_resources": [
+            "coke",
+            "coal",
+            "limestone"
+          ],
+          "pooling_efficiency": 0.9109754803396468
+        }
+      },
+      {
+        "coalition_id": "coalition_3",
+        "members": [
+          "production_9",
+          "logistics_14",
+          "resource_0"
+        ],
+        "formation_reason": "efficiency_improvement",
+        "coalition_strength": 0.8062890564246705,
+        "stability_index": 0.7385513193642612,
+        "joint_objectives": {
+          "primary_goal": "energy_efficiency",
+          "success_probability": 0.8630598367053053,
+          "expected_benefit": 0.239792735857626
+        },
+        "resource_pooling": {
+          "shared_resources": [
+            "iron_ore",
+            "limestone"
+          ],
+          "pooling_efficiency": 0.9479203055940834
+        }
+      },
+      {
+        "coalition_id": "coalition_4",
+        "members": [
+          "production_17",
+          "resource_0",
+          "logistics_26",
+          "resource_8",
+          "logistics_10"
+        ],
+        "formation_reason": "resource_sharing",
+        "coalition_strength": 0.8474358340746132,
+        "stability_index": 0.8488503381741148,
+        "joint_objectives": {
+          "primary_goal": "quality_improvement",
+          "success_probability": 0.8852121399194337,
+          "expected_benefit": 0.22755491188509275
+        },
+        "resource_pooling": {
+          "shared_resources": [
+            "iron_ore",
+            "limestone",
+            "coke"
+          ],
+          "pooling_efficiency": 0.9425627448245532
+        }
+      }
+    ],
+    "payoff_matrix": {
+      "resource_0": {
+        "production_1": {
+          "cooperation": 0.9793608339860711,
+          "competition": 0.7102469924206145,
+          "optimal_strategy": "cooperation"
+        },
+        "logistics_2": {
+          "cooperation": 0.9098255432621061,
+          "competition": 0.4513237468112506,
+          "optimal_strategy": "cooperation"
+        },
+        "energy_3": {
+          "cooperation": 0.8177392607196993,
+          "competition": 0.5515991549429524,
+          "optimal_strategy": "cooperation"
+        },
+        "resource_4": {
+          "cooperation": 0.8971381128142661,
+          "competition": 0.49067467868799497,
+          "optimal_strategy": "cooperation"
+        },
+        "production_5": {
+          "cooperation": 0.9966947479238424,
+          "competition": 0.7239548329025425,
+          "optimal_strategy": "cooperation"
+        }
+      },
+      "production_1": {
+        "resource_0": {
+          "cooperation": 0.8830945406042332,
+          "competition": 0.7756826121389434,
+          "optimal_strategy": "cooperation"
+        },
+        "logistics_2": {
+          "cooperation": 0.960640262807073,
+          "competition": 0.45864729736926646,
+          "optimal_strategy": "cooperation"
+        },
+        "energy_3": {
+          "cooperation": 0.7908691957339045,
+          "competition": 0.5037987413636675,
+          "optimal_strategy": "cooperation"
+        },
+        "resource_4": {
+          "cooperation": 0.9379652656754531,
+          "competition": 0.6520633133078879,
+          "optimal_strategy": "cooperation"
+        },
+        "production_5": {
+          "cooperation": 0.8403785944593316,
+          "competition": 0.6587830610333993,
+          "optimal_strategy": "cooperation"
+        }
+      },
+      "logistics_2": {
+        "resource_0": {
+          "cooperation": 0.924899801560832,
+          "competition": 0.5854724922660136,
+          "optimal_strategy": "cooperation"
+        },
+        "production_1": {
+          "cooperation": 0.7407056536582743,
+          "competition": 0.4380550049525999,
+          "optimal_strategy": "cooperation"
+        },
+        "energy_3": {
+          "cooperation": 0.9149205702437273,
+          "competition": 0.7800896479072783,
+          "optimal_strategy": "cooperation"
+        },
+        "resource_4": {
+          "cooperation": 0.7242075278053756,
+          "competition": 0.588272199437892,
+          "optimal_strategy": "cooperation"
+        },
+        "production_5": {
+          "cooperation": 0.731942260704228,
+          "competition": 0.49258691297491813,
+          "optimal_strategy": "cooperation"
+        }
+      },
+      "energy_3": {
+        "resource_0": {
+          "cooperation": 0.9066181476208051,
+          "competition": 0.5395478667672983,
+          "optimal_strategy": "cooperation"
+        },
+        "production_1": {
+          "cooperation": 0.8919284785065758,
+          "competition": 0.414379487734813,
+          "optimal_strategy": "cooperation"
+        },
+        "logistics_2": {
+          "cooperation": 0.9593218517862787,
+          "competition": 0.5515126438595412,
+          "optimal_strategy": "cooperation"
+        },
+        "resource_4": {
+          "cooperation": 0.7797939460332161,
+          "competition": 0.7078758850521406,
+          "optimal_strategy": "cooperation"
+        },
+        "production_5": {
+          "cooperation": 0.9610681243326091,
+          "competition": 0.5208314072789446,
+          "optimal_strategy": "cooperation"
+        }
+      },
+      "resource_4": {
+        "resource_0": {
+          "cooperation": 0.9222162647174018,
+          "competition": 0.4975580623653053,
+          "optimal_strategy": "cooperation"
+        },
+        "production_1": {
+          "cooperation": 0.7722288265290567,
+          "competition": 0.5111143317830166,
+          "optimal_strategy": "cooperation"
+        },
+        "logistics_2": {
+          "cooperation": 0.9590543317650524,
+          "competition": 0.7523049257087762,
+          "optimal_strategy": "cooperation"
+        },
+        "energy_3": {
+          "cooperation": 0.9085048280461281,
+          "competition": 0.7734364639164663,
+          "optimal_strategy": "cooperation"
+        },
+        "production_5": {
+          "cooperation": 0.704285029364686,
+          "competition": 0.5158700632664504,
+          "optimal_strategy": "cooperation"
+        }
+      },
+      "production_5": {
+        "resource_0": {
+          "cooperation": 0.9996992599717195,
+          "competition": 0.4018658494548133,
+          "optimal_strategy": "cooperation"
+        },
+        "production_1": {
+          "cooperation": 0.7696135869404342,
+          "competition": 0.715478874022334,
+          "optimal_strategy": "cooperation"
+        },
+        "logistics_2": {
+          "cooperation": 0.9254693283479011,
+          "competition": 0.5932130237674001,
+          "optimal_strategy": "cooperation"
+        },
+        "energy_3": {
+          "cooperation": 0.9395894787170672,
+          "competition": 0.4389921433760873,
+          "optimal_strategy": "cooperation"
+        },
+        "resource_4": {
+          "cooperation": 0.9889874078858911,
+          "competition": 0.4233426471442565,
+          "optimal_strategy": "cooperation"
+        }
+      }
+    },
+    "strategy_evolution": {
+      "resource_0": {
+        "initial_strategy": "cooperative",
+        "current_strategy": "competitive",
+        "strategy_changes": 1,
+        "learning_rate": 0.12889843522623945,
+        "adaptation_success": 0.8847966867554855,
+        "strategy_effectiveness": 0.8741197351489016
+      },
+      "production_1": {
+        "initial_strategy": "mixed",
+        "current_strategy": "cooperative",
+        "strategy_changes": 0,
+        "learning_rate": 0.1817517161949448,
+        "adaptation_success": 0.821210869142878,
+        "strategy_effectiveness": 0.8023462080594386
+      },
+      "logistics_2": {
+        "initial_strategy": "cooperative",
+        "current_strategy": "competitive",
+        "strategy_changes": 1,
+        "learning_rate": 0.08677687408308052,
+        "adaptation_success": 0.7392194027819583,
+        "strategy_effectiveness": 0.7962020773271417
+      },
+      "energy_3": {
+        "initial_strategy": "mixed",
+        "current_strategy": "competitive",
+        "strategy_changes": 2,
+        "learning_rate": 0.18927638041852435,
+        "adaptation_success": 0.8973000075850082,
+        "strategy_effectiveness": 0.8932622889826785
+      },
+      "resource_4": {
+        "initial_strategy": "cooperative",
+        "current_strategy": "mixed",
+        "strategy_changes": 2,
+        "learning_rate": 0.07718134670687318,
+        "adaptation_success": 0.8919102910188847,
+        "strategy_effectiveness": 0.9077928368957257
+      },
+      "production_5": {
+        "initial_strategy": "competitive",
+        "current_strategy": "competitive",
+        "strategy_changes": 2,
+        "learning_rate": 0.15879152603038751,
+        "adaptation_success": 0.6109606411596871,
+        "strategy_effectiveness": 0.8058488144216553
+      },
+      "logistics_6": {
+        "initial_strategy": "competitive",
+        "current_strategy": "competitive",
+        "strategy_changes": 2,
+        "learning_rate": 0.14752810518300188,
+        "adaptation_success": 0.7479663425658484,
+        "strategy_effectiveness": 0.8073550698604955
+      },
+      "energy_7": {
+        "initial_strategy": "cooperative",
+        "current_strategy": "cooperative",
+        "strategy_changes": 2,
+        "learning_rate": 0.15929341986930354,
+        "adaptation_success": 0.8188054901094393,
+        "strategy_effectiveness": 0.7110852277912978
+      },
+      "resource_8": {
+        "initial_strategy": "mixed",
+        "current_strategy": "competitive",
+        "strategy_changes": 3,
+        "learning_rate": 0.10747572175346407,
+        "adaptation_success": 0.753508023368934,
+        "strategy_effectiveness": 0.9062113363320549
+      },
+      "production_9": {
+        "initial_strategy": "cooperative",
+        "current_strategy": "cooperative",
+        "strategy_changes": 1,
+        "learning_rate": 0.16364681857054494,
+        "adaptation_success": 0.7033314700618185,
+        "strategy_effectiveness": 0.9262394531661913
+      },
+      "logistics_10": {
+        "initial_strategy": "competitive",
+        "current_strategy": "mixed",
+        "strategy_changes": 1,
+        "learning_rate": 0.19372252295917725,
+        "adaptation_success": 0.6779933891244659,
+        "strategy_effectiveness": 0.8408510251786747
+      },
+      "energy_11": {
+        "initial_strategy": "competitive",
+        "current_strategy": "competitive",
+        "strategy_changes": 3,
+        "learning_rate": 0.07739452468205249,
+        "adaptation_success": 0.6218282434992904,
+        "strategy_effectiveness": 0.8937251616413865
+      },
+      "resource_12": {
+        "initial_strategy": "mixed",
+        "current_strategy": "competitive",
+        "strategy_changes": 0,
+        "learning_rate": 0.14272963753517393,
+        "adaptation_success": 0.6751664941471014,
+        "strategy_effectiveness": 0.7264489767938005
+      },
+      "production_13": {
+        "initial_strategy": "competitive",
+        "current_strategy": "competitive",
+        "strategy_changes": 2,
+        "learning_rate": 0.1342825462449778,
+        "adaptation_success": 0.6264283890413174,
+        "strategy_effectiveness": 0.7933080832477561
+      },
+      "logistics_14": {
+        "initial_strategy": "mixed",
+        "current_strategy": "cooperative",
+        "strategy_changes": 1,
+        "learning_rate": 0.11535398691067562,
+        "adaptation_success": 0.7972810893388067,
+        "strategy_effectiveness": 0.8827616889491561
+      },
+      "energy_15": {
+        "initial_strategy": "mixed",
+        "current_strategy": "mixed",
+        "strategy_changes": 0,
+        "learning_rate": 0.11550592499519391,
+        "adaptation_success": 0.8691512814575353,
+        "strategy_effectiveness": 0.769146032553911
+      },
+      "resource_16": {
+        "initial_strategy": "competitive",
+        "current_strategy": "cooperative",
+        "strategy_changes": 2,
+        "learning_rate": 0.08578252742634293,
+        "adaptation_success": 0.783839250704016,
+        "strategy_effectiveness": 0.7957058631068894
+      },
+      "production_17": {
+        "initial_strategy": "competitive",
+        "current_strategy": "mixed",
+        "strategy_changes": 0,
+        "learning_rate": 0.08074497523555704,
+        "adaptation_success": 0.7249424999509774,
+        "strategy_effectiveness": 0.8062711753061179
+      },
+      "logistics_18": {
+        "initial_strategy": "competitive",
+        "current_strategy": "competitive",
+        "strategy_changes": 1,
+        "learning_rate": 0.10109880250580228,
+        "adaptation_success": 0.6211163531992965,
+        "strategy_effectiveness": 0.9387087948772026
+      },
+      "energy_19": {
+        "initial_strategy": "mixed",
+        "current_strategy": "mixed",
+        "strategy_changes": 1,
+        "learning_rate": 0.19061860603999042,
+        "adaptation_success": 0.8402425559791206,
+        "strategy_effectiveness": 0.9216694232159598
+      },
+      "resource_20": {
+        "initial_strategy": "mixed",
+        "current_strategy": "cooperative",
+        "strategy_changes": 2,
+        "learning_rate": 0.11553981584316408,
+        "adaptation_success": 0.7260943770632433,
+        "strategy_effectiveness": 0.8995401013769914
+      },
+      "production_21": {
+        "initial_strategy": "mixed",
+        "current_strategy": "cooperative",
+        "strategy_changes": 2,
+        "learning_rate": 0.16392538928545755,
+        "adaptation_success": 0.7630776064252776,
+        "strategy_effectiveness": 0.8259673741935176
+      },
+      "logistics_22": {
+        "initial_strategy": "competitive",
+        "current_strategy": "competitive",
+        "strategy_changes": 3,
+        "learning_rate": 0.09687401108971236,
+        "adaptation_success": 0.8937055402529948,
+        "strategy_effectiveness": 0.7985696652025703
+      },
+      "energy_23": {
+        "initial_strategy": "competitive",
+        "current_strategy": "competitive",
+        "strategy_changes": 0,
+        "learning_rate": 0.08100580736265206,
+        "adaptation_success": 0.6592369234695751,
+        "strategy_effectiveness": 0.9001686021550938
+      },
+      "resource_24": {
+        "initial_strategy": "cooperative",
+        "current_strategy": "competitive",
+        "strategy_changes": 3,
+        "learning_rate": 0.05960327742535704,
+        "adaptation_success": 0.8176276248823784,
+        "strategy_effectiveness": 0.8565930558566177
+      },
+      "production_25": {
+        "initial_strategy": "mixed",
+        "current_strategy": "competitive",
+        "strategy_changes": 3,
+        "learning_rate": 0.1403209403860252,
+        "adaptation_success": 0.6430046752764835,
+        "strategy_effectiveness": 0.9073800915676895
+      },
+      "logistics_26": {
+        "initial_strategy": "competitive",
+        "current_strategy": "cooperative",
+        "strategy_changes": 0,
+        "learning_rate": 0.07182382792494044,
+        "adaptation_success": 0.6467402701828481,
+        "strategy_effectiveness": 0.8703224713668597
+      },
+      "energy_27": {
+        "initial_strategy": "mixed",
+        "current_strategy": "competitive",
+        "strategy_changes": 0,
+        "learning_rate": 0.1530178582770492,
+        "adaptation_success": 0.848016657813998,
+        "strategy_effectiveness": 0.868768586608613
+      },
+      "resource_28": {
+        "initial_strategy": "competitive",
+        "current_strategy": "mixed",
+        "strategy_changes": 2,
+        "learning_rate": 0.08345772308008886,
+        "adaptation_success": 0.8069018203711247,
+        "strategy_effectiveness": 0.8290487608284567
+      },
+      "production_29": {
+        "initial_strategy": "competitive",
+        "current_strategy": "cooperative",
+        "strategy_changes": 1,
+        "learning_rate": 0.09842311791135402,
+        "adaptation_success": 0.6404537706935907,
+        "strategy_effectiveness": 0.9460942248035148
+      },
+      "logistics_30": {
+        "initial_strategy": "competitive",
+        "current_strategy": "mixed",
+        "strategy_changes": 0,
+        "learning_rate": 0.1685278254483115,
+        "adaptation_success": 0.6605948066150303,
+        "strategy_effectiveness": 0.9426235408660004
+      },
+      "energy_31": {
+        "initial_strategy": "mixed",
+        "current_strategy": "mixed",
+        "strategy_changes": 3,
+        "learning_rate": 0.15181202030187005,
+        "adaptation_success": 0.7307596426295887,
+        "strategy_effectiveness": 0.7439106865667124
+      }
+    },
+    "cooperation_index": {
+      "resource_0": {
+        "cooperation_frequency": 0.6466575413002186,
+        "cooperation_quality": 0.8279163689579658,
+        "trust_level": 0.8259825246497295,
+        "reciprocity_score": 0.7437679162551736,
+        "reputation_score": 0.7897937787946091
+      },
+      "production_1": {
+        "cooperation_frequency": 0.6807205888407196,
+        "cooperation_quality": 0.8523960631199563,
+        "trust_level": 0.7335585906089965,
+        "reciprocity_score": 0.9003174015956277,
+        "reputation_score": 0.7739981716227627
+      },
+      "logistics_2": {
+        "cooperation_frequency": 0.6560798441150857,
+        "cooperation_quality": 0.744578459657899,
+        "trust_level": 0.8660646205224054,
+        "reciprocity_score": 0.9173814361096819,
+        "reputation_score": 0.9121727133421678
+      },
+      "energy_3": {
+        "cooperation_frequency": 0.6675219416769157,
+        "cooperation_quality": 0.7097398776096113,
+        "trust_level": 0.8334869219513484,
+        "reciprocity_score": 0.7597333329340881,
+        "reputation_score": 0.7733957159348139
+      },
+      "resource_4": {
+        "cooperation_frequency": 0.8209695429429974,
+        "cooperation_quality": 0.7300228546572238,
+        "trust_level": 0.6732953924265347,
+        "reciprocity_score": 0.7340304243820338,
+        "reputation_score": 0.7529234068130698
+      },
+      "production_5": {
+        "cooperation_frequency": 0.6790480426180743,
+        "cooperation_quality": 0.8494291437607588,
+        "trust_level": 0.8078967168397799,
+        "reciprocity_score": 0.7872613437633802,
+        "reputation_score": 0.8770085633614737
+      },
+      "logistics_6": {
+        "cooperation_frequency": 0.8765848352415588,
+        "cooperation_quality": 0.9208965101664122,
+        "trust_level": 0.7488337866662138,
+        "reciprocity_score": 0.8067397614395496,
+        "reputation_score": 0.7673174700609269
+      },
+      "energy_7": {
+        "cooperation_frequency": 0.6093889902892817,
+        "cooperation_quality": 0.8967972073903046,
+        "trust_level": 0.6943483758791963,
+        "reciprocity_score": 0.7640142999735368,
+        "reputation_score": 0.9440886608321154
+      },
+      "resource_8": {
+        "cooperation_frequency": 0.6621580045135579,
+        "cooperation_quality": 0.8427053368333594,
+        "trust_level": 0.723130168616236,
+        "reciprocity_score": 0.9236746863737788,
+        "reputation_score": 0.8749599975389157
+      },
+      "production_9": {
+        "cooperation_frequency": 0.8884458908774089,
+        "cooperation_quality": 0.9251595750706649,
+        "trust_level": 0.6885903846716408,
+        "reciprocity_score": 0.7763025450175196,
+        "reputation_score": 0.9264431731649699
+      },
+      "logistics_10": {
+        "cooperation_frequency": 0.743801044601804,
+        "cooperation_quality": 0.8897528225434714,
+        "trust_level": 0.6948513690838802,
+        "reciprocity_score": 0.7639421857520439,
+        "reputation_score": 0.8712668484122857
+      },
+      "energy_11": {
+        "cooperation_frequency": 0.6515108153917074,
+        "cooperation_quality": 0.726045343505532,
+        "trust_level": 0.8915726463577757,
+        "reciprocity_score": 0.7742175718008537,
+        "reputation_score": 0.8735753881263437
+      },
+      "resource_12": {
+        "cooperation_frequency": 0.7960735597583737,
+        "cooperation_quality": 0.8306747412592275,
+        "trust_level": 0.791435621586024,
+        "reciprocity_score": 0.7965403467099301,
+        "reputation_score": 0.9233912280974046
+      },
+      "production_13": {
+        "cooperation_frequency": 0.6906991769105473,
+        "cooperation_quality": 0.8516831513342611,
+        "trust_level": 0.7439680533012778,
+        "reciprocity_score": 0.8263099796903614,
+        "reputation_score": 0.858122960820362
+      },
+      "logistics_14": {
+        "cooperation_frequency": 0.6477423601108235,
+        "cooperation_quality": 0.8903339313056218,
+        "trust_level": 0.7143490583503508,
+        "reciprocity_score": 0.7465153983703792,
+        "reputation_score": 0.9222525514817838
+      },
+      "energy_15": {
+        "cooperation_frequency": 0.8182546601192846,
+        "cooperation_quality": 0.7772886890823897,
+        "trust_level": 0.6717563043131152,
+        "reciprocity_score": 0.7551917059605545,
+        "reputation_score": 0.9289069019519791
+      },
+      "resource_16": {
+        "cooperation_frequency": 0.617218028411589,
+        "cooperation_quality": 0.7769757908743076,
+        "trust_level": 0.7268838600879617,
+        "reciprocity_score": 0.701670726561828,
+        "reputation_score": 0.8862035657199622
+      },
+      "production_17": {
+        "cooperation_frequency": 0.6117226534897434,
+        "cooperation_quality": 0.7227495885188933,
+        "trust_level": 0.7459395352080477,
+        "reciprocity_score": 0.881276222140703,
+        "reputation_score": 0.8892618875263442
+      },
+      "logistics_18": {
+        "cooperation_frequency": 0.8035575007721386,
+        "cooperation_quality": 0.7087292419328854,
+        "trust_level": 0.8021966809409332,
+        "reciprocity_score": 0.7484041055742205,
+        "reputation_score": 0.8549095887687809
+      },
+      "energy_19": {
+        "cooperation_frequency": 0.7231950986424742,
+        "cooperation_quality": 0.7986251620417191,
+        "trust_level": 0.8651822839705536,
+        "reciprocity_score": 0.934741165520987,
+        "reputation_score": 0.8176375154560853
+      },
+      "resource_20": {
+        "cooperation_frequency": 0.7227588511956606,
+        "cooperation_quality": 0.8642536810361369,
+        "trust_level": 0.8466746463564254,
+        "reciprocity_score": 0.8688238509995228,
+        "reputation_score": 0.8467619934358677
+      },
+      "production_21": {
+        "cooperation_frequency": 0.6624426795322462,
+        "cooperation_quality": 0.8918924830123466,
+        "trust_level": 0.7477301147533981,
+        "reciprocity_score": 0.7586243735812732,
+        "reputation_score": 0.933930413298898
+      },
+      "logistics_22": {
+        "cooperation_frequency": 0.6698442584091447,
+        "cooperation_quality": 0.794797812672539,
+        "trust_level": 0.7748956139009633,
+        "reciprocity_score": 0.8440086744834224,
+        "reputation_score": 0.7662168211647596
+      },
+      "energy_23": {
+        "cooperation_frequency": 0.8825678655596383,
+        "cooperation_quality": 0.7131831053113391,
+        "trust_level": 0.7782680074758236,
+        "reciprocity_score": 0.9222468986277119,
+        "reputation_score": 0.8979374482444316
+      },
+      "resource_24": {
+        "cooperation_frequency": 0.6813854853928613,
+        "cooperation_quality": 0.8139579729515376,
+        "trust_level": 0.6818688843105062,
+        "reciprocity_score": 0.8043133669675984,
+        "reputation_score": 0.8631762053727071
+      },
+      "production_25": {
+        "cooperation_frequency": 0.8902537139350706,
+        "cooperation_quality": 0.8874044077313348,
+        "trust_level": 0.7574683795882315,
+        "reciprocity_score": 0.9470878033683385,
+        "reputation_score": 0.757794206367199
+      },
+      "logistics_26": {
+        "cooperation_frequency": 0.6206203050614677,
+        "cooperation_quality": 0.8091979686498092,
+        "trust_level": 0.8664735794163395,
+        "reciprocity_score": 0.9048627469567221,
+        "reputation_score": 0.8766529611037346
+      },
+      "energy_27": {
+        "cooperation_frequency": 0.6389056346153539,
+        "cooperation_quality": 0.9368220369079239,
+        "trust_level": 0.768461774203348,
+        "reciprocity_score": 0.8703466994033324,
+        "reputation_score": 0.7762428981830786
+      },
+      "resource_28": {
+        "cooperation_frequency": 0.8575090271461305,
+        "cooperation_quality": 0.72526599828694,
+        "trust_level": 0.665965770180709,
+        "reciprocity_score": 0.9070798058989991,
+        "reputation_score": 0.9315937826528133
+      },
+      "production_29": {
+        "cooperation_frequency": 0.6344279774177379,
+        "cooperation_quality": 0.9087857081269259,
+        "trust_level": 0.8074067595667691,
+        "reciprocity_score": 0.9376338549175112,
+        "reputation_score": 0.8294685647732777
+      },
+      "logistics_30": {
+        "cooperation_frequency": 0.6609348658977362,
+        "cooperation_quality": 0.7641888294157712,
+        "trust_level": 0.8158763899474326,
+        "reciprocity_score": 0.8677472321505681,
+        "reputation_score": 0.8604390785445921
+      },
+      "energy_31": {
+        "cooperation_frequency": 0.7421236812993235,
+        "cooperation_quality": 0.7288168769062143,
+        "trust_level": 0.7233258147150281,
+        "reciprocity_score": 0.7085218187000428,
+        "reputation_score": 0.785038196955738
+      }
+    }
+  },
+  "optimized_resource_allocation": {
+    "resource_distribution": {
+      "原料与采购物流区": {
+        "iron_ore": 138.6442280616596,
+        "limestone": 49.01374388335908,
+        "coal": 79.1780055420398,
+        "coke": 0.0,
+        "allocation_efficiency": 0.8691257043648996,
+        "utilization_rate": 0.8365851700889725
+      },
+      "烧结/球团区": {
+        "iron_ore": 87.29451396474862,
+        "limestone": 27.77445486723681,
+        "coal": 18.694806864092733,
+        "coke": 0.0,
+        "allocation_efficiency": 0.9095446400315955,
+        "utilization_rate": 0.9246150260377367
+      },
+      "炼焦区": {
+        "iron_ore": 0.0,
+        "limestone": 0.0,
+        "coal": 52.78533702802654,
+        "coke": 0.0,
+        "allocation_efficiency": 0.9213111717804223,
+        "utilization_rate": 0.8893228885008274
+      },
+      "炼铁区": {
+        "iron_ore": 70.95596857027695,
+        "limestone": 18.81335623805702,
+        "coal": 9.497361775875985,
+        "coke": 31.459617375247472,
+        "allocation_efficiency": 0.9413055333603441,
+        "utilization_rate": 0.9215635300182301
+      },
+      "炼钢区": {
+        "iron_ore": 0.0,
+        "limestone": 9.901766441082641,
+        "coal": 4.998611460987361,
+        "coke": 12.418270016545055,
+        "allocation_efficiency": 0.91024454999279,
+        "utilization_rate": 0.9174496559998706
+      },
+      "连铸区": {
+        "iron_ore": 0.0,
+        "limestone": 4.455794898487189,
+        "coal": 0.0,
+        "coke": 3.725481004963516,
+        "allocation_efficiency": 0.9487773736564449,
+        "utilization_rate": 0.9298264989111942
+      },
+      "轧制区": {
+        "iron_ore": 0.0,
+        "limestone": 0.0,
+        "coal": 7.497917191481042,
+        "coke": 0.0,
+        "allocation_efficiency": 0.8910903310339409,
+        "utilization_rate": 0.9030392880259923
+      },
+      "热处理区": {
+        "iron_ore": 0.0,
+        "limestone": 0.0,
+        "coal": 10.497084068073459,
+        "coke": 0.0,
+        "allocation_efficiency": 0.8757232740786094,
+        "utilization_rate": 0.894467445691598
+      }
+    },
+    "production_assignments": {
+      "原料与采购物流区": {
+        "target_output": 103.07213855943121,
+        "production_rate": 0.8264767196022019,
+        "quality_target": 0.9225138941374771,
+        "efficiency_target": 0.9405082246865398,
+        "priority_level": 1,
+        "deadline": 21.006304933211787
+      },
+      "烧结/球团区": {
+        "target_output": 96.80490449705636,
+        "production_rate": 0.8524139820045419,
+        "quality_target": 0.9316279609508883,
+        "efficiency_target": 0.9249856162778525,
+        "priority_level": 5,
+        "deadline": 4.621067680915635
+      },
+      "炼焦区": {
+        "target_output": 107.83935200518286,
+        "production_rate": 0.8878529793457125,
+        "quality_target": 0.9570889772775499,
+        "efficiency_target": 0.9430459207163112,
+        "priority_level": 4,
+        "deadline": 16.468909741876267
+      },
+      "炼铁区": {
+        "target_output": 90.48600688951157,
+        "production_rate": 1.0,
+        "quality_target": 0.9072291208547194,
+        "efficiency_target": 0.851074607944691,
+        "priority_level": 3,
+        "deadline": 4.787290637900028
+      },
+      "炼钢区": {
+        "target_output": 106.60806170906474,
+        "production_rate": 0.9999985028765667,
+        "quality_target": 0.977546010947751,
+        "efficiency_target": 0.9383330026127388,
+        "priority_level": 1,
+        "deadline": 9.94362097893235
+      },
+      "连铸区": {
+        "target_output": 103.81415614134548,
+        "production_rate": 0.864622901965458,
+        "quality_target": 0.9679131736262729,
+        "efficiency_target": 0.9157275409034437,
+        "priority_level": 3,
+        "deadline": 11.525800757735318
+      },
+      "轧制区": {
+        "target_output": 82.77415560239656,
+        "production_rate": 0.8513850381953626,
+        "quality_target": 0.9096611640588644,
+        "efficiency_target": 0.859101339423491,
+        "priority_level": 2,
+        "deadline": 20.927755911909934
+      },
+      "热处理区": {
+        "target_output": 111.27231910974903,
+        "production_rate": 0.8627066281809008,
+        "quality_target": 0.9108635923175918,
+        "efficiency_target": 0.9317864310681061,
+        "priority_level": 1,
+        "deadline": 15.252126999492678
+      }
+    },
+    "energy_allocation": {
+      "原料与采购物流区": {
+        "electricity": 67.6813025431367,
+        "steam": 31.96282873781188,
+        "natural_gas": 11.280217090522783,
+        "renewable_energy": 11.416717052511824,
+        "total_consumption": 112.80217090522783,
+        "energy_efficiency": 0.8458230382840017,
+        "cost_optimization": 0.9060176705567173
+      },
+      "烧结/球团区": {
+        "electricity": 62.60787262522437,
+        "steam": 29.56687645134149,
+        "natural_gas": 10.434645437537396,
+        "renewable_energy": 10.560913282753747,
+        "total_consumption": 104.34645437537395,
+        "energy_efficiency": 0.8406727487883205,
+        "cost_optimization": 0.9252005118175112
+      },
+      "炼焦区": {
+        "electricity": 63.33971782738064,
+        "steam": 29.912493955440222,
+        "natural_gas": 10.556619637896773,
+        "renewable_energy": 10.684363471879927,
+        "total_consumption": 105.56619637896773,
+        "energy_efficiency": 0.9128596993988889,
+        "cost_optimization": 0.9119028417414897
+      },
+      "炼铁区": {
+        "electricity": 60.23261625738237,
+        "steam": 28.445149923614817,
+        "natural_gas": 10.038769376230396,
+        "renewable_energy": 10.160246793488922,
+        "total_consumption": 100.38769376230395,
+        "energy_efficiency": 0.9145964045630263,
+        "cost_optimization": 0.9232649915140043
+      },
+      "炼钢区": {
+        "electricity": 67.01242145145838,
+        "steam": 31.64694634524639,
+        "natural_gas": 11.168736908576399,
+        "renewable_energy": 11.303887868105992,
+        "total_consumption": 111.68736908576398,
+        "energy_efficiency": 0.8644257310873814,
+        "cost_optimization": 0.9203368923602704
+      },
+      "连铸区": {
+        "electricity": 48.856285900112375,
+        "steam": 23.072621836667352,
+        "natural_gas": 8.142714316685398,
+        "renewable_energy": 8.241247898601033,
+        "total_consumption": 81.42714316685397,
+        "energy_efficiency": 0.8580294423971186,
+        "cost_optimization": 0.9338802266547798
+      },
+      "轧制区": {
+        "electricity": 58.815981110120376,
+        "steam": 27.776136992502256,
+        "natural_gas": 9.802663518353398,
+        "renewable_energy": 9.921283859336976,
+        "total_consumption": 98.02663518353397,
+        "energy_efficiency": 0.8198593473770404,
+        "cost_optimization": 0.900477725073237
+      },
+      "热处理区": {
+        "electricity": 62.73089931407652,
+        "steam": 29.62497641156987,
+        "natural_gas": 10.45514988567942,
+        "renewable_energy": 10.5816658516872,
+        "total_consumption": 104.5514988567942,
+        "energy_efficiency": 0.8835120084617508,
+        "cost_optimization": 0.9044502133882932
+      }
+    },
+    "logistics_optimization": {
+      "原料与采购物流区_to_烧结/球团区": {
+        "transport_capacity": 94.32451941139888,
+        "route_efficiency": 0.8556294866254059,
+        "transport_cost": 81.8889685487279,
+        "delivery_time": 0.5826779829087634,
+        "reliability_score": 0.957245706716336,
+        "alternative_routes": 1
+      },
+      "烧结/球团区_to_炼铁区": {
+        "transport_capacity": 93.77148668388718,
+        "route_efficiency": 0.8556294866254059,
+        "transport_cost": 66.32307143824295,
+        "delivery_time": 0.5636866520850466,
+        "reliability_score": 0.9596097019008972,
+        "alternative_routes": 3
+      },
+      "炼焦区_to_炼铁区": {
+        "transport_capacity": 107.26295631100635,
+        "route_efficiency": 0.8556294866254059,
+        "transport_cost": 74.16224918426352,
+        "delivery_time": 1.2914957745586912,
+        "reliability_score": 0.9460524086232304,
+        "alternative_routes": 1
+      },
+      "炼铁区_to_炼钢区": {
+        "transport_capacity": 96.2601170007315,
+        "route_efficiency": 0.8556294866254059,
+        "transport_cost": 98.27596611382026,
+        "delivery_time": 1.5240068283080017,
+        "reliability_score": 0.974474788245648,
+        "alternative_routes": 1
+      },
+      "炼钢区_to_连铸区": {
+        "transport_capacity": 100.31034233255406,
+        "route_efficiency": 0.8556294866254059,
+        "transport_cost": 76.35994582065513,
+        "delivery_time": 0.9795520184143724,
+        "reliability_score": 0.9394226060966064,
+        "alternative_routes": 3
+      },
+      "连铸区_to_轧制区": {
+        "transport_capacity": 96.60519965452679,
+        "route_efficiency": 0.8556294866254059,
+        "transport_cost": 60.56782270683952,
+        "delivery_time": 0.5883192158872015,
+        "reliability_score": 0.9013389222466445,
+        "alternative_routes": 3
+      },
+      "轧制区_to_热处理区": {
+        "transport_capacity": 83.25193717625616,
+        "route_efficiency": 0.8556294866254059,
+        "transport_cost": 80.52941605097286,
+        "delivery_time": 1.0400908901109072,
+        "reliability_score": 0.9520724049766348,
+        "alternative_routes": 2
+      }
+    },
+    "quality_assurance": {
+      "原料与采购物流区": {
+        "inspection_coverage": 0.999678491156367,
+        "process_control_level": 0.980802729278994,
+        "quality_target": 0.9308669026452977,
+        "defect_rate": 0.03694886901877185,
+        "quality_improvement": 0.04242286198419391,
+        "certification_compliance": 0.9710374409595045
+      },
+      "烧结/球团区": {
+        "inspection_coverage": 0.999678491156367,
+        "process_control_level": 0.980802729278994,
+        "quality_target": 0.9515913950613054,
+        "defect_rate": 0.03973231153818118,
+        "quality_improvement": 0.05050925361614723,
+        "certification_compliance": 0.9594836044748191
+      },
+      "炼焦区": {
+        "inspection_coverage": 0.999678491156367,
+        "process_control_level": 0.980802729278994,
+        "quality_target": 0.9406410336479549,
+        "defect_rate": 0.01426008251475266,
+        "quality_improvement": 0.0659081803003022,
+        "certification_compliance": 0.9738787255313742
+      },
+      "炼铁区": {
+        "inspection_coverage": 0.999678491156367,
+        "process_control_level": 0.980802729278994,
+        "quality_target": 0.9365623206775574,
+        "defect_rate": 0.03999138863659257,
+        "quality_improvement": 0.05177311995021874,
+        "certification_compliance": 0.9638480564801768
+      },
+      "炼钢区": {
+        "inspection_coverage": 0.999678491156367,
+        "process_control_level": 0.980802729278994,
+        "quality_target": 0.9252614951577889,
+        "defect_rate": 0.03905986541745081,
+        "quality_improvement": 0.05225725322695789,
+        "certification_compliance": 0.9500051287138026
+      },
+      "连铸区": {
+        "inspection_coverage": 0.999678491156367,
+        "process_control_level": 0.980802729278994,
+        "quality_target": 0.9652289584378626,
+        "defect_rate": 0.02518587567046123,
+        "quality_improvement": 0.06769313090778813,
+        "certification_compliance": 0.9529821320218678
+      },
+      "轧制区": {
+        "inspection_coverage": 0.999678491156367,
+        "process_control_level": 0.980802729278994,
+        "quality_target": 0.9230705256866353,
+        "defect_rate": 0.021728376987083638,
+        "quality_improvement": 0.07915260917985567,
+        "certification_compliance": 0.9797024927821478
+      },
+      "热处理区": {
+        "inspection_coverage": 0.999678491156367,
+        "process_control_level": 0.980802729278994,
+        "quality_target": 0.9752728459717515,
+        "defect_rate": 0.02095306668929337,
+        "quality_improvement": 0.07310292854569984,
+        "certification_compliance": 0.9678511109375304
+      }
+    },
+    "optimization_metrics": {
+      "overall_efficiency_improvement": 0.12175482444563772,
+      "cost_reduction": 0.1546815228225568,
+      "energy_savings": 0.19350589826598025,
+      "quality_enhancement": 0.06306332918061783,
+      "resource_utilization_improvement": 0.16579450142103824,
+      "environmental_impact_reduction": 0.2332744782316969,
+      "collaboration_efficiency_gain": 0.20775058827584675
+    }
+  },
+  "kpi_metrics": {
+    "production_rate": 0.8084729569015382,
+    "energy_consumption": 0.7971632786085031,
+    "cost_efficiency": 0.7833613354703949,
+    "quality_index": 0.9663243881900049,
+    "environmental_score": 0.8481233410070985,
+    "resource_utilization": 0.9898543608611281,
+    "collaboration_efficiency": 0.8441201734940431,
+    "optimization_convergence": 1.93,
+    "scheduling_efficiency": 0.9000000000000001,
+    "risk_mitigation_score": 1.0
+  },
+  "algorithm_performance": {
+    "maddpg": {
+      "training_step": 0,
+      "convergence_status": "stable",
+      "learning_efficiency": 0.8578146708762114
+    },
+    "nsga2": {
+      "pareto_solutions_count": 193,
+      "optimization_quality": 0.9017586625524205,
+      "convergence_generations": 443
+    },
+    "hierarchical_dp": {
+      "scheduling_efficiency": 0.9000000000000001,
+      "constraint_satisfaction": 0.9245834254835417,
+      "optimization_time": 7.916607140107357
+    }
+  },
+  "system_recommendations": {
+    "immediate_actions": [],
+    "medium_term_strategies": [
+      "实施能源效率提升计划"
+    ],
+    "long_term_optimizations": [
+      "升级生产设备自动化水平",
+      "建立预测性维护系统",
+      "发展循环经济产业链",
+      "构建数字化双胞胎系统"
+    ],
+    "risk_mitigation_measures": [
+      "建立多元化供应商网络",
+      "增加关键资源安全库存",
+      "制定应急响应预案",
+      "加强人员技能培训"
+    ]
+  },
+  "future_predictions": {
+    "short_term_forecast": {
+      "production_rate": {
+        "predicted_value": 0.8314426647446818,
+        "change_from_current": 0.02296970784314356,
+        "confidence": 0.7952047332957659
+      },
+      "energy_consumption": {
+        "predicted_value": 0.7977906871418894,
+        "change_from_current": 0.0006274085333862756,
+        "confidence": 0.7857216648884944
+      },
+      "cost_efficiency": {
+        "predicted_value": 0.8231316373400489,
+        "change_from_current": 0.03977030186965402,
+        "confidence": 0.889349510927567
+      },
+      "quality_index": {
+        "predicted_value": 0.9890437601285424,
+        "change_from_current": 0.02271937193853757,
+        "confidence": 0.7761888827772219
+      },
+      "environmental_score": {
+        "predicted_value": 0.8860923115388579,
+        "change_from_current": 0.037968970531759405,
+        "confidence": 0.7566554785923074
+      },
+      "resource_utilization": {
+        "predicted_value": 0.9756756423796682,
+        "change_from_current": -0.014178718481459907,
+        "confidence": 0.8776481792680338
+      },
+      "collaboration_efficiency": {
+        "predicted_value": 0.8701784626954933,
+        "change_from_current": 0.026058289201450147,
+        "confidence": 0.8700675296630755
+      },
+      "optimization_convergence": {
+        "predicted_value": 1.0,
+        "change_from_current": -0.9299999999999999,
+        "confidence": 0.8460061545485867
+      },
+      "scheduling_efficiency": {
+        "predicted_value": 0.8966912446132391,
+        "change_from_current": -0.0033087553867610087,
+        "confidence": 0.8150518225388769
+      },
+      "risk_mitigation_score": {
+        "predicted_value": 1.0,
+        "change_from_current": 0.0,
+        "confidence": 0.8634978374985629
+      }
+    },
+    "medium_term_forecast": {
+      "production_rate": {
+        "predicted_value": 0.7788775938551254,
+        "change_from_current": -0.029595363046412748,
+        "confidence": 0.7871335939353382
+      },
+      "energy_consumption": {
+        "predicted_value": 0.7772990591772393,
+        "change_from_current": -0.01986421943126382,
+        "confidence": 0.6717066518768633
+      },
+      "cost_efficiency": {
+        "predicted_value": 0.8387872785523874,
+        "change_from_current": 0.05542594308199256,
+        "confidence": 0.8000467058472663
+      },
+      "quality_index": {
+        "predicted_value": 0.941306824074592,
+        "change_from_current": -0.025017564115412894,
+        "confidence": 0.8266187103255804
+      },
+      "environmental_score": {
+        "predicted_value": 0.8064379535853771,
+        "change_from_current": -0.041685387421721454,
+        "confidence": 0.7033614139968721
+      },
+      "resource_utilization": {
+        "predicted_value": 0.9459692462414457,
+        "change_from_current": -0.043885114619682364,
+        "confidence": 0.8074784904189185
+      },
+      "collaboration_efficiency": {
+        "predicted_value": 0.8416939034254078,
+        "change_from_current": -0.0024262700686352723,
+        "confidence": 0.7447300223955028
+      },
+      "optimization_convergence": {
+        "predicted_value": 1.0,
+        "change_from_current": -0.9299999999999999,
+        "confidence": 0.6763869380876705
+      },
+      "scheduling_efficiency": {
+        "predicted_value": 0.954182418308903,
+        "change_from_current": 0.05418241830890291,
+        "confidence": 0.7520008649879247
+      },
+      "risk_mitigation_score": {
+        "predicted_value": 0.9961390580142049,
+        "change_from_current": -0.003860941985795119,
+        "confidence": 0.7718932562608629
+      }
+    },
+    "trend_analysis": {
+      "production_rate": {
+        "trend_direction": "decreasing",
+        "trend_strength": 0.15341225474371037,
+        "volatility": 0.2517407692026772,
+        "seasonality_effect": 0.05312215014939167
+      },
+      "energy_consumption": {
+        "trend_direction": "decreasing",
+        "trend_strength": 0.7270819335950475,
+        "volatility": 0.20440526258953468,
+        "seasonality_effect": -0.07473203877321451
+      },
+      "cost_efficiency": {
+        "trend_direction": "increasing",
+        "trend_strength": 0.37634536360369575,
+        "volatility": 0.11366720739234405,
+        "seasonality_effect": -0.07807481831651526
+      },
+      "quality_index": {
+        "trend_direction": "increasing",
+        "trend_strength": 0.5283599373628884,
+        "volatility": 0.09600842659676113,
+        "seasonality_effect": 0.06892563953494363
+      },
+      "environmental_score": {
+        "trend_direction": "increasing",
+        "trend_strength": 0.12816765725439114,
+        "volatility": 0.10436097133118803,
+        "seasonality_effect": -0.026054388928825015
+      },
+      "resource_utilization": {
+        "trend_direction": "decreasing",
+        "trend_strength": 0.37982177857040733,
+        "volatility": 0.21367662001393412,
+        "seasonality_effect": -0.04413094319844855
+      },
+      "collaboration_efficiency": {
+        "trend_direction": "stable",
+        "trend_strength": 0.1576183617702505,
+        "volatility": 0.06005739912619669,
+        "seasonality_effect": 0.0009036772835278734
+      },
+      "optimization_convergence": {
+        "trend_direction": "stable",
+        "trend_strength": 0.5613385703219026,
+        "volatility": 0.24580007077061938,
+        "seasonality_effect": 0.01984993435452767
+      },
+      "scheduling_efficiency": {
+        "trend_direction": "stable",
+        "trend_strength": 0.217679558700542,
+        "volatility": 0.07941933243978837,
+        "seasonality_effect": -0.06620772480258966
+      },
+      "risk_mitigation_score": {
+        "trend_direction": "stable",
+        "trend_strength": 0.49198432911401724,
+        "volatility": 0.28016685098653943,
+        "seasonality_effect": -0.06244188304427931
+      }
+    },
+    "confidence_intervals": {
+      "production_rate": {
+        "lower_95": 0.7814426647446817,
+        "upper_95": 0.8814426647446818,
+        "interval_width": 0.10000000000000009
+      },
+      "energy_consumption": {
+        "lower_95": 0.7477906871418893,
+        "upper_95": 0.8477906871418894,
+        "interval_width": 0.10000000000000009
+      },
+      "cost_efficiency": {
+        "lower_95": 0.7731316373400489,
+        "upper_95": 0.873131637340049,
+        "interval_width": 0.10000000000000009
+      },
+      "quality_index": {
+        "lower_95": 0.9390437601285424,
+        "upper_95": 1.0,
+        "interval_width": 0.10000000000000009
+      },
+      "environmental_score": {
+        "lower_95": 0.8360923115388579,
+        "upper_95": 0.936092311538858,
+        "interval_width": 0.10000000000000009
+      },
+      "resource_utilization": {
+        "lower_95": 0.9256756423796682,
+        "upper_95": 1.0,
+        "interval_width": 0.10000000000000009
+      },
+      "collaboration_efficiency": {
+        "lower_95": 0.8201784626954932,
+        "upper_95": 0.9201784626954933,
+        "interval_width": 0.10000000000000009
+      },
+      "optimization_convergence": {
+        "lower_95": 0.95,
+        "upper_95": 1.0,
+        "interval_width": 0.10000000000000009
+      },
+      "scheduling_efficiency": {
+        "lower_95": 0.8466912446132391,
+        "upper_95": 0.9466912446132392,
+        "interval_width": 0.10000000000000009
+      },
+      "risk_mitigation_score": {
+        "lower_95": 0.95,
+        "upper_95": 1.0,
+        "interval_width": 0.10000000000000009
+      }
+    }
+  }
+}
