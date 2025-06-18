@@ -37,7 +37,7 @@
       </div>
       <div class="header-item">
         <environment-outlined />
-        <span>区域</span>
+        <span>受影响区域</span>
       </div>
       <div class="header-item">
         <safety-outlined />
@@ -72,7 +72,7 @@
           </div>
           <div class="list-item list-region">
             <environment-outlined class="item-icon" />
-            <span>{{ region.region }}</span>
+            <span>{{ region.regions.join('、') }}</span>
           </div>
           <div class="list-item">
             <div
@@ -87,6 +87,10 @@
               <warning-outlined v-else-if="region.risk_level === 'warning'" />
               <exclamation-circle-outlined v-else-if="region.risk_level === 'danger'" />
               <span>{{ getRiskLevelText(region.risk_level) }}</span>
+              <!-- 显示场景数量指示器 -->
+              <span v-if="region.scenarios && region.scenarios.length > 0" class="scenario-count">
+                ({{ region.scenarios.length }}个场景)
+              </span>
             </div>
           </div>
         </div>
@@ -107,14 +111,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed, inject, onUnmounted, watch, nextTick } from 'vue'
+import { ref, onMounted, computed, inject, onUnmounted, nextTick } from 'vue'
 import { useAlgorithmStore, ModuleType, AlgorithmType } from '@/stores/algorithmStore'
 import unityService from '@/services/UnityService'
 import { message } from 'ant-design-vue'
 // 导入文本框组件和消息管理
 import TextMessageDisplayBox from '../controls/windows/TextMessageDisplayBox.vue'
 import { useMessageStore } from '@/stores/messageStore'
-import Algorithm3Api, { type AlgorithmResult, type DownloadCsvParams } from '@/apis/Algorithm3'
+import Algorithm3Api, { type DownloadCsvParams } from '@/apis/Algorithm3'
 import {
   ClockCircleOutlined,
   EnvironmentOutlined,
@@ -122,42 +126,163 @@ import {
   CheckCircleOutlined,
   WarningOutlined,
   ExclamationCircleOutlined,
-  DownloadOutlined, // 添加下载图标
+  DownloadOutlined,
 } from '@ant-design/icons-vue'
 import GraphHeader from '../common/GraphHeader.vue'
 
 // 使用算法数据 store
 const algorithmStore = useAlgorithmStore()
 
+interface RegionScenario {
+  feature: string
+  name: string
+  description: string
+  impact: string
+  action: string
+}
+
+interface RegionAnomalyData {
+  timestamp: string
+  anomaly_score: number
+  is_anomaly: number
+  risk_level: string
+  risk_color: string
+  affected_areas: string[]
+  anomaly_features: string[]
+  scenario_count: number
+  scenarios: RegionScenario[]
+}
+
 interface Region {
   timestamp: string
-  region: string
+  regions: string[] // 改为区域数组
   risk_level: 'safe' | 'warning' | 'danger'
   message: string
+  anomaly_data?: RegionAnomalyData
+  scenarios?: RegionScenario[]
 }
 
 // Unity通信数据结构
 interface UnityData {
-  region: string
+  regions: string[] // 改为区域数组
   risk_level: string
   message: string
 }
 
-// 定义有效区域常量
-const VALID_REGIONS = ['RMS', 'REA', 'SEP', 'PRO', 'UTL']
-const VALID_RISK_LEVELS = ['safe', 'warning', 'danger']
-
 // 根据风险级别返回对应的中文文本
 const getRiskLevelText = (riskLevel: string): string => {
   switch (riskLevel) {
+    case '安全':
     case 'safe':
       return '安全'
+    case '警告':
     case 'warning':
       return '警告'
+    case '危险':
     case 'danger':
       return '危险'
     default:
       return '未知'
+  }
+}
+
+// 根据风险级别返回对应的英文值
+const getRiskLevelKey = (riskLevel: string): 'safe' | 'warning' | 'danger' => {
+  switch (riskLevel) {
+    case '安全':
+      return 'safe'
+    case '警告':
+      return 'warning'
+    case '危险':
+      return 'danger'
+    default:
+      return 'safe'
+  }
+}
+
+// 解析CSV数据并转换为区域数据
+const parseCSVData = async (): Promise<Region[]> => {
+  try {
+    // 读取完整的CSV文件
+    const response = await fetch('/src/mock/steel_anomaly_decision_results.csv')
+    const csvData = await response.text()
+
+    const lines = csvData.split('\n').filter((line) => line.trim())
+    if (lines.length < 2) return []
+
+    const headers = lines[0].split(',')
+    const regions: Region[] = []
+
+    for (let i = 1; i < lines.length; i++) {
+      const values = lines[i].split(',')
+      if (values.length < headers.length) continue
+
+      const row: any = {}
+      headers.forEach((header, index) => {
+        row[header.trim()] = values[index]?.trim() || ''
+      })
+
+      // 解析受影响区域
+      const affectedAreas =
+        row.affected_areas === '无'
+          ? []
+          : row.affected_areas
+              .split(';')
+              .map((area: string) => area.trim())
+              .filter((area: string) => area)
+
+      // 解析异常特征
+      const anomalyFeatures =
+        row.anomaly_features === '无'
+          ? []
+          : row.anomaly_features
+              .split(';')
+              .map((feature: string) => feature.trim())
+              .filter((feature: string) => feature)
+
+      // 解析场景数据
+      const scenarios: RegionScenario[] = []
+      const scenarioCount = parseInt(row.scenario_count) || 0
+
+      for (let j = 1; j <= scenarioCount; j++) {
+        const scenario = {
+          feature: row[`scenario_${j}_feature`] || '',
+          name: row[`scenario_${j}_name`] || '',
+          description: row[`scenario_${j}_description`] || '',
+          impact: row[`scenario_${j}_impact`] || '',
+          action: row[`scenario_${j}_action`] || '',
+        }
+        if (scenario.name) {
+          scenarios.push(scenario)
+        }
+      }
+
+      const anomalyData: RegionAnomalyData = {
+        timestamp: row.timestamp,
+        anomaly_score: parseFloat(row.anomaly_score) || 0,
+        is_anomaly: parseInt(row.is_anomaly) || 0,
+        risk_level: row.risk_level,
+        risk_color: row.risk_color,
+        affected_areas: affectedAreas,
+        anomaly_features: anomalyFeatures,
+        scenario_count: scenarioCount,
+        scenarios: scenarios,
+      }
+      // 为每个时间戳创建一个Region记录，包含所有受影响的区域
+      regions.push({
+        timestamp: row.timestamp,
+        regions: affectedAreas.length > 0 ? affectedAreas : ['全部区域'], // 包含所有区域
+        risk_level: getRiskLevelKey(row.risk_level),
+        message: `风险评分: ${row.anomaly_score}, 风险等级: ${row.risk_level}`,
+        anomaly_data: anomalyData,
+        scenarios: scenarios,
+      })
+    }
+
+    return regions
+  } catch (error) {
+    console.error('解析CSV数据失败:', error)
+    return []
   }
 }
 
@@ -185,16 +310,6 @@ const listBody = ref<HTMLElement | null>(null)
 let scrollObserver: IntersectionObserver | null = null
 const loadTriggerRef = ref<HTMLDivElement | null>(null)
 
-// 将API返回的数据转换为区域条目
-const convertToRegionEntries = (results: AlgorithmResult[]): Region[] => {
-  return results.map((result) => ({
-    timestamp: result.timestamp,
-    region: result.region,
-    risk_level: result.risk_level as 'safe' | 'warning' | 'danger',
-    message: result.message || '',
-  }))
-}
-
 // 计算当前可见的区域数据
 const visibleRegions = computed(() => {
   if (regions.value.length === 0) return []
@@ -215,26 +330,14 @@ const visibleRegions = computed(() => {
 // 判断区域是否被选中
 const isRegionSelected = (region: Region): boolean => {
   if (!selectedRegion.value) return false
-  return region.region.toUpperCase() === selectedRegion.value.region.toUpperCase()
+  return region.timestamp === selectedRegion.value.timestamp
 }
 
 // 验证并构造发送给Unity的数据
 const prepareUnityData = (region: Region): UnityData | null => {
-  // 验证区域名称
-  if (!VALID_REGIONS.includes(region.region)) {
-    console.warn(`非法区域值: ${region.region}，有效区域应为: ${VALID_REGIONS.join(', ')}`)
-    return null
-  }
-
-  // 验证风险等级
-  if (!VALID_RISK_LEVELS.includes(region.risk_level)) {
-    console.warn(`非法风险等级: ${region.risk_level}，有效风险等级应为: ${VALID_RISK_LEVELS.join(', ')}`)
-    return null
-  }
-
   // 返回有效的Unity数据
   return {
-    region: region.region,
+    regions: region.regions,
     risk_level: region.risk_level,
     message: region.message || '',
   }
@@ -270,12 +373,21 @@ const handleRegionLeave = (region: Region) => {
 // 配置字段映射
 const textFieldConfig = {
   labelMap: {
-    region: '区域名称',
+    regions: '受影响区域',
     risk_level: '风险等级',
     message: '详细信息',
+    scenario_name: '风险场景',
+    scenario_description: '风险描述',
+    scenario_impact: '可能后果',
+    scenario_action: '推荐建议',
+    anomaly_score: '风险评分',
+    affected_areas: '受影响区域',
+    anomaly_features: '异常特征',
   },
   valueFormatters: {
-    risk_level: (v: string) => getRiskLevelText(v), // 复用已有的翻译函数
+    risk_level: (v: string) => getRiskLevelText(v),
+    affected_areas: (v: string[]) => (Array.isArray(v) ? v.join(', ') : v),
+    anomaly_features: (v: string[]) => (Array.isArray(v) ? v.join(', ') : v),
   },
 }
 
@@ -303,10 +415,33 @@ const handleRegionClick = (region: Region) => {
 
   // 无论是选中还是取消选中，都发送同一个消息
   unityService.sendMessageToUnity('Sensor', 'RegionContinuousHighlight', JSON.stringify(unityData))
+  // 准备显示的数据
+  const displayData: any = {
+    regions: region.regions.join(', '),
+    risk_level: region.risk_level,
+    message: region.message,
+  }
+
+  // 如果有异常数据，添加更多信息
+  if (region.anomaly_data) {
+    displayData.anomaly_score = region.anomaly_data.anomaly_score.toFixed(3)
+    displayData.affected_areas = region.anomaly_data.affected_areas
+    displayData.anomaly_features = region.anomaly_data.anomaly_features
+  }
+
+  // 如果有场景数据，添加场景信息
+  if (region.scenarios && region.scenarios.length > 0) {
+    region.scenarios.forEach((scenario, index) => {
+      displayData[`scenario_${index + 1}_name`] = scenario.name
+      displayData[`scenario_${index + 1}_description`] = scenario.description
+      displayData[`scenario_${index + 1}_impact`] = scenario.impact
+      displayData[`scenario_${index + 1}_action`] = scenario.action
+    })
+  }
   // 发送消息给文本框
-  messageStore.showMessage(unityData, textFieldConfig, {
-    source: 'region', // 可选的消息来源标识
-    title: `区域风险预测-${region.region}`, // 设置特定标题
+  messageStore.showMessage(displayData, textFieldConfig, {
+    source: 'region',
+    title: `区域风险分析-${region.regions.join('、')}`,
   })
 }
 
@@ -329,42 +464,32 @@ const loadRegionData = async (reset = true) => {
       isLoadingMore.value = true
     }
 
-    // 获取当前选中的算法类型
-    const selectedAlgorithm = algorithmStore.getModuleSelectedAlgorithm(ModuleType.Module3)
+    // 使用解析CSV数据的方法，获取完整数据
+    const csvRegions = await parseCSVData()
 
-    // 获取当前算法的参数
-    const params = algorithmStore.getAlgorithmParams(selectedAlgorithm)
+    console.log(`加载了 ${csvRegions.length} 条区域数据记录`)
 
-    // 构建请求参数
-    const requestParams = {
-      algorithm: selectedAlgorithm,
-      learning_rate: Number(params.learning_rate) || 0.1,
-      max_depth:
-        selectedAlgorithm === AlgorithmType.xgboost || selectedAlgorithm === AlgorithmType.lightGBM
-          ? Number(params.max_depth)
-          : null,
-      max_epochs: selectedAlgorithm === AlgorithmType.TabNet ? Number(params.max_epochs) : null,
-      skip: currentSkip.value,
-      limit: pageSize,
-    }
-
-    // 调用API获取数据（带分页）
-    const response = await Algorithm3Api.getResultsWithPagination(requestParams)
+    // 分页处理
+    const start = currentSkip.value
+    const end = start + pageSize
+    const paginatedRegions = csvRegions.slice(start, end)
 
     // 更新分页信息
-    hasMore.value = response.pagination.has_more
+    hasMore.value = end < csvRegions.length
 
-    // 转换数据格式并添加到当前列表
+    // 添加到当前列表
     if (reset) {
-      regions.value = convertToRegionEntries(response.data)
+      regions.value = paginatedRegions
     } else {
-      regions.value = [...regions.value, ...convertToRegionEntries(response.data)]
+      regions.value = [...regions.value, ...paginatedRegions]
     }
 
     // 更新下一页的偏移量
-    currentSkip.value += response.data.length
+    currentSkip.value = end
+
+    console.log(`当前显示 ${regions.value.length} 条记录，还有更多数据: ${hasMore.value}`)
   } catch (error) {
-    console.error(`加载模块3区域数据失败:`, error)
+    console.error(`加载钢铁异常决策数据失败:`, error)
     message.error('加载区域数据失败，请稍后再试')
     if (reset) regions.value = [] // 重置时才清空区域列表
   } finally {
@@ -464,23 +589,6 @@ onMounted(async () => {
   scrollTimer = setInterval(scrollList, 2000) as unknown as number
 })
 
-// 监听模块3的任何变化（包括算法选择和参数）
-watch(
-  () => [
-    algorithmStore.selectedAlgorithms[ModuleType.Module3],
-    algorithmStore.algorithms[algorithmStore.selectedAlgorithms[ModuleType.Module3]]?.params,
-  ],
-  async () => {
-    console.log('模块3配置已更新，重新加载数据')
-    await loadRegionData()
-    // 重置开始索引
-    startIndex.value = 0
-    // 清除选中状态
-    selectedRegion.value = null
-  },
-  { deep: true },
-)
-
 onUnmounted(() => {
   // 清除定时器
   if (scrollTimer) {
@@ -496,6 +604,441 @@ onUnmounted(() => {
 })
 </script>
 
-<style lang="scss" scoped>
-@use '@/assets/styles/ScrollingRegionList.scss';
+<style scoped>
+.scrolling-list-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(32, 160, 255, 0.15);
+  border-radius: 8px;
+  overflow: hidden;
+  padding-top: 0;
+  position: relative;
+  z-index: 0;
+  background-color: rgba(8, 15, 35, 0.97);
+  color: rgba(220, 230, 240, 0.9);
+  box-shadow: 0 0 25px rgba(0, 100, 255, 0.07);
+  backdrop-filter: blur(5px);
+  background: linear-gradient(135deg, rgba(15, 30, 60, 0.95), rgba(8, 15, 35, 0.95));
+  isolation: isolate;
+}
+
+.scrolling-list-header {
+  display: flex;
+  background: linear-gradient(90deg, rgba(12, 24, 48, 0.9) 0%, rgba(20, 40, 80, 0.9) 50%, rgba(12, 24, 48, 0.9) 100%);
+  font-weight: 600;
+  padding: 10px 8px;
+  border-bottom: 1px solid rgba(32, 160, 255, 0.15);
+  font-size: 14px;
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  color: rgba(120, 180, 255, 0.95);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-shadow: 0 0 8px rgba(32, 160, 255, 0.4);
+}
+
+.header-item {
+  flex: 1;
+  text-align: center;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.header-item::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40%;
+  height: 2px;
+  background: linear-gradient(90deg, rgba(32, 160, 255, 0), rgba(32, 160, 255, 0.6), rgba(32, 160, 255, 0));
+}
+
+.scrolling-list-body {
+  flex: 1;
+  overflow-y: auto;
+  font-size: 14px;
+  font-family: 'Consolas', 'Monaco', monospace;
+  background: radial-gradient(ellipse at center, rgba(20, 40, 80, 0.3) 0%, rgba(8, 15, 35, 0.3) 100%);
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: rgba(32, 160, 255, 0.6) rgba(11, 19, 43, 0.3);
+}
+
+/* WebKit/Chrome滚动条样式 */
+.scrolling-list-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scrolling-list-body::-webkit-scrollbar-track {
+  background: rgba(11, 19, 43, 0.3);
+}
+
+.scrolling-list-body::-webkit-scrollbar-thumb {
+  background-color: rgba(32, 160, 255, 0.6);
+  border-radius: 3px;
+}
+
+/* 非展开状态隐藏滚动条 */
+.scrolling-list-container:not(.expanded) .scrolling-list-body {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.scrolling-list-container:not(.expanded) .scrolling-list-body::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+.list-row {
+  display: flex;
+  padding: 10px;
+  border-bottom: 1px solid rgba(32, 160, 255, 0.06);
+  transition: all 0.2s ease;
+  cursor: pointer;
+  align-items: center;
+  background-color: rgba(12, 20, 40, 0.75);
+  position: relative;
+}
+
+.list-row::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 3px;
+  background: transparent;
+  transition: all 0.2s ease;
+}
+
+.row-alt {
+  background-color: rgba(15, 30, 60, 0.75);
+}
+
+.list-row:hover {
+  background-color: rgba(25, 45, 85, 0.95);
+  transform: translateX(2px);
+  box-shadow: -2px 0 8px rgba(32, 160, 255, 0.18);
+  z-index: 2;
+}
+
+.row-selected {
+  background: linear-gradient(90deg, rgba(20, 60, 130, 0.5), rgba(30, 80, 160, 0.5)) !important;
+  border-right: 1px solid rgba(64, 180, 255, 0.35);
+  box-shadow: 0 0 15px rgba(32, 160, 255, 0.2);
+}
+
+.list-item {
+  flex: 1;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.list-time {
+  color: rgba(140, 190, 240, 0.85);
+  font-family: 'Consolas', monospace;
+  text-shadow: 0 0 5px rgba(32, 160, 255, 0.3);
+  letter-spacing: 0.5px;
+  font-size: 13px;
+}
+
+.list-region {
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  position: relative;
+  text-shadow: 0 0 5px rgba(32, 160, 255, 0.25);
+  font-size: 13px;
+}
+
+.list-region::after {
+  content: '';
+  position: absolute;
+  bottom: -3px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(32, 160, 255, 0), rgba(32, 160, 255, 0.7), rgba(32, 160, 255, 0));
+  transition: width 0.25s ease;
+}
+
+.list-row:hover .list-region::after {
+  width: 40%;
+}
+
+/* 状态指示器样式 */
+.status-indicator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3px 10px;
+  border-radius: 10px;
+  font-size: 13px;
+  min-width: 90px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+  letter-spacing: 0.5px;
+  height: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  gap: 6px;
+}
+
+/* 发光效果 */
+.status-indicator::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  filter: blur(6px);
+  opacity: 0.5;
+  transform: scale(0.9);
+  transition: all 0.3s ease;
+}
+
+.status-indicator::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0));
+  border-radius: 10px 10px 0 0;
+  pointer-events: none;
+}
+
+.list-row:hover .status-indicator {
+  transform: scale(1.03);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.list-row:hover .status-indicator::before {
+  transform: scale(0.95);
+  opacity: 0.6;
+}
+
+.status-safe {
+  background: linear-gradient(145deg, rgba(40, 170, 30, 0.8), rgba(60, 200, 40, 0.8));
+  color: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 1px 6px rgba(82, 196, 26, 0.3);
+  text-shadow: 0 1px 1px rgba(0, 80, 0, 0.5);
+}
+
+.status-safe::before {
+  background: rgba(82, 196, 26, 0.6);
+}
+
+.status-warning {
+  background: linear-gradient(145deg, rgba(250, 150, 0, 0.8), rgba(255, 180, 30, 0.8));
+  color: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 1px 6px rgba(250, 173, 20, 0.3);
+  text-shadow: 0 1px 1px rgba(120, 60, 0, 0.5);
+}
+
+.status-warning::before {
+  background: rgba(250, 173, 20, 0.6);
+}
+
+.status-danger {
+  background: linear-gradient(145deg, rgba(220, 20, 10, 0.8), rgba(255, 50, 30, 0.8));
+  color: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 1px 6px rgba(245, 34, 45, 0.3);
+  text-shadow: 0 1px 1px rgba(100, 0, 0, 0.5);
+}
+
+.status-danger::before {
+  background: rgba(245, 34, 45, 0.6);
+}
+
+/* 扫描线效果和网格 */
+.scrolling-list-container::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to bottom, transparent 49.5%, rgba(32, 160, 255, 0.03) 50%, transparent 50.5%),
+    linear-gradient(90deg, rgba(32, 160, 255, 0.01) 1px, transparent 1px),
+    linear-gradient(rgba(32, 160, 255, 0.01) 1px, transparent 1px);
+  background-size:
+    100% 6px,
+    20px 20px,
+    20px 20px;
+  z-index: 1;
+}
+
+/* 全息投影效果 */
+.scrolling-list-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(64, 120, 255, 0.05) 0%, rgba(64, 120, 255, 0) 70%),
+    radial-gradient(ellipse at 50% 100%, rgba(64, 120, 255, 0.05) 0%, rgba(64, 120, 255, 0) 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* 状态脉动动画 */
+@keyframes pulse {
+  0% {
+    opacity: 0.8;
+  }
+  50% {
+    opacity: 0.95;
+  }
+  100% {
+    opacity: 0.8;
+  }
+}
+
+.status-danger {
+  animation: pulse 2.5s infinite;
+}
+
+/* 展开状态下更大字体 */
+.expanded .scrolling-list-body,
+.expanded .list-time,
+.expanded .list-region,
+.expanded .status-indicator {
+  font-size: 16px;
+}
+
+.expanded .status-indicator {
+  height: 28px;
+  padding: 4px 14px;
+}
+
+/* 图标样式 */
+.item-icon {
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+}
+
+/* 状态指示器内图标颜色 */
+.status-indicator svg {
+  font-size: 14px;
+}
+
+/* 展开状态下的图标 */
+.expanded .item-icon,
+.expanded .status-indicator svg {
+  font-size: 16px;
+}
+
+/* 图标颜色随风险等级变化 */
+.row-selected .item-icon,
+.list-row:hover .item-icon {
+  color: rgba(220, 230, 240, 0.9);
+}
+
+/* 安全状态图标颜色 */
+.list-row .status-safe ~ .list-item .item-icon,
+.list-row:has(.status-safe) .item-icon {
+  color: rgba(82, 196, 26, 0.9);
+}
+
+/* 警告状态图标颜色 */
+.list-row .status-warning ~ .list-item .item-icon,
+.list-row:has(.status-warning) .item-icon {
+  color: rgba(250, 173, 20, 0.9);
+}
+
+/* 危险状态图标颜色 */
+.list-row .status-danger ~ .list-item .item-icon,
+.list-row:has(.status-danger) .item-icon {
+  color: rgba(245, 34, 45, 0.9);
+}
+
+/* 加载状态和空数据状态 */
+.loading-indicator,
+.empty-data {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
+  width: 100%;
+  color: rgba(32, 160, 255, 0.7);
+  font-size: 16px;
+  text-align: center;
+}
+
+/* 加载更多相关样式 */
+.load-more-trigger {
+  padding: 15px;
+  text-align: center;
+  color: rgba(32, 160, 255, 0.7);
+}
+
+.loading-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.no-more-data {
+  font-size: 14px;
+  color: rgba(180, 200, 220, 0.5);
+  padding: 10px;
+}
+
+/* 导出按钮样式 */
+.export-button {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(32, 160, 255, 0.15);
+  border: 1px solid rgba(32, 160, 255, 0.3);
+  color: rgba(220, 230, 240, 0.9);
+  padding: 5px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.export-button:hover {
+  background: rgba(32, 160, 255, 0.25);
+  border-color: rgba(32, 160, 255, 0.5);
+  box-shadow: 0 0 8px rgba(32, 160, 255, 0.4);
+}
+
+.export-button:active {
+  background: rgba(32, 160, 255, 0.35);
+  transform: translateY(1px);
+}
+
+/* 场景数量指示器样式 */
+.scenario-count {
+  font-size: 11px;
+  opacity: 0.8;
+  margin-left: 5px;
+  font-weight: normal;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.expanded .scenario-count {
+  font-size: 12px;
+}
 </style>

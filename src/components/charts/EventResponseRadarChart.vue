@@ -1,15 +1,19 @@
 <script setup lang="ts">
 /**
- * @description 事件响应情况雷达图组件
+ * @description KPI指标雷达图组件
  *
- * 该组件使用ECharts实现雷达图，用于展示不同化工车间的事件响应情况。
+ * 该组件使用ECharts实现雷达图，用于展示钢铁工业optimization_result数据中的KPI指标。
  * 包含以下数据维度：
- * 1. 响应时效
- * 2. 响应耗时
- * 3. 事件完成率
- * 4. 响应质量
- * 5. 资源利用率
- * 6. 文档完整度
+ * 1. 生产效率 (production_rate)
+ * 2. 能耗水平 (energy_consumption)
+ * 3. 成本效率 (cost_efficiency)
+ * 4. 质量指数 (quality_index)
+ * 5. 环境评分 (environmental_score)
+ * 6. 资源利用率 (resource_utilization)
+ * 7. 协同效率 (collaboration_efficiency)
+ * 8. 优化收敛 (optimization_convergence)
+ * 9. 调度效率 (scheduling_efficiency)
+ * 10. 风险缓解评分 (risk_mitigation_score)
  *
  * 支持图表展开/收起状态的响应式调整
  */
@@ -18,125 +22,37 @@ import type { Ref } from 'vue'
 import * as echarts from 'echarts'
 import GraphHeader from '../common/GraphHeader.vue'
 
-// 导入所有算法结果文件
-import mappo005 from '@/mock/MAPPO/0.005_1000.json'
-import mappo001 from '@/mock/MAPPO/0.001_1000.json'
-import maddpg005 from '@/mock/MADDPG/0.005_1000.json'
-import maddpg001 from '@/mock/MADDPG/0.001_1000.json'
-import iqlearning005 from '@/mock/IQL/0.005_1000.json'
-import iqlearning001 from '@/mock/IQL/0.001_1000.json'
-import dqn005 from '@/mock/DQN/0.005_1000.json'
-import dqn001 from '@/mock/DQN/0.001_1000.json'
+// 导入优化结果数据
+import optimizationResult from '@/mock/model4output/optimization_result_2025-05-17_00-00-00.json'
 
-// 为每个算法分配不同颜色
-const algorithmColors = {
-  'MAPPO (0.005)': '#4CAF50', // 绿色
-  'MAPPO (0.001)': '#2196F3', // 蓝色
-  'MADDPG (0.005)': '#FF5722', // 橙色
-  'MADDPG (0.001)': '#9C27B0', // 紫色
-  'IQL (0.005)': '#FFC107', // 黄色
-  'IQL (0.001)': '#607D8B', // 蓝灰色
-  'DQN (0.005)': '#E91E63', // 粉色
-  'DQN (0.001)': '#795548', // 棕色
-}
+// KPI指标定义
+const kpiIndicators = [
+  { name: '生产效率', key: 'production_rate', max: 1 },
+  { name: '能耗水平', key: 'energy_consumption', max: 1 },
+  { name: '成本效率', key: 'cost_efficiency', max: 1 },
+  { name: '质量指数', key: 'quality_index', max: 1 },
+  { name: '环境评分', key: 'environmental_score', max: 1 },
+  { name: '资源利用率', key: 'resource_utilization', max: 1 },
+  { name: '协同效率', key: 'collaboration_efficiency', max: 1 },
+  { name: '优化收敛', key: 'optimization_convergence', max: 2 }, // 这个指标最大值为2
+  { name: '调度效率', key: 'scheduling_efficiency', max: 1 },
+  { name: '风险缓解', key: 'risk_mitigation_score', max: 1 },
+]
 
-// 准备算法性能指标数据
-const responseData = {
-  indicators: [
-    { name: '响应时间', max: 25000 },
-    { name: '响应及时性', max: 1 },
-    { name: '响应质量', max: 1 },
-    { name: '资源利用率', max: 1 },
-    { name: '事件完成率', max: 1 },
-  ],
+// 准备KPI指标数据
+const kpiData = {
+  indicators: kpiIndicators.map((indicator) => ({
+    name: indicator.name,
+    max: indicator.max,
+  })),
   data: [
     {
-      name: 'MAPPO (0.005)',
-      values: [
-        mappo005.performance.response_time,
-        Math.abs(mappo005.performance.response_timeliness),
-        mappo005.performance.response_quality,
-        mappo005.performance.resource_utilization,
-        mappo005.performance.event_completion_rate,
-      ],
-      color: algorithmColors['MAPPO (0.005)'],
-    },
-    {
-      name: 'MAPPO (0.001)',
-      values: [
-        mappo001.performance.response_time,
-        Math.abs(mappo001.performance.response_timeliness),
-        mappo001.performance.response_quality,
-        mappo001.performance.resource_utilization,
-        mappo001.performance.event_completion_rate,
-      ],
-      color: algorithmColors['MAPPO (0.001)'],
-    },
-    {
-      name: 'MADDPG (0.005)',
-      values: [
-        maddpg005.performance.response_time,
-        Math.abs(maddpg005.performance.response_timeliness),
-        maddpg005.performance.response_quality,
-        maddpg005.performance.resource_utilization,
-        maddpg005.performance.event_completion_rate,
-      ],
-      color: algorithmColors['MADDPG (0.005)'],
-    },
-    {
-      name: 'MADDPG (0.001)',
-      values: [
-        maddpg001.performance.response_time,
-        Math.abs(maddpg001.performance.response_timeliness),
-        maddpg001.performance.response_quality,
-        maddpg001.performance.resource_utilization,
-        maddpg001.performance.event_completion_rate,
-      ],
-      color: algorithmColors['MADDPG (0.001)'],
-    },
-    {
-      name: 'IQL (0.005)',
-      values: [
-        iqlearning005.performance.response_time,
-        Math.abs(iqlearning005.performance.response_timeliness),
-        iqlearning005.performance.response_quality,
-        iqlearning005.performance.resource_utilization,
-        iqlearning005.performance.event_completion_rate,
-      ],
-      color: algorithmColors['IQL (0.005)'],
-    },
-    {
-      name: 'IQL (0.001)',
-      values: [
-        iqlearning001.performance.response_time,
-        Math.abs(iqlearning001.performance.response_timeliness),
-        iqlearning001.performance.response_quality,
-        iqlearning001.performance.resource_utilization,
-        iqlearning001.performance.event_completion_rate,
-      ],
-      color: algorithmColors['IQL (0.001)'],
-    },
-    {
-      name: 'DQN (0.005)',
-      values: [
-        dqn005.performance.response_time,
-        Math.abs(dqn005.performance.response_timeliness),
-        dqn005.performance.response_quality,
-        dqn005.performance.resource_utilization,
-        dqn005.performance.event_completion_rate,
-      ],
-      color: algorithmColors['DQN (0.005)'],
-    },
-    {
-      name: 'DQN (0.001)',
-      values: [
-        dqn001.performance.response_time,
-        Math.abs(dqn001.performance.response_timeliness),
-        dqn001.performance.response_quality,
-        dqn001.performance.resource_utilization,
-        dqn001.performance.event_completion_rate,
-      ],
-      color: algorithmColors['DQN (0.001)'],
+      name: optimizationResult.timestamp,
+      values: kpiIndicators.map((indicator) => {
+        const value = (optimizationResult as any).kpi_metrics?.[indicator.key] || 0
+        return value
+      }),
+      color: '#4CAF50', // 绿色
     },
   ],
 }
@@ -179,7 +95,7 @@ const updateChart = () => {
   if (!chartInstance) return
 
   const option: echarts.EChartsOption = {
-    color: responseData.data.map((item) => item.color),
+    color: kpiData.data.map((item) => item.color),
     tooltip: {
       trigger: 'item',
       confine: false,
@@ -187,11 +103,11 @@ const updateChart = () => {
       className: 'event-radar-tooltip',
       formatter: (params: any) => {
         const { name, value } = params
-        const indicators = responseData.indicators
+        const indicators = kpiData.indicators
         let result = `<div style="font-weight:bold;margin-bottom:8px;font-size:14px;color:#ffffff;">${name}</div>`
         result += '<div style="display:table;width:100%;">'
         value.forEach((val: number, index: number) => {
-          const formattedValue = Number.isInteger(val) ? val : val.toFixed(2)
+          const formattedValue = Number.isInteger(val) ? val : val.toFixed(3)
           result += `
             <div style="display:table-row;">
               <div style="display:table-cell;padding-right:10px;color:#a9d6ff;">${indicators[index].name}:</div>
@@ -211,7 +127,7 @@ const updateChart = () => {
         'border-radius: 8px; backdrop-filter: blur(6px); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3), 0 0 15px rgba(32, 160, 255, 0.15);',
     },
     legend: {
-      data: responseData.data.map((item) => item.name),
+      data: kpiData.data.map((item) => item.name),
       bottom: isExpanded.value ? 15 : 10,
       itemWidth: isExpanded.value ? 12 : 10,
       itemHeight: isExpanded.value ? 12 : 10,
@@ -219,7 +135,7 @@ const updateChart = () => {
         fontSize: isExpanded.value ? 12 : 10,
         color: 'rgba(220, 230, 240, 0.9)',
       },
-      itemGap: isExpanded.value ? 12 : 6, // 减少非展开状态下的间距
+      itemGap: isExpanded.value ? 12 : 6,
       backgroundColor: 'rgba(15, 30, 60, 0.7)',
       borderRadius: 6,
       padding: isExpanded.value ? 10 : 5,
@@ -227,7 +143,7 @@ const updateChart = () => {
       borderWidth: 1,
     },
     radar: {
-      indicator: responseData.indicators.map((indicator) => ({
+      indicator: kpiData.indicators.map((indicator) => ({
         name: indicator.name,
         max: indicator.max,
       })),
@@ -259,7 +175,6 @@ const updateChart = () => {
         shadowColor: 'rgba(0, 0, 0, 0.3)',
         shadowBlur: 5,
         rich: {
-          // 添加富文本配置实现指标名称加粗
           value: {
             color: 'rgba(220, 230, 240, 0.9)',
             fontWeight: 'bold',
@@ -267,7 +182,6 @@ const updateChart = () => {
           },
         },
         formatter: function (name?: string) {
-          // 将指标名称用富文本包装实现加粗
           return '{value|' + (name || '') + '}'
         },
       },
@@ -276,54 +190,33 @@ const updateChart = () => {
       {
         type: 'radar',
         symbolSize: isExpanded.value ? 6 : 4,
-        data: responseData.data.map((item) => ({
+        data: kpiData.data.map((item) => ({
           value: item.values,
           name: item.name,
           symbol: 'circle',
-          // 修改：移除区域填充颜色
           areaStyle: {
-            opacity: 0, // 将透明度设为0，移除填充
+            opacity: 0.1,
+            color: item.color,
           },
-          // 美化线条样式
           lineStyle: {
             width: isExpanded.value ? 2.5 : 2,
             shadowColor: item.color,
             shadowBlur: 5,
-            // 添加虚线效果
             type: 'solid',
-            // 添加渐变效果
-            color: {
-              type: 'linear',
-              x: 0,
-              y: 0,
-              x2: 0,
-              y2: 1,
-              colorStops: [
-                {
-                  offset: 0,
-                  color: item.color, // 开始颜色
-                },
-                {
-                  offset: 1,
-                  color: item.color + 'cc', // 结束颜色，增加透明度
-                },
-              ],
-              global: false, // 缺省为 false
-            },
+            color: item.color,
           },
           emphasis: {
             lineStyle: {
               width: isExpanded.value ? 4 : 3,
               shadowBlur: 8,
-              type: 'solid', // 悬停时显示实线
+              type: 'solid',
             },
             itemStyle: {
               shadowColor: item.color,
               shadowBlur: 10,
             },
-            // 悬停时也不显示区域填充
             areaStyle: {
-              opacity: 0.1, // 悬停时轻微显示区域
+              opacity: 0.2,
               color: item.color,
             },
           },
@@ -417,7 +310,7 @@ const chartStyle = computed(() => {
 <template>
   <div class="event-response-radar-container">
     <!-- 标题栏 -->
-    <GraphHeader :title="'系统响应性能分析'">
+    <GraphHeader :title="'KPI指标性能分析'">
       <template #icon>
         <svg viewBox="0 0 24 24" width="20" height="20">
           <path
@@ -433,103 +326,82 @@ const chartStyle = computed(() => {
   </div>
 </template>
 
-<style lang="scss" scoped>
-@use '@/assets/styles/_variables' as *;
-@use '@/assets/styles/_mixins' as *;
-@use 'sass:color';
-
-// =====================
-// EventResponseRadarChart 变量
-// =====================
-
-// 背景和基础颜色
-$radar-bg1: $color-bg-primary;
-$radar-bg2: color.adjust($color-bg-primary, $lightness: -5%);
-$radar-grid-color: rgba($color-primary, 0.05);
-$radar-grid-highlight: rgba($color-primary, 0.1);
-
-// 工具提示样式
-$radar-tooltip-bg: rgba($color-bg-primary, 0.9);
-$radar-tooltip-border: rgba($color-primary, 0.5);
-
-// 图表相关尺寸
-$radar-border-radius: $border-radius;
-$radar-tooltip-radius: 4px;
-
-// 渐变和效果
-$radar-bg-gradient: linear-gradient(135deg, $radar-bg1, $radar-bg2);
-$radar-glow1: rgba($color-primary, 0.05);
-$radar-glow2: rgba($color-secondary, 0.05);
-
-// 阴影效果
-$radar-shadow: $panel-shadow;
-$radar-tooltip-shadow:
-  0 4px 20px rgba(0, 0, 0, 0.3),
-  0 0 15px rgba($color-primary, 0.15);
-
-// =====================
-// 组件样式
-// =====================
+<style scoped>
+/* 容器样式 */
 .event-response-radar-container {
   width: 100%;
   height: 100%;
-  @include flex-column;
+  display: flex;
+  flex-direction: column;
   position: relative;
-  background: $radar-bg-gradient;
-  border-radius: $radar-border-radius;
+  background: linear-gradient(135deg, rgba(15, 30, 60, 0.95), rgba(8, 15, 35, 0.95));
+  border-radius: 8px;
   overflow: hidden;
-  box-shadow: $radar-shadow;
-  @include futuristic-border($color-primary);
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.2),
+    0 0 30px rgba(32, 160, 255, 0.07);
+  border: 1px solid rgba(32, 160, 255, 0.15);
 }
 
-// 雷达图样式
+/* 雷达图样式 */
 .event-response-radar-chart {
   width: 100%;
   flex: 1;
   position: relative;
   backdrop-filter: blur(2px);
-  isolation: isolate;
-
-  // 网格背景效果
-  &::before {
-    content: '';
-    @include absolute-fill;
-    pointer-events: none;
-    background-image:
-      linear-gradient(to bottom, transparent 49.5%, $radar-grid-color 50%, transparent 50.5%),
-      linear-gradient(90deg, $radar-grid-highlight 1px, transparent 1px),
-      linear-gradient($radar-grid-color 1px, transparent 1px);
-    background-size:
-      100% 6px,
-      20px 20px,
-      20px 20px;
-    z-index: -1;
-  }
-
-  // 全息投影效果
-  &::after {
-    content: '';
-    @include absolute-fill;
-    @include tech-glow-background($color-primary, $color-secondary);
-    pointer-events: none;
-    z-index: -1;
-  }
 }
 
-// 工具提示样式
+/* 网格背景效果 */
+.event-response-radar-chart::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to bottom, transparent 49.5%, rgba(32, 160, 255, 0.03) 50%, transparent 50.5%),
+    linear-gradient(90deg, rgba(32, 160, 255, 0.01) 1px, transparent 1px),
+    linear-gradient(rgba(32, 160, 255, 0.01) 1px, transparent 1px);
+  background-size:
+    100% 6px,
+    20px 20px,
+    20px 20px;
+  z-index: 0;
+}
+
+/* 全息投影效果 */
+.event-response-radar-chart::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(64, 120, 255, 0.05) 0%, rgba(64, 120, 255, 0) 70%),
+    radial-gradient(ellipse at 50% 100%, rgba(64, 120, 255, 0.05) 0%, rgba(64, 120, 255, 0) 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* 工具提示样式  */
 :deep(.event-radar-tooltip) {
-  background: $radar-tooltip-bg !important;
+  background: rgba(8, 20, 40, 0.9) !important;
   backdrop-filter: blur(10px) !important;
-  border-radius: $radar-tooltip-radius !important;
-  border: 1px solid $radar-tooltip-border !important;
-  box-shadow: $radar-tooltip-shadow !important;
-  padding: $spacing-sm $spacing-md !important;
-  color: $color-text-primary !important;
+  border-radius: 8px !important;
+  border: 1px solid rgba(64, 169, 255, 0.5) !important;
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.3),
+    0 0 15px rgba(32, 160, 255, 0.15) !important;
+  padding: 10px 14px !important;
+  color: rgba(220, 230, 240, 0.95) !important;
   font-family: 'Inter', 'Roboto', sans-serif !important;
 }
 
 :deep(.radar-indicator-name) {
   font-weight: bold !important;
-  text-shadow: 0 0 5px rgba($color-primary, 0.2) !important;
+  text-shadow: 0 0 5px rgba(32, 160, 255, 0.2) !important;
 }
 </style>

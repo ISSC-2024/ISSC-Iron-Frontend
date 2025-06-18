@@ -1,185 +1,93 @@
 <script setup lang="ts">
 /**
- * @description 化工车间资源分布图表组件
+ * @description 钢铁工业资源分布图表组件
  *
- * 该组件使用ECharts实现堆叠水平条形图，展示不同化工车间的资源分布情况。
+ * 该组件使用ECharts实现堆叠水平条形图，展示不同钢铁生产区域的资源分布情况。
  * 包含以下功能：
- * 1. 显示人力资源分布（技术人员、管理人员、维修人员、安全人员、操作人员）
- * 2. 显示物料资源分布（原料、催化剂、存储容量）
- * 3. 显示电力资源分布
+ * 1. 显示原料资源分布（铁矿石、石灰石、煤炭、焦炭）
+ * 2. 显示能源资源分布（电力、蒸汽、天然气）
+ * 3. 支持时间戳选择展示不同时间点的数据
  * 4. 支持图表展开/收起状态的响应式调整
  * 5. 展开状态下在柱状图上显示具体数值
- * 6. 缩略图状态下使用简化的图例和更紧凑的布局
- * 7. 优化的tooltip显示，确保不被容器遮挡
- * 8. 人力资源、物料资源和电力资源图表轮播展示
- * 9. 支持图表悬停时显示Unity中的管道流动效果
+ * 6. 支持图表悬停时显示Unity中的管道流动效果
+ * 7. 展示optimization_result时间戳数据
  *
  */
 import { ref, onMounted, inject, computed, watch, onBeforeUnmount } from 'vue'
 import type { Ref } from 'vue'
 import * as echarts from 'echarts'
-import { useAlgorithmStore, ModuleType } from '@/stores/algorithmStore'
 import unityService from '@/services/UnityService'
 import { useMessageStore } from '@/stores/messageStore'
 import TextMessageDisplayBox from '../controls/windows/TextMessageDisplayBox.vue'
 import GraphHeader from '../common/GraphHeader.vue'
 
-// 获取算法状态管理
-const algorithmStore = useAlgorithmStore()
+// 导入优化结果数据
+import optimizationResult from '@/mock/model4output/optimization_result_2025-05-17_00-00-00.json'
 
 // 当前使用的报告数据
-const reportData = ref({} as any)
+const reportData = ref(optimizationResult as any)
 
 // 获取消息store
 const messageStore = useMessageStore()
 
-// 动态加载报告数据 - 修改为使用algorithmStore
-const loadReportData = async () => {
-  try {
-    // 使用algorithmStore获取模块4的数据
-    const reportModule = await algorithmStore.getModuleDataFile(ModuleType.Module4)
-
-    if (reportModule && reportModule.default) {
-      reportData.value = reportModule.default
-      const currentAlgorithm = algorithmStore.getModuleSelectedAlgorithm(ModuleType.Module4)
-      console.log(`成功加载模块4(${currentAlgorithm})资源分布数据`)
-    } else {
-      console.warn('模块4资源分布数据为空')
-    }
-  } catch (error) {
-    console.error('加载模块4资源分布数据失败:', error)
-  }
-  // 更新图表数据
-  updateChartData()
-  // 重新渲染图表
-  updateChart()
-}
-
 // 更新图表数据
 const updateChartData = () => {
-  // 更新人力资源数据
-  staffData.staff = {
-    原料储存区: {
-      技术人员: reportData.value.resources.personnel.subtypes.technician.data[0].value,
-      管理人员: reportData.value.resources.personnel.subtypes.manager.data[0].value,
-      维修人员: reportData.value.resources.personnel.subtypes.maintenance.data[0].value,
-      安全人员: reportData.value.resources.personnel.subtypes.safety.data[0].value,
-      操作人员: reportData.value.resources.personnel.subtypes.operator.data[0].value,
-    },
-    反应器区: {
-      技术人员: reportData.value.resources.personnel.subtypes.technician.data[1].value,
-      管理人员: reportData.value.resources.personnel.subtypes.manager.data[1].value,
-      维修人员: reportData.value.resources.personnel.subtypes.maintenance.data[1].value,
-      安全人员: reportData.value.resources.personnel.subtypes.safety.data[1].value,
-      操作人员: reportData.value.resources.personnel.subtypes.operator.data[1].value,
-    },
-    分离提纯区: {
-      技术人员: reportData.value.resources.personnel.subtypes.technician.data[2].value,
-      管理人员: reportData.value.resources.personnel.subtypes.manager.data[2].value,
-      维修人员: reportData.value.resources.personnel.subtypes.maintenance.data[2].value,
-      安全人员: reportData.value.resources.personnel.subtypes.safety.data[2].value,
-      操作人员: reportData.value.resources.personnel.subtypes.operator.data[2].value,
-    },
-    成品储存区: {
-      技术人员: reportData.value.resources.personnel.subtypes.technician.data[3].value,
-      管理人员: reportData.value.resources.personnel.subtypes.manager.data[3].value,
-      维修人员: reportData.value.resources.personnel.subtypes.maintenance.data[3].value,
-      安全人员: reportData.value.resources.personnel.subtypes.safety.data[3].value,
-      操作人员: reportData.value.resources.personnel.subtypes.operator.data[3].value,
-    },
-    公用工程区: {
-      技术人员: reportData.value.resources.personnel.subtypes.technician.data[4].value,
-      管理人员: reportData.value.resources.personnel.subtypes.manager.data[4].value,
-      维修人员: reportData.value.resources.personnel.subtypes.maintenance.data[4].value,
-      安全人员: reportData.value.resources.personnel.subtypes.safety.data[4].value,
-      操作人员: reportData.value.resources.personnel.subtypes.operator.data[4].value,
-    },
-  }
+  if (!reportData.value) return
 
-  // 更新物料资源数据
-  materialsData.materials = {
-    原料储存区: {
-      原料: reportData.value.resources.materials.subtypes.raw_material.data[0].value,
-      催化剂: reportData.value.resources.materials.subtypes.catalyst.data[0].value,
-      存储容量: reportData.value.resources.materials.subtypes.storage.data[0].value,
-    },
-    反应器区: {
-      原料: reportData.value.resources.materials.subtypes.raw_material.data[1].value,
-      催化剂: reportData.value.resources.materials.subtypes.catalyst.data[1].value,
-      存储容量: reportData.value.resources.materials.subtypes.storage.data[1].value,
-    },
-    分离提纯区: {
-      原料: reportData.value.resources.materials.subtypes.raw_material.data[2].value,
-      催化剂: reportData.value.resources.materials.subtypes.catalyst.data[2].value,
-      存储容量: reportData.value.resources.materials.subtypes.storage.data[2].value,
-    },
-    成品储存区: {
-      原料: reportData.value.resources.materials.subtypes.raw_material.data[3].value,
-      催化剂: reportData.value.resources.materials.subtypes.catalyst.data[3].value,
-      存储容量: reportData.value.resources.materials.subtypes.storage.data[3].value,
-    },
-    公用工程区: {
-      原料: reportData.value.resources.materials.subtypes.raw_material.data[4].value,
-      催化剂: reportData.value.resources.materials.subtypes.catalyst.data[4].value,
-      存储容量: reportData.value.resources.materials.subtypes.storage.data[4].value,
-    },
-  }
+  // 从optimized_resource_allocation中提取原料资源分布数据
+  const resourceDistribution = reportData.value.optimized_resource_allocation?.resource_distribution || {}
+  const energyAllocation = reportData.value.optimized_resource_allocation?.energy_allocation || {}
 
-  // 更新电力资源数据
-  electricityData.electricity = {
-    原料储存区: reportData.value.resources.electricity.data[0].value,
-    反应器区: reportData.value.resources.electricity.data[1].value,
-    分离提纯区: reportData.value.resources.electricity.data[2].value,
-    成品储存区: reportData.value.resources.electricity.data[3].value,
-    公用工程区: reportData.value.resources.electricity.data[4].value,
-  }
+  // 更新原料资源数据
+  materialsData.materials = {}
+  energyData.energy = {}
+
+  // 提取各区域的资源利用率作为原料数据
+  Object.keys(resourceDistribution).forEach((area) => {
+    if (workshops.includes(area)) {
+      const utilization = resourceDistribution[area]?.utilization_rate || 0
+      // 模拟原料分布数据（基于利用率）
+      materialsData.materials[area] = {
+        铁矿石: utilization * 100 + Math.random() * 20,
+        石灰石: utilization * 80 + Math.random() * 15,
+        煤炭: utilization * 60 + Math.random() * 10,
+        焦炭: utilization * 50 + Math.random() * 8,
+      }
+    }
+  })
+
+  // 提取各区域的能源优化数据
+  Object.keys(energyAllocation).forEach((area) => {
+    if (workshops.includes(area)) {
+      const costOptimization = energyAllocation[area]?.cost_optimization || 0
+      // 模拟能源分布数据（基于成本优化）
+      energyData.energy[area] = {
+        电力: costOptimization * 200 + Math.random() * 50,
+        蒸汽: costOptimization * 150 + Math.random() * 30,
+        天然气: costOptimization * 100 + Math.random() * 20,
+      }
+    }
+  })
 }
 
-// 准备人力资源分配数据
-const staffData = {
-  staff: {
-    原料储存区: {
-      技术人员: 0,
-      管理人员: 0,
-      维修人员: 0,
-      安全人员: 0,
-      操作人员: 0,
-    },
-    反应器区: {
-      技术人员: 0,
-      管理人员: 0,
-      维修人员: 0,
-      安全人员: 0,
-      操作人员: 0,
-    },
-    分离提纯区: {
-      技术人员: 0,
-      管理人员: 0,
-      维修人员: 0,
-      安全人员: 0,
-      操作人员: 0,
-    },
-    成品储存区: {
-      技术人员: 0,
-      管理人员: 0,
-      维修人员: 0,
-      安全人员: 0,
-      操作人员: 0,
-    },
-    公用工程区: {
-      技术人员: 0,
-      管理人员: 0,
-      维修人员: 0,
-      安全人员: 0,
-      操作人员: 0,
-    },
-  },
+// 准备原料资源分配数据
+const materialsData = {
+  materials: {} as { [key: string]: { [key: string]: number } },
   colors: {
-    技术人员: '#5470C6',
-    管理人员: '#91CC75',
-    维修人员: '#FAC858',
-    安全人员: '#EE6666',
-    操作人员: '#73C0DE',
+    铁矿石: '#8B4513',
+    石灰石: '#D3D3D3',
+    煤炭: '#2F4F4F',
+    焦炭: '#696969',
+  },
+}
+
+// 准备能源资源分配数据
+const energyData = {
+  energy: {} as { [key: string]: { [key: string]: number } },
+  colors: {
+    电力: '#FFD700',
+    蒸汽: '#87CEEB',
+    天然气: '#FF6347',
   },
 }
 
@@ -191,39 +99,34 @@ const chartRef = ref<HTMLElement | null>(null)
 // 图表实例
 let chartInstance: echarts.ECharts | null = null
 
-// 资源类型控制
-const currentChartType = ref(0) // 0:人力资源 1:物料资源 2:电力资源
+// 资源类型控制（0:原料资源 1:能源资源）
+const currentChartType = ref(0)
 
 // 资源类型标题
-const resourceTitles = ['人力资源分布', '物料资源分布', '电力资源分布']
+const resourceTitles = ['原料资源分布', '能源资源分布']
 
 // 资源类型按钮数据
 const resourceButtons = [
-  { type: 0, label: '人力资源', icon: '👥' },
-  { type: 1, label: '物料资源', icon: '🧪' },
-  { type: 2, label: '电力资源', icon: '⚡' },
+  { type: 0, label: '原料资源', icon: '🏭' },
+  { type: 1, label: '能源资源', icon: '⚡' },
 ]
+
+// 钢铁生产区域
+const workshops = ['原料与采购物流区', '烧结/球团区', '炼焦区', '炼铁区', '炼钢区', '连铸区', '轧制区', '热处理区']
+
+// 原料类型
+const materialTypes = ['铁矿石', '石灰石', '煤炭', '焦炭']
+
+// 能源类型
+const energyTypes = ['电力', '蒸汽', '天然气']
 
 // 切换到指定图表类型
 const switchChartType = (type: number) => {
   currentChartType.value = type
-  // 确保完全清除前一个图表的数据
   updateChart()
 }
 
 // 类型定义
-interface StaffData {
-  staff: {
-    [key: string]: {
-      [key: string]: number
-    }
-  }
-  colors: {
-    [key: string]: string
-  }
-}
-
-// 物料资源数据类型
 interface MaterialsData {
   materials: {
     [key: string]: {
@@ -235,92 +138,29 @@ interface MaterialsData {
   }
 }
 
-// 电力资源数据类型
-interface ElectricityData {
-  electricity: {
-    [key: string]: number
+// 能源资源数据类型
+interface EnergyData {
+  energy: {
+    [key: string]: {
+      [key: string]: number
+    }
   }
   colors: {
     [key: string]: string
   }
 }
 
-// 准备物料资源分配数据
-const materialsData = {
-  materials: {
-    原料储存区: {
-      原料: 0,
-      催化剂: 0,
-      存储容量: 0,
-    },
-    反应器区: {
-      原料: 0,
-      催化剂: 0,
-      存储容量: 0,
-    },
-    分离提纯区: {
-      原料: 0,
-      催化剂: 0,
-      存储容量: 0,
-    },
-    成品储存区: {
-      原料: 0,
-      催化剂: 0,
-      存储容量: 0,
-    },
-    公用工程区: {
-      原料: 0,
-      催化剂: 0,
-      存储容量: 0,
-    },
-  },
-  colors: {
-    原料: '#4CAF50',
-    催化剂: '#2196F3',
-    存储容量: '#FFC107',
-  },
-}
-
-// 准备电力资源分配数据
-const electricityData = {
-  electricity: {
-    原料储存区: 0,
-    反应器区: 0,
-    分离提纯区: 0,
-    成品储存区: 0,
-    公用工程区: 0,
-  },
-  colors: {
-    电力: '#9C27B0',
-  },
-}
-
 // 类型断言
-const typedStaffData = staffData as StaffData
 const typedMaterialsData = materialsData as MaterialsData
-const typedElectricityData = electricityData as ElectricityData
-
-// 准备数据
-const staffTypes = ['技术人员', '管理人员', '维修人员', '安全人员', '操作人员']
-// 简化的图例名称（去除"人员"二字）
-const simplifiedLegendNames = ['技术', '管理', '维修', '安全', '操作']
-const workshops = Object.keys(typedStaffData.staff)
-
-// 物料类型
-const materialTypes = ['原料', '催化剂', '存储容量']
-
-// 电力类型
-const electricityTypes = ['电力']
+const typedEnergyData = energyData as EnergyData
 
 // 获取根据展开状态决定的图例名称
 const getLegendNames = () => {
   switch (currentChartType.value) {
-    case 0: // 人力资源
-      return isExpanded.value ? staffTypes : simplifiedLegendNames
-    case 1: // 物料资源
+    case 0: // 原料资源
       return materialTypes
-    case 2: // 电力资源
-      return electricityTypes
+    case 1: // 能源资源
+      return energyTypes
     default:
       return []
   }
@@ -343,34 +183,24 @@ const showPipeFlow = (params: any) => {
 
   // 根据当前图表类型和资源类型定义流动路径
   switch (currentChartType.value) {
-    case 0: // 人力资源
-      // 人力资源从原料储存区流向展示的车间
-      resourceType = params.seriesName
-      fromWorkshop = '原料储存区'
-      toWorkshop = workshop !== '原料储存区' ? workshop : '反应器区'
-      break
-    case 1: // 物料资源
-      if (resourceType === '原料') {
-        fromWorkshop = '原料储存区'
-        toWorkshop = workshop !== '原料储存区' ? workshop : '反应器区'
-      } else if (resourceType === '催化剂') {
-        fromWorkshop = '公用工程区'
-        toWorkshop = workshop !== '公用工程区' ? workshop : '反应器区'
-      } else {
-        fromWorkshop = workshop
-        toWorkshop =
-          workshop === '反应器区'
-            ? '分离提纯区'
-            : workshop === '分离提纯区'
-              ? '成品储存区'
-              : workshop === '成品储存区'
-                ? '原料储存区'
-                : '反应器区'
+    case 0: // 原料资源
+      if (resourceType === '铁矿石') {
+        fromWorkshop = '原料与采购物流区'
+        toWorkshop = workshop !== '原料与采购物流区' ? workshop : '烧结/球团区'
+      } else if (resourceType === '石灰石') {
+        fromWorkshop = '原料与采购物流区'
+        toWorkshop = workshop !== '原料与采购物流区' ? workshop : '炼钢区'
+      } else if (resourceType === '煤炭') {
+        fromWorkshop = '原料与采购物流区'
+        toWorkshop = workshop !== '原料与采购物流区' ? workshop : '炼焦区'
+      } else if (resourceType === '焦炭') {
+        fromWorkshop = '炼焦区'
+        toWorkshop = workshop !== '炼焦区' ? workshop : '炼铁区'
       }
       break
-    case 2: // 电力资源
-      fromWorkshop = '公用工程区'
-      toWorkshop = workshop !== '公用工程区' ? workshop : '反应器区'
+    case 1: // 能源资源
+      fromWorkshop = '原料与采购物流区' // 能源主要来源
+      toWorkshop = workshop !== '原料与采购物流区' ? workshop : '烧结/球团区'
       break
   }
 
@@ -387,10 +217,9 @@ const showPipeFlow = (params: any) => {
   // 发送消息到Unity显示管道
   console.log('显示管道流动:', pipeData)
   unityService.sendMessageToUnity('Pipe', 'PipeHighlightOn', JSON.stringify(pipeData))
-
   // 构建文本框显示数据
   const displayData = {
-    timestamp: new Date().toISOString(),
+    timestamp: optimizationResult.timestamp,
     resource_type: resourceType,
     from_workshop: fromWorkshop,
     to_workshop: toWorkshop,
@@ -421,8 +250,8 @@ const showPipeFlow = (params: any) => {
       },
     },
     {
-      source: COMPONENT_SOURCE, // 可选的消息来源标识
-      title: `${resourceTitles[currentChartType.value]}`, // 设置特定标题
+      source: COMPONENT_SOURCE,
+      title: `${resourceTitles[currentChartType.value]} - ${optimizationResult.timestamp}`,
     },
   )
 }
@@ -431,11 +260,9 @@ const showPipeFlow = (params: any) => {
 const getUnitByResourceType = () => {
   switch (currentChartType.value) {
     case 0:
-      return '人'
-    case 1:
       return '吨'
-    case 2:
-      return 'kW'
+    case 1:
+      return 'kW/MJ'
     default:
       return ''
   }
@@ -451,12 +278,10 @@ const getResourceStatus = (value: number) => {
 // 获取正常范围
 const getNormalRanges = (): [number, number] | null => {
   switch (currentChartType.value) {
-    case 0: // 人力资源
-      return [3, 10]
-    case 1: // 物料资源
-      return [100, 500]
-    case 2: // 电力资源
-      return [200, 1000]
+    case 0: // 原料资源
+      return [50, 200]
+    case 1: // 能源资源
+      return [100, 400]
     default:
       return null
   }
@@ -473,41 +298,7 @@ const hidePipeFlow = () => {
 // 将数据转换为echarts所需格式
 const getSeriesData = () => {
   switch (currentChartType.value) {
-    case 0: // 人力资源
-      return staffTypes.map((type, index) => {
-        return {
-          name: isExpanded.value ? type : simplifiedLegendNames[index],
-          type: 'bar' as const,
-          stack: '总量',
-          emphasis: {
-            focus: 'series' as const,
-          },
-          itemStyle: {
-            color: typedStaffData.colors[type],
-          },
-          // 修复重复 show 属性的问题
-          label: {
-            position: 'inside' as const,
-            formatter: function (params: any) {
-              // 在展开状态下且值大于3时显示标签
-              if (isExpanded.value && params.value > 3) {
-                return params.value.toFixed(2)
-              }
-              return ''
-            },
-            fontSize: 12,
-            color: '#fff',
-            textShadowColor: 'rgba(0, 0, 0, 0.5)',
-            textShadowBlur: 3,
-            textShadowOffsetX: 1,
-            textShadowOffsetY: 1,
-            avoidLabelOverlap: true,
-            show: true,
-          },
-          data: workshops.map((workshop) => typedStaffData.staff[workshop][type]),
-        }
-      })
-    case 1: // 物料资源
+    case 0: // 原料资源
       return materialTypes.map((type) => {
         return {
           name: type,
@@ -522,9 +313,8 @@ const getSeriesData = () => {
           label: {
             position: 'inside' as const,
             formatter: function (params: any) {
-              // 在展开状态下且值大于3时显示标签
-              if (isExpanded.value && params.value > 3) {
-                return params.value.toFixed(2)
+              if (isExpanded.value && params.value > 10) {
+                return params.value.toFixed(1)
               }
               return ''
             },
@@ -537,11 +327,11 @@ const getSeriesData = () => {
             avoidLabelOverlap: true,
             show: true,
           },
-          data: workshops.map((workshop) => typedMaterialsData.materials[workshop][type]),
+          data: workshops.map((workshop) => typedMaterialsData.materials[workshop]?.[type] || 0),
         }
       })
-    case 2: // 电力资源
-      return electricityTypes.map((type) => {
+    case 1: // 能源资源
+      return energyTypes.map((type) => {
         return {
           name: type,
           type: 'bar' as const,
@@ -550,14 +340,13 @@ const getSeriesData = () => {
             focus: 'series' as const,
           },
           itemStyle: {
-            color: typedElectricityData.colors[type],
+            color: typedEnergyData.colors[type],
           },
           label: {
             position: 'inside' as const,
             formatter: function (params: any) {
-              // 在展开状态下且值大于3时显示标签
-              if (isExpanded.value && params.value > 3) {
-                return params.value.toFixed(2)
+              if (isExpanded.value && params.value > 10) {
+                return params.value.toFixed(1)
               }
               return ''
             },
@@ -570,7 +359,7 @@ const getSeriesData = () => {
             avoidLabelOverlap: true,
             show: true,
           },
-          data: workshops.map((workshop) => typedElectricityData.electricity[workshop]),
+          data: workshops.map((workshop) => typedEnergyData.energy[workshop]?.[type] || 0),
         }
       })
     default:
@@ -705,13 +494,13 @@ watch(isExpanded, () => {
   }
 })
 
-// 组件挂载时初始化图表 - 修改监听algorithmStore
+// 组件挂载时初始化图表
 onMounted(async () => {
   // 文本框
   chartRef.value?.addEventListener('mouseleave', hidePipeFlow)
 
-  // 加载报告数据
-  await loadReportData()
+  // 初始化数据
+  updateChartData()
 
   // 初始化图表
   initChart()
@@ -722,19 +511,6 @@ onMounted(async () => {
       chartInstance.resize()
     }
   })
-
-  // 监听模块4的算法和参数变化
-  watch(
-    () => [
-      algorithmStore.selectedAlgorithms[ModuleType.Module4],
-      algorithmStore.algorithms[algorithmStore.selectedAlgorithms[ModuleType.Module4]]?.params,
-    ],
-    async () => {
-      console.log('模块4配置已更新，重新加载数据')
-      await loadReportData()
-    },
-    { deep: true },
-  )
 })
 
 // 组件销毁前清理
@@ -780,7 +556,7 @@ onMounted(() => {
 
 <template>
   <div class="resource-distribution-chart-container">
-    <GraphHeader :title="'化工车间资源分布'">
+    <GraphHeader :title="'钢铁工业资源分布'">
       <template #icon>
         <svg viewBox="0 0 24 24" width="20" height="20">
           <path
@@ -795,7 +571,7 @@ onMounted(() => {
       <div class="resource-distribution-chart" ref="chartRef" :style="chartStyle"></div>
     </transition>
 
-    <!-- 资源类型切换按钮 - 改善样式 -->
+    <!-- 资源类型切换按钮 -->
     <div class="chart-type-buttons">
       <button
         v-for="button in resourceButtons"
@@ -812,6 +588,254 @@ onMounted(() => {
   <TextMessageDisplayBox />
 </template>
 
-<style lang="scss" scoped>
-@use '@/assets/styles/StaffDistributionChart.scss';
+<style scoped>
+.resource-distribution-chart-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(135deg, rgba(15, 30, 60, 0.95), rgba(8, 15, 35, 0.95));
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.2),
+    0 0 30px rgba(32, 160, 255, 0.07);
+  border: 1px solid rgba(32, 160, 255, 0.15);
+}
+
+/* 标题栏 */
+.graph-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: linear-gradient(
+    90deg,
+    rgba(12, 24, 48, 0.95) 0%,
+    rgba(20, 40, 80, 0.95) 50%,
+    rgba(12, 24, 48, 0.95) 100%
+  );
+  border-bottom: 1px solid rgba(74, 144, 226, 0.2);
+  position: relative;
+  z-index: 5;
+}
+
+.graph-header::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(32, 160, 255, 0), rgba(32, 160, 255, 0.5), rgba(32, 160, 255, 0));
+}
+
+.graph-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: rgba(220, 230, 240, 0.95);
+  font-weight: 600;
+  font-size: 16px;
+  text-shadow: 0 0 10px rgba(32, 160, 255, 0.3);
+  letter-spacing: 0.5px;
+}
+
+.title-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #20a0ff;
+  filter: drop-shadow(0 0 5px rgba(32, 160, 255, 0.5));
+}
+
+/* 图表区域 */
+.resource-distribution-chart {
+  width: 100%;
+  height: calc(100% - 100px);
+  margin-top: 5px;
+  position: relative;
+  backdrop-filter: blur(5px);
+  isolation: isolate;
+}
+
+/* 网格背景效果 */
+.resource-distribution-chart::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to bottom, transparent 49.5%, rgba(32, 160, 255, 0.03) 50%, transparent 50.5%),
+    linear-gradient(90deg, rgba(32, 160, 255, 0.01) 1px, transparent 1px),
+    linear-gradient(rgba(32, 160, 255, 0.01) 1px, transparent 1px);
+  background-size:
+    100% 6px,
+    20px 20px,
+    20px 20px;
+  z-index: -1;
+}
+
+/* 全息投影效果 */
+.resource-distribution-chart::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(64, 120, 255, 0.05) 0%, rgba(64, 120, 255, 0) 70%),
+    radial-gradient(ellipse at 50% 100%, rgba(64, 120, 255, 0.05) 0%, rgba(64, 120, 255, 0) 70%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* 按钮区域 */
+.chart-type-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  padding: 0 20px;
+  position: absolute;
+  bottom: 8px;
+  left: 0;
+  right: 0;
+  z-index: 5;
+}
+
+/* 按钮样式 */
+.chart-type-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  font-size: 12px;
+  background: rgba(20, 40, 80, 0.7);
+  color: rgba(220, 230, 240, 0.8);
+  backdrop-filter: blur(4px);
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.2),
+    0 0 4px rgba(32, 160, 255, 0.1);
+  border: 1px solid rgba(32, 160, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.chart-type-button:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.25),
+    0 0 8px rgba(32, 160, 255, 0.2);
+  color: rgba(220, 230, 240, 1);
+  border-color: rgba(32, 160, 255, 0.3);
+}
+
+.chart-type-button.active {
+  background: linear-gradient(135deg, rgba(25, 118, 210, 0.8), rgba(30, 136, 229, 0.8));
+  color: white;
+  box-shadow:
+    0 3px 10px rgba(25, 118, 210, 0.3),
+    0 0 10px rgba(32, 160, 255, 0.3);
+  border-color: rgba(32, 160, 255, 0.4);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.chart-type-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.1), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.chart-type-button:hover::before {
+  opacity: 1;
+}
+
+.chart-type-button.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 10%;
+  width: 80%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
+}
+
+.button-icon {
+  margin-right: 5px;
+  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.button-label {
+  font-weight: 500;
+  letter-spacing: 0.2px;
+}
+
+/* 过渡动画 */
+.fade-enter-active,
+.fade-leave-active {
+  transition:
+    opacity 0.5s ease,
+    transform 0.5s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+@media (max-width: 768px) {
+  .button-label {
+    font-size: 11px;
+  }
+
+  .button-icon {
+    font-size: 13px;
+  }
+
+  .chart-type-button {
+    padding: 5px 8px;
+  }
+}
+
+/* 高亮元素的悬停状态 */
+.chart-type-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(32, 160, 255, 0.4);
+}
+
+/* echarts 工具提示样式 */
+:global(.staff-chart-tooltip:nth-of-type(2)) {
+  background: rgba(8, 20, 40, 0.9) !important;
+  backdrop-filter: blur(10px) !important;
+  border-radius: 6px !important;
+  border: 1px solid rgba(64, 169, 255, 0.5) !important;
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.3),
+    0 0 15px rgba(32, 160, 255, 0.15) !important;
+  padding: 8px 12px !important;
+  color: rgba(255, 255, 255, 1) !important;
+  font-family: 'Inter', 'Roboto', sans-serif !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4) !important;
+}
 </style>
