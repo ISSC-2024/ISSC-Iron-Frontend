@@ -320,7 +320,7 @@ const initChart = () => {
       },
       extraCssText: 'box-shadow:0 4px 24px 0 rgba(33,150,243,0.12);border-radius:10px;',
       formatter: (params: any) => {
-        const iconMap = ['🌐', '��️', '🔷', '🟢', '⚠️', '🔥']
+        const iconMap = ['🌐', '📡', '🔷', '🟢', '⚠️', '🔥']
         if (params.dataType === 'node') {
           const data = params.data as NodeData
           return `<div style="min-width:120px;padding:2px 0 2px 0;">
