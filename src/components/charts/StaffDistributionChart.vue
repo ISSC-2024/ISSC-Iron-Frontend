@@ -216,7 +216,7 @@ const showPipeFlow = (params: any) => {
 
   // 发送消息到Unity显示管道
   console.log('显示管道流动:', pipeData)
-  unityService.sendMessageToUnity('Pipe', 'PipeHighlightOn', JSON.stringify(pipeData))
+  unityService.sendMessageToUnity('Scripts', 'ReceiveDataFromJS', JSON.stringify(pipeData))
   // 构建文本框显示数据
   const displayData = {
     timestamp: optimizationResult.timestamp,
@@ -292,7 +292,7 @@ const hidePipeFlow = () => {
   // 隐藏文本框
   messageStore.hideMessage(COMPONENT_SOURCE)
   // 发送消息到Unity隐藏管道
-  unityService.sendMessageToUnity('Pipe', 'PipeHighlightOff', '')
+  unityService.sendMessageToUnity('Scripts', 'StopFlow', '')
 }
 
 // 将数据转换为echarts所需格式
