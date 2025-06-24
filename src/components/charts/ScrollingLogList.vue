@@ -140,7 +140,6 @@ import {
   DownloadOutlined, // 添加下载图标
 } from '@ant-design/icons-vue'
 import GraphHeader from '../common/GraphHeader.vue'
-import '@/assets/styles/ScrollingLogList.scss'
 
 // 使用全局对象，先通过script标签引入
 declare global {
@@ -559,3 +558,7 @@ onUnmounted(() => {
   }
 })
 </script>
+
+<style lang="scss" scoped>
+@use '@/assets/styles/ScrollingLogList.scss';
+</style>

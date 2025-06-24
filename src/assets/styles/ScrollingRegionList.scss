@@ -69,8 +69,14 @@ $region-pulse-duration: 2.5s;
     right: 0;
     bottom: 0;
     pointer-events: none;
-    @include tech-dots-background($color-primary, $color-secondary);
-    opacity: 0.4;
+    background-image:
+      linear-gradient(to bottom, transparent 49.5%, rgba($color-primary, 0.03) 50%, transparent 50.5%),
+      linear-gradient(90deg, rgba($color-primary, 0.01) 1px, transparent 1px),
+      linear-gradient(rgba($color-primary, 0.01) 1px, transparent 1px);
+    background-size:
+      100% 6px,
+      $region-grid-size $region-grid-size,
+      $region-grid-size $region-grid-size;
     z-index: 1;
   }
 
@@ -81,7 +87,9 @@ $region-pulse-duration: 2.5s;
     left: 0;
     right: 0;
     bottom: 0;
-    @include tech-glow-background($color-primary, $color-secondary);
+    background:
+      radial-gradient(ellipse at 50% 0%, rgba($color-primary, 0.05) 0%, rgba($color-primary, 0) 70%),
+      radial-gradient(ellipse at 50% 100%, rgba($color-primary, 0.05) 0%, rgba($color-primary, 0) 70%);
     pointer-events: none;
     z-index: 0;
   }
@@ -111,43 +119,53 @@ $region-pulse-duration: 2.5s;
     .status-indicator svg {
       font-size: $font-size-md;
     }
+    .scenario-count {
+      font-size: 12px;
+    }
   }
 }
 
 .scrolling-list-header {
-  display: flex;
-  align-items: center;
-  padding: 0 8px;
-  background: linear-gradient(90deg, $region-header-bg1, $region-header-bg2, $region-header-bg1);
+  @include flex-between;
+  background: linear-gradient(90deg, $region-header-bg1 0%, $region-header-bg2 50%, $region-header-bg1 100%);
   font-weight: 600;
-  border-bottom: $region-border-width solid rgba($color-primary, 0.5);
+  padding: 0 8px;
+  height: 48px;
+  border-bottom: $region-border-width solid rgba($color-primary, 0.15);
   font-size: $font-size-sm;
   position: sticky;
   top: 0;
   z-index: 5;
-  color: $region-header-color;
+  color: rgba($color-primary, 0.95);
   text-transform: uppercase;
   letter-spacing: 1px;
   text-shadow: 0 0 8px rgba($color-primary, 0.4);
 }
 
 .header-item {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: $region-header-height;
-  line-height: 1;
-  gap: 8px;
-  position: relative;
   flex: 1;
+  @include flex-center;
+  gap: 6px;
+  line-height: 1;
+  height: 100%;
   text-align: center;
+  position: relative;
 
-  @include header-underline($color-primary);
-
+  span,
   svg {
-    font-size: $font-size-md;
-    vertical-align: middle;
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40%;
+    height: 2px;
+    background: linear-gradient(90deg, rgba($color-primary, 0), rgba($color-primary, 0.6), rgba($color-primary, 0));
   }
 }
 
@@ -164,7 +182,7 @@ $region-pulse-duration: 2.5s;
     width: 6px;
   }
   &::-webkit-scrollbar-track {
-    background: $region-scrollbar-track;
+    background: rgba($region-bg2, 0.3);
   }
   &::-webkit-scrollbar-thumb {
     background-color: $region-scrollbar-thumb;
@@ -179,7 +197,7 @@ $region-pulse-duration: 2.5s;
   @include transition(all, $region-transition-speed);
   cursor: pointer;
   align-items: center;
-  background-color: transparent;
+  background-color: rgba($region-bg1, 0.75);
   position: relative;
 
   &::before {
@@ -194,25 +212,41 @@ $region-pulse-duration: 2.5s;
   }
 
   &.row-alt {
-    background-color: $region-row-alt-bg;
+    background-color: rgba($region-bg2, 0.75);
   }
+
   &:hover {
     background-color: $region-row-hover-bg;
     transform: translateX(2px);
     box-shadow: -2px 0 8px rgba($color-primary, 0.18);
     z-index: 2;
 
-    &::before {
-      background: linear-gradient(to bottom, $color-primary, $color-secondary);
+    .list-region::after {
+      width: 40%;
+    }
+
+    .status-indicator {
+      transform: scale(1.03);
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+
+      &::before {
+        transform: scale(0.95);
+        opacity: 0.6;
+      }
+    }
+
+    .item-icon {
+      color: $color-text-primary;
     }
   }
+
   &.row-selected {
-    background: linear-gradient(135deg, $region-row-selected-bg1, $region-row-selected-bg2) !important;
-    border-right: 1px solid $region-row-selected-border;
+    background: linear-gradient(90deg, rgba($color-primary, 0.15), rgba($color-primary, 0.2)) !important;
+    border-right: 1px solid rgba($color-primary, 0.35);
     box-shadow: 0 0 15px rgba($color-primary, 0.2);
 
-    &::before {
-      background: $color-secondary;
+    .item-icon {
+      color: $color-text-primary;
     }
   }
 }
@@ -220,9 +254,7 @@ $region-pulse-duration: 2.5s;
 .list-item {
   flex: 1;
   text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  @include flex-center;
   gap: 8px;
 }
 
@@ -231,7 +263,7 @@ $region-pulse-duration: 2.5s;
   font-family: 'Consolas', monospace;
   text-shadow: 0 0 5px rgba($color-primary, 0.3);
   letter-spacing: 0.5px;
-  font-size: $font-size-sm;
+  font-size: 13px;
 }
 
 .list-region {
@@ -239,7 +271,7 @@ $region-pulse-duration: 2.5s;
   letter-spacing: 0.5px;
   position: relative;
   text-shadow: 0 0 5px rgba($color-primary, 0.25);
-  font-size: $font-size-sm;
+  font-size: 13px;
 
   &::after {
     content: '';
@@ -254,17 +286,14 @@ $region-pulse-duration: 2.5s;
   }
 }
 
-.list-row:hover .list-region::after {
-  width: 40%;
-}
-
+// 状态指示器
 .status-indicator {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   padding: 3px 10px;
   border-radius: 10px;
-  font-size: $font-size-sm;
+  font-size: 13px;
   min-width: 90px;
   font-weight: 600;
   @include transition(all, $region-transition-speed);
@@ -297,18 +326,13 @@ $region-pulse-duration: 2.5s;
     border-radius: 10px 10px 0 0;
     pointer-events: none;
   }
+
+  svg {
+    font-size: $font-size-sm;
+  }
 }
 
-.list-row:hover .status-indicator {
-  transform: scale(1.03);
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-}
-
-.list-row:hover .status-indicator::before {
-  transform: scale(0.95);
-  opacity: 0.6;
-}
-
+// 状态类型样式
 .status-safe {
   background: linear-gradient(145deg, rgba($region-status-safe, 0.8), rgba($region-status-safe2, 0.8));
   color: rgba(255, 255, 255, 0.95);
@@ -355,36 +379,41 @@ $region-pulse-duration: 2.5s;
   }
 }
 
+// 图标样式
 .item-icon {
   font-size: $font-size-sm;
   display: flex;
   align-items: center;
 }
 
-.status-indicator svg {
-  font-size: $font-size-sm;
+// 图标颜色随风险等级变化
+.list-row {
+  &:has(.status-safe) .item-icon {
+    color: rgba($region-status-safe, 0.9);
+  }
+
+  &:has(.status-warning) .item-icon {
+    color: rgba($region-status-warning, 0.9);
+  }
+
+  &:has(.status-danger) .item-icon {
+    color: rgba($region-status-danger, 0.9);
+  }
+
+  .status-safe ~ .list-item .item-icon {
+    color: rgba($region-status-safe, 0.9);
+  }
+
+  .status-warning ~ .list-item .item-icon {
+    color: rgba($region-status-warning, 0.9);
+  }
+
+  .status-danger ~ .list-item .item-icon {
+    color: rgba($region-status-danger, 0.9);
+  }
 }
 
-.row-selected .item-icon,
-.list-row:hover .item-icon {
-  color: $color-text-primary;
-}
-
-.list-row .status-safe ~ .list-item .item-icon,
-.list-row:has(.status-safe) .item-icon {
-  color: rgba($region-status-safe, 0.9);
-}
-
-.list-row .status-warning ~ .list-item .item-icon,
-.list-row:has(.status-warning) .item-icon {
-  color: rgba($region-status-warning, 0.9);
-}
-
-.list-row .status-danger ~ .list-item .item-icon,
-.list-row:has(.status-danger) .item-icon {
-  color: rgba($region-status-danger, 0.9);
-}
-
+// 加载状态和空数据状态
 .loading-indicator,
 .empty-data {
   display: flex;
@@ -392,11 +421,12 @@ $region-pulse-duration: 2.5s;
   align-items: center;
   height: 100px;
   width: 100%;
-  color: rgba($color-primary, 0.8);
+  color: rgba($color-primary, 0.7);
   font-size: $font-size-md;
   text-align: center;
 }
 
+// 加载更多相关样式
 .load-more-trigger {
   padding: 15px;
   text-align: center;
@@ -416,6 +446,7 @@ $region-pulse-duration: 2.5s;
   padding: 10px;
 }
 
+// 导出按钮样式
 .export-button {
   display: flex;
   align-items: center;
@@ -436,13 +467,45 @@ $region-pulse-duration: 2.5s;
     border-color: rgba($color-primary, $opacity-high);
     @include glow-effect($color-primary, 0.4);
   }
+
   &:active {
     background: rgba($color-primary, $opacity-high);
     transform: translateY(1px);
   }
 }
 
+// 场景数量指示器样式
+.scenario-count {
+  font-size: 11px;
+  opacity: 0.8;
+  margin-left: 5px;
+  font-weight: normal;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+// 图表头部和列表头部之间的间距修正
 .graph-header + .scrolling-list-header {
   margin-top: 0 !important;
   padding-top: 0 !important;
+}
+
+// 在非展开（默认）模式下，为受影响的区域列提供文本省略效果
+.scrolling-list-container:not(.expanded) .list-region {
+  min-width: 0;
+}
+
+.scrolling-list-container:not(.expanded) .list-region span:not(.item-icon) {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+// 非展开状态下：危险/警告指示器仅显示文本，不显示场景数量
+.scrolling-list-container:not(.expanded) {
+  .status-danger .scenario-count,
+  .status-warning .scenario-count {
+    display: none;
+  }
 }
