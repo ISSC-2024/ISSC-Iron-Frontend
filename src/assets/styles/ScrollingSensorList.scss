@@ -52,7 +52,9 @@ $modal-z: 1500;
       height: 1.75rem !important;
     }
     .dropdown {
-      width: 10.9375rem !important;
+      width: auto !important;
+      min-width: 7.5rem !important;
+      max-width: 15rem !important;
     }
     .select-wrapper {
       margin-top: 0.25rem !important;
@@ -307,7 +309,9 @@ $modal-z: 1500;
 
 .dropdown {
   position: relative;
-  width: 8.75rem;
+  width: auto;
+  min-width: 6.25rem;
+  max-width: 12rem;
 }
 
 .select-wrapper {
@@ -381,12 +385,19 @@ $modal-z: 1500;
   -moz-appearance: none;
   background: none !important;
   border-left: 1px solid rgba($color-primary, 0.15);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  max-width: 100%;
+  width: auto;
 
   option {
     background-color: $color-bg-panel;
     color: $color-text-primary;
     padding: 0.5rem;
     font-size: $font-size-xs;
+    white-space: normal;
+    word-wrap: break-word;
 
     &:hover {
       background-color: rgba($color-primary, 0.3) !important;
