@@ -292,7 +292,6 @@ const isExpanded = inject('isChartExpanded', ref(false))
 const regions = ref<Region[]>([])
 const startIndex = ref(0)
 const visibleCount = 100 // 一次显示的行数
-let scrollTimer: number | null = null
 
 // 跟踪当前选中的区域
 const selectedRegion = ref<Region | null>(null)
@@ -346,11 +345,6 @@ const prepareUnityData = (region: Region): UnityData | null => {
 // 鼠标悬停在区域上时触发高亮
 const handleRegionHover = (region: Region) => {
   if (!unityService.isUnityLoaded()) return
-  // 鼠标悬停时停止滚动
-  if (scrollTimer) {
-    clearInterval(scrollTimer)
-    scrollTimer = null
-  }
   const unityData = prepareUnityData(region)
   if (unityData) {
     unityService.sendMessageToUnity('Sensor', 'RegionHighlightOn', JSON.stringify(unityData))
@@ -360,10 +354,6 @@ const handleRegionHover = (region: Region) => {
 // 鼠标离开区域时取消高亮
 const handleRegionLeave = (region: Region) => {
   if (!unityService.isUnityLoaded()) return
-  // 如果不在展开状态，重新开始滚动
-  if (!isExpanded.value && !scrollTimer) {
-    scrollTimer = setInterval(scrollList, 2000) as unknown as number
-  }
   const unityData = prepareUnityData(region)
   if (unityData) {
     unityService.sendMessageToUnity('Sensor', 'RegionHighlightOff', JSON.stringify(unityData))
@@ -414,7 +404,7 @@ const handleRegionClick = (region: Region) => {
   }
 
   // 无论是选中还是取消选中，都发送同一个消息
-  unityService.sendMessageToUnity('Sensor', 'RegionContinuousHighlight', JSON.stringify(unityData))
+  //unityService.sendMessageToUnity('Sensor', 'RegionContinuousHighlight', JSON.stringify(unityData))
   // 准备显示的数据
   const displayData: any = {
     regions: region.regions.join(', '),
@@ -446,9 +436,26 @@ const handleRegionClick = (region: Region) => {
 }
 
 // 滚动列表的函数
-const scrollList = () => {
-  if (regions.value.length > 0) {
-    startIndex.value = (startIndex.value + 1) % regions.value.length
+const scrollList = async () => {
+  try {
+    if (regions.value.length > 0) {
+      startIndex.value = (startIndex.value + 1) % regions.value.length
+
+      // 获取第一条可见数据并只提取需要的字段
+      const firstRegion = visibleRegions.value[0]
+      if (firstRegion) {
+        const simplifiedData = {
+          regions: firstRegion.regions,
+          risk_level: firstRegion.risk_level,
+          message: firstRegion.message,
+        }
+
+        // 异步发送数据给Unity
+        await unityService.sendMessageToUnity('Building', 'ReceiveDataFromJS', JSON.stringify(simplifiedData))
+      }
+    }
+  } catch (error) {
+    console.error('向Unity发送数据失败:', error)
   }
 }
 
@@ -581,26 +588,27 @@ const handleExport = async () => {
 onMounted(async () => {
   // 初始加载数据
   await loadRegionData()
-
   // 设置滚动观察器
   setupScrollObserver()
-
-  // 设置定时器，每2秒滚动一次
-  scrollTimer = setInterval(scrollList, 2000) as unknown as number
+  // 监听 sensorlist-finished 事件，sensor发送完消息后，再region发消息，用于字体颜色正确切换
+  window.addEventListener('sensorlist-finished', handleSensorListFinished)
 })
 
-onUnmounted(() => {
-  // 清除定时器
-  if (scrollTimer) {
-    clearInterval(scrollTimer)
-    scrollTimer = null
-  }
+function handleSensorListFinished() {
+  setTimeout(() => {
+    scrollList()
+    window.dispatchEvent(new Event('regionlist-finished'))
+  }, 80) // 80ms 延迟，可根据需要调整
+}
 
+onUnmounted(() => {
   // 清除滚动观察器
   if (scrollObserver) {
     scrollObserver.disconnect()
     scrollObserver = null
   }
+  // 移除 sensorlist-finished 事件监听
+  window.removeEventListener('sensorlist-finished', handleSensorListFinished)
 })
 </script>
 
