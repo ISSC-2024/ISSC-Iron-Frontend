@@ -519,18 +519,18 @@ $modal-z: 1500;
     rgba($color-bg-panel, 0.9) 50%,
     rgba($color-bg-primary, 0.9) 100%
   );
-  font-weight: 600;
+  font-weight: $header-font-weight;
   padding: 0.625rem 0.5rem;
-  border-bottom: 1px solid rgba($color-primary, 0.15);
+  border-bottom: $header-border-bottom;
   font-size: $font-size-xs;
   position: sticky;
   top: 0;
-  z-index: 5;
+  z-index: $header-z-index;
   margin-top: 2.375rem;
   color: $color-text-secondary;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  text-shadow: 0 0 0.5rem rgba($color-primary, 0.4);
+  text-transform: $header-text-transform;
+  letter-spacing: $header-letter-spacing;
+  text-shadow: $header-text-shadow;
   align-items: center;
   height: 2.5rem;
 

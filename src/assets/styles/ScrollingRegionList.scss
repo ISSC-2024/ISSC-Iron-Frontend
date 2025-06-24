@@ -128,18 +128,18 @@ $region-pulse-duration: 2.5s;
 .scrolling-list-header {
   @include flex-between;
   background: linear-gradient(90deg, $region-header-bg1 0%, $region-header-bg2 50%, $region-header-bg1 100%);
-  font-weight: 600;
+  font-weight: $header-font-weight;
   padding: 0 8px;
   height: 48px;
-  border-bottom: $region-border-width solid rgba($color-primary, 0.15);
+  border-bottom: $header-border-bottom;
   font-size: $font-size-sm;
   position: sticky;
   top: 0;
-  z-index: 5;
-  color: rgba($color-primary, 0.95);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  text-shadow: 0 0 8px rgba($color-primary, 0.4);
+  z-index: $header-z-index;
+  color: $color-text-secondary;
+  text-transform: $header-text-transform;
+  letter-spacing: $header-letter-spacing;
+  text-shadow: $header-text-shadow;
 }
 
 .header-item {

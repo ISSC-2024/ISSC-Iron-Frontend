@@ -217,14 +217,14 @@ $scenario-label-color: rgba(180, 220, 255, 0.8);
 .log-header {
   display: flex;
   background: linear-gradient(90deg, $log-header-bg1 0%, $log-header-bg2 50%, $log-header-bg1 100%);
-  font-weight: 600;
+  font-weight: $header-font-weight;
   padding: $spacing-sm;
-  border-bottom: 1px solid rgba($color-primary, 0.15);
+  border-bottom: $header-border-bottom;
   font-size: $font-size-sm;
   color: $color-text-secondary;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  text-shadow: 0 0 8px rgba($color-primary, 0.4);
+  text-transform: $header-text-transform;
+  letter-spacing: $header-letter-spacing;
+  text-shadow: $header-text-shadow;
   position: relative;
   overflow: hidden;
 
