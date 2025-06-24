@@ -27,7 +27,7 @@ const focusedArea = ref<string | null>(null)
 // Unity全局聚焦状态
 const isUnityGlobalFocused = ref(false)
 // Unity全局聚焦区域列表
-const unityFocusAreas = ['PRO', 'REA', 'RMS', 'SEP', 'UTL']
+const unityFocusAreas = ['原料区', '炼焦区', '烧结区', '炼铁区', '炼钢区', '连铸区', '轧制区', '热处理区']
 // 控制标签显示状态
 const showAllLabels = ref(false)
 
@@ -102,12 +102,14 @@ const sendHighlightToUnity = (areaCode: string | null, highlight: boolean): void
   }
 
   // 查找该区域下的所有传感器
-  const areaSensors = originalNodes.value.filter((node: NodeData) => node.category === 1 && node.area_code === areaCode)
+  const areaSensors = originalNodes.value.filter((node: NodeData) => {
+    return node.category === 3 && node.area === areaCode && node.name == '安全'
+  })
 
   // 为每个传感器添加权重信息
   areaSensors.forEach((sensor: NodeData) => {
-    if (sensor.id && sensor.weight !== undefined) {
-      message.nodes[sensor.id.replace(`${areaCode}_`, '')] = Math.round(sensor.weight * 1000) / 1000
+    if (sensor.id && sensor.weight !== undefined && sensor.sensor_type != undefined) {
+      message.nodes[sensor.sensor_type] = Math.round(sensor.weight * 1000) / 1000
     }
   })
 
