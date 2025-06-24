@@ -87,7 +87,7 @@
           <!-- 消息 -->
           <div class="log-message" :class="{ expanded: isExpanded }" :title="log.message">
             <message-outlined />
-            {{ log.message }}
+            <span class="log-message-text">{{ log.message }}</span>
           </div>
 
           <!-- 场景详情（只在展开状态下显示） -->
