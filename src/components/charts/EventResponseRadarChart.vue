@@ -117,7 +117,7 @@ const updateChart = () => {
         result += '</div>'
         return result
       },
-      backgroundColor: 'rgba(18, 15, 30, 0.9)',
+      backgroundColor: 'rgba(8, 20, 40, 0.9)',
       borderColor: 'rgba(32, 160, 255, 0.3)',
       textStyle: {
         color: '#ffffff',
@@ -136,7 +136,7 @@ const updateChart = () => {
         color: 'rgba(220, 230, 240, 0.9)',
       },
       itemGap: isExpanded.value ? 12 : 6,
-      backgroundColor: 'rgba(20, 18, 32, 0.7)',
+      backgroundColor: 'rgba(15, 30, 60, 0.7)',
       borderRadius: 6,
       padding: isExpanded.value ? 10 : 5,
       borderColor: 'rgba(32, 160, 255, 0.2)',
@@ -170,7 +170,7 @@ const updateChart = () => {
         color: 'rgba(220, 230, 240, 0.9)',
         fontSize: isExpanded.value ? 13 : 12,
         padding: [3, 5],
-        backgroundColor: 'rgba(20, 18, 32, 0.7)',
+        backgroundColor: 'rgba(15, 30, 60, 0.7)',
         borderRadius: 3,
         shadowColor: 'rgba(0, 0, 0, 0.3)',
         shadowBlur: 5,

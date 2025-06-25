@@ -312,14 +312,14 @@ const getSeriesData = () => {
             borderRadius: [0, 6, 6, 0],
           },
           label: {
-            position: 'top' as const,
+            position: 'inside' as const,
             formatter: function (params: any) {
               if (isExpanded.value && params.value > 10) {
                 return params.value.toFixed(1)
               }
               return ''
             },
-            fontSize: 10,
+            fontSize: 12,
             color: '#fff',
             textShadowColor: 'rgba(0, 0, 0, 0.5)',
             textShadowBlur: 3,
@@ -345,14 +345,14 @@ const getSeriesData = () => {
             borderRadius: [0, 6, 6, 0],
           },
           label: {
-            position: 'top' as const,
+            position: 'inside' as const,
             formatter: function (params: any) {
               if (isExpanded.value && params.value > 10) {
                 return params.value.toFixed(1)
               }
               return ''
             },
-            fontSize: 10,
+            fontSize: 12,
             color: '#fff',
             textShadowColor: 'rgba(0, 0, 0, 0.5)',
             textShadowBlur: 3,
@@ -435,7 +435,7 @@ const updateChart = () => {
         fontSize: isExpanded.value ? 12 : 10,
         color: 'rgba(220, 230, 240, 0.9)', // 增加图例文本颜色
       },
-      backgroundColor: 'rgba(20, 18, 32, 0.7)', // 添加图例背景色
+      backgroundColor: 'rgba(12, 24, 48, 0.7)', // 添加图例背景色
       borderRadius: 4, // 圆角边框
       padding: 8, // 内边距
       borderColor: 'rgba(32, 160, 255, 0.2)', // 边框颜色
@@ -450,27 +450,21 @@ const updateChart = () => {
       containLabel: true,
     },
     xAxis: {
-      type: 'category',
-      data: workshops,
+      type: 'value',
       axisLine: {
         lineStyle: {
           color: 'rgba(32, 160, 255, 0.3)', // 轴线颜色
         },
       },
-      axisLabel: {
-        color: 'rgba(220, 230, 240, 0.8)', // 轴标签颜色
-        fontSize: 10, // 字体大小
-        fontWeight: 'bold', // 加粗
-        rotate: 45, // 旋转标签以避免重叠
-        rich: {
-          a: {
-            backgroundColor: 'rgba(25, 22, 35, 0.7)', // 轴标签背景色
-            padding: [4, 8], // 内边距
-            borderRadius: 3, // 圆角
-            color: 'rgba(220, 230, 240, 0.9)', // 文本颜色
-          },
+      splitLine: {
+        lineStyle: {
+          color: 'rgba(32, 160, 255, 0.1)', // 网格线颜色
         },
       },
+      axisLabel: {
+        color: 'rgba(220, 230, 240, 0.8)', // 轴标签颜色
+      },
+      axisTick: { show: false },
     },
     yAxis: {
       type: 'category',
