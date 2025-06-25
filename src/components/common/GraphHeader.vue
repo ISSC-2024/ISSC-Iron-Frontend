@@ -1,15 +1,15 @@
 <template>
-  <div class="graph-header">
+  <div class="graph-header" :class="{ centered }">
     <div class="graph-header-decoration">
       <div class="header-corner top-left"></div>
       <div class="header-corner top-right"></div>
     </div>
 
-    <div class="graph-title">
+    <div class="graph-title" :class="{ 'glow-effect': glowEffect }">
       <div class="title-icon" v-if="$slots.icon">
         <slot name="icon" />
       </div>
-      <span>{{ title }}</span>
+      <span :data-text="title">{{ title }}</span>
     </div>
     <div v-if="$slots.actions" class="graph-actions">
       <slot name="actions" />
@@ -27,6 +27,8 @@ import { defineProps } from 'vue'
 
 defineProps<{
   title: string
+  centered?: boolean
+  glowEffect?: boolean
 }>()
 </script>
 
@@ -58,6 +60,26 @@ defineProps<{
     bottom: 0;
     height: 1px;
     background: linear-gradient(90deg, rgba($color-primary, 0), rgba($color-primary, 0.3), rgba($color-primary, 0));
+  }
+
+  // 居中样式
+  &.centered {
+    justify-content: center;
+
+    .graph-title {
+      margin: 0 auto;
+    }
+
+    .graph-actions {
+      position: absolute;
+      right: 16px;
+    }
+
+    .graph-extra {
+      position: absolute;
+      right: 16px;
+      margin-left: 0;
+    }
   }
 }
 
@@ -141,6 +163,38 @@ defineProps<{
   letter-spacing: 0.5px;
   position: relative;
   z-index: 5;
+
+  // 炫光特效
+  &.glow-effect {
+    span {
+      background: linear-gradient(
+        90deg,
+        rgba(127, 47, 128, 0.9) 0%,
+        rgba(255, 255, 255, 0.9) 50%,
+        rgba(117, 2, 166, 0.9) 100%
+      );
+      background-size: 200% 100%;
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: glowSlide 3s ease-in-out infinite;
+      position: relative;
+
+      &::before {
+        content: attr(data-text);
+        position: absolute;
+        top: 0;
+        left: 0;
+        background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.8) 50%, transparent 100%);
+        background-size: 200% 100%;
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: shimmer 2s ease-in-out infinite;
+        z-index: 1;
+      }
+    }
+  }
 }
 
 .title-icon {
@@ -210,6 +264,34 @@ defineProps<{
     color: $color-white;
     transform: translateY(1px);
     box-shadow: 0 1px 3px rgba($color-primary, 0.1);
+  }
+}
+
+// 炫光动画
+@keyframes glowSlide {
+  0%,
+  100% {
+    background-position: 0% 50%;
+    filter: drop-shadow(0 0 8px rgba(100, 200, 255, 0.4));
+  }
+  50% {
+    background-position: 100% 50%;
+    filter: drop-shadow(0 0 12px rgba(100, 200, 255, 0.6));
+  }
+}
+
+// 闪光动画
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    background-position: 200% 0;
+    opacity: 0;
   }
 }
 </style>

@@ -585,7 +585,7 @@ onMounted(() => {
 
 <template>
   <div class="resource-distribution-chart-container">
-    <GraphHeader :title="'钢铁工业资源分布'">
+    <GraphHeader :title="'钢铁工业资源分布'" :centered="true" :glow-effect="true">
       <template #icon>
         <svg viewBox="0 0 24 24" width="20" height="20">
           <path

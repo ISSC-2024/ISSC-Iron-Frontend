@@ -13,7 +13,7 @@
    *
    -->
   <div class="scrolling-log-container" :class="{ expanded: isExpanded }">
-    <GraphHeader :title="'系统运行日志'">
+    <GraphHeader :title="'系统运行日志'" :centered="true" :glow-effect="true">
       <template #icon>
         <svg viewBox="0 0 24 24" width="20" height="20">
           <path
