@@ -31,7 +31,7 @@ jobs:
         run: pnpm install
 
       - name: Run build task
-        run: pnpm build --if-present
+        run: pnpm build
 
       # - name: Generating tarball
       #   run: cd dist && tar -jcf ../artifact.tar.bz2 .
