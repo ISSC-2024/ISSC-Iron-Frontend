@@ -530,63 +530,6 @@ const close = () => {
   margin-top: 40px;
 }
 
-.submit-btn,
-.reset-btn {
-  min-width: 120px;
-  padding: 12px 30px;
-  border-radius: 25px;
-  font-size: 15px;
-  cursor: pointer;
-  transition: all 0.3s;
-  position: relative;
-  overflow: hidden;
-}
-
-.submit-btn {
-  background: linear-gradient(135deg, #1890ff, #40a9ff);
-  color: white;
-  border: none;
-  box-shadow: 0 4px 15px rgba(32, 160, 255, 0.3);
-}
-
-.reset-btn {
-  background: rgba(20, 40, 70, 0.5);
-  color: rgba(220, 240, 255, 0.85);
-  border: 1px solid rgba(64, 169, 255, 0.4);
-}
-
-.submit-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(32, 160, 255, 0.5);
-}
-
-.submit-btn:active {
-  transform: translateY(1px);
-  box-shadow: 0 2px 10px rgba(32, 160, 255, 0.3);
-}
-
-.reset-btn:hover {
-  background: rgba(30, 50, 80, 0.6);
-  border-color: rgba(64, 169, 255, 0.6);
-}
-
-/* 提交按钮光晕 */
-.btn-shine {
-  position: absolute;
-  top: 0;
-  left: -120%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0.2) 50%,
-    rgba(255, 255, 255, 0) 100%
-  );
-  transform: skewX(-25deg);
-  animation: btnShine 3s infinite;
-}
-
 /* 动画效果 */
 @keyframes btnGlow {
   0% {

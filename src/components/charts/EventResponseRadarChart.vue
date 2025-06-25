@@ -52,7 +52,7 @@ const kpiData = {
         const value = (optimizationResult as any).kpi_metrics?.[indicator.key] || 0
         return value
       }),
-      color: '#4CAF50', // 绿色
+      color: '#00E5FF', // 亮青色，高对比
     },
   ],
 }
@@ -189,35 +189,41 @@ const updateChart = () => {
     series: [
       {
         type: 'radar',
-        symbolSize: isExpanded.value ? 6 : 4,
+        symbolSize: isExpanded.value ? 8 : 6,
         data: kpiData.data.map((item) => ({
           value: item.values,
           name: item.name,
           symbol: 'circle',
           areaStyle: {
-            opacity: 0.1,
-            color: item.color,
+            opacity: 0.18,
+            color: new echarts.graphic.RadialGradient(0.5, 0.5, 0.8, [
+              { offset: 0, color: 'rgba(0, 229, 255, 0.35)' },
+              { offset: 1, color: 'rgba(0, 229, 255, 0.05)' },
+            ]),
           },
           lineStyle: {
-            width: isExpanded.value ? 2.5 : 2,
+            width: isExpanded.value ? 3 : 2.2,
             shadowColor: item.color,
-            shadowBlur: 5,
+            shadowBlur: 12,
             type: 'solid',
             color: item.color,
           },
           emphasis: {
             lineStyle: {
-              width: isExpanded.value ? 4 : 3,
-              shadowBlur: 8,
+              width: isExpanded.value ? 5 : 4,
+              shadowBlur: 16,
               type: 'solid',
             },
             itemStyle: {
               shadowColor: item.color,
-              shadowBlur: 10,
+              shadowBlur: 14,
             },
             areaStyle: {
-              opacity: 0.2,
-              color: item.color,
+              opacity: 0.28,
+              color: new echarts.graphic.RadialGradient(0.5, 0.5, 0.8, [
+                { offset: 0, color: 'rgba(0, 229, 255, 0.45)' },
+                { offset: 1, color: 'rgba(0, 229, 255, 0.08)' },
+              ]),
             },
           },
         })),
@@ -326,82 +332,103 @@ const chartStyle = computed(() => {
   </div>
 </template>
 
-<style scoped>
-/* 容器样式 */
+<style lang="scss" scoped>
+@use '@/assets/styles/_variables' as *;
+@use '@/assets/styles/_mixins' as *;
+@use 'sass:color';
+
+// =====================
+// EventResponseRadarChart 变量
+// =====================
+
+// 背景和基础颜色
+$radar-bg1: $color-bg-primary;
+$radar-bg2: color.adjust($color-bg-primary, $lightness: -5%);
+$radar-grid-color: rgba($color-primary, 0.05);
+$radar-grid-highlight: rgba($color-primary, 0.1);
+
+// 工具提示样式
+$radar-tooltip-bg: rgba($color-bg-primary, 0.9);
+$radar-tooltip-border: rgba($color-primary, 0.5);
+
+// 图表相关尺寸
+$radar-border-radius: $border-radius;
+$radar-tooltip-radius: 4px;
+
+// 渐变和效果
+$radar-bg-gradient: linear-gradient(135deg, $radar-bg1, $radar-bg2);
+$radar-glow1: rgba($color-primary, 0.05);
+$radar-glow2: rgba($color-secondary, 0.05);
+
+// 阴影效果
+$radar-shadow: $panel-shadow;
+$radar-tooltip-shadow:
+  0 4px 20px rgba(0, 0, 0, 0.3),
+  0 0 15px rgba($color-primary, 0.15);
+
+// =====================
+// 组件样式
+// =====================
 .event-response-radar-container {
   width: 100%;
   height: 100%;
-  display: flex;
-  flex-direction: column;
+  @include flex-column;
   position: relative;
-  background: linear-gradient(135deg, rgba(15, 30, 60, 0.95), rgba(8, 15, 35, 0.95));
-  border-radius: 8px;
+  background: $radar-bg-gradient;
+  border-radius: $radar-border-radius;
   overflow: hidden;
-  box-shadow:
-    0 4px 20px rgba(0, 0, 0, 0.2),
-    0 0 30px rgba(32, 160, 255, 0.07);
-  border: 1px solid rgba(32, 160, 255, 0.15);
+  box-shadow: $radar-shadow;
+  @include futuristic-border($color-primary);
 }
 
-/* 雷达图样式 */
+// 雷达图样式
 .event-response-radar-chart {
   width: 100%;
   flex: 1;
   position: relative;
   backdrop-filter: blur(2px);
+  isolation: isolate;
+
+  // 网格背景效果
+  &::before {
+    content: '';
+    @include absolute-fill;
+    pointer-events: none;
+    background-image:
+      linear-gradient(to bottom, transparent 49.5%, $radar-grid-color 50%, transparent 50.5%),
+      linear-gradient(90deg, $radar-grid-highlight 1px, transparent 1px),
+      linear-gradient($radar-grid-color 1px, transparent 1px);
+    background-size:
+      100% 6px,
+      20px 20px,
+      20px 20px;
+    z-index: -1;
+  }
+
+  // 全息投影效果
+  &::after {
+    content: '';
+    @include absolute-fill;
+    @include tech-glow-background($color-primary, $color-secondary);
+    pointer-events: none;
+    z-index: -1;
+  }
 }
 
-/* 网格背景效果 */
-.event-response-radar-chart::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  pointer-events: none;
-  background-image:
-    linear-gradient(to bottom, transparent 49.5%, rgba(32, 160, 255, 0.03) 50%, transparent 50.5%),
-    linear-gradient(90deg, rgba(32, 160, 255, 0.01) 1px, transparent 1px),
-    linear-gradient(rgba(32, 160, 255, 0.01) 1px, transparent 1px);
-  background-size:
-    100% 6px,
-    20px 20px,
-    20px 20px;
-  z-index: 0;
-}
-
-/* 全息投影效果 */
-.event-response-radar-chart::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background:
-    radial-gradient(ellipse at 50% 0%, rgba(64, 120, 255, 0.05) 0%, rgba(64, 120, 255, 0) 70%),
-    radial-gradient(ellipse at 50% 100%, rgba(64, 120, 255, 0.05) 0%, rgba(64, 120, 255, 0) 70%);
-  pointer-events: none;
-  z-index: 0;
-}
-
-/* 工具提示样式  */
+// 工具提示样式
 :deep(.event-radar-tooltip) {
-  background: rgba(8, 20, 40, 0.9) !important;
+  background: $radar-tooltip-bg !important;
   backdrop-filter: blur(10px) !important;
-  border-radius: 8px !important;
-  border: 1px solid rgba(64, 169, 255, 0.5) !important;
-  box-shadow:
-    0 4px 20px rgba(0, 0, 0, 0.3),
-    0 0 15px rgba(32, 160, 255, 0.15) !important;
-  padding: 10px 14px !important;
-  color: rgba(220, 230, 240, 0.95) !important;
+  border-radius: $radar-tooltip-radius !important;
+  border: 1px solid $radar-tooltip-border !important;
+  box-shadow: $radar-tooltip-shadow !important;
+  padding: $spacing-sm $spacing-md !important;
+  color: $color-text-primary !important;
   font-family: 'Inter', 'Roboto', sans-serif !important;
 }
 
 :deep(.radar-indicator-name) {
   font-weight: bold !important;
-  text-shadow: 0 0 5px rgba(32, 160, 255, 0.2) !important;
+  text-shadow: 0 0 5px rgba($color-primary, 0.2) !important;
 }
 </style>

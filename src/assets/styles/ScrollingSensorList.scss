@@ -5,6 +5,7 @@
 
 @use 'variables' as *;
 @use 'mixins' as *;
+@use 'sass:color';
 
 // ===== 变量 =====
 $modal-z: 1500;
@@ -52,7 +53,9 @@ $modal-z: 1500;
       height: 1.75rem !important;
     }
     .dropdown {
-      width: 10.9375rem !important;
+      width: auto !important;
+      min-width: 7.5rem !important;
+      max-width: 15rem !important;
     }
     .select-wrapper {
       margin-top: 0.25rem !important;
@@ -307,7 +310,9 @@ $modal-z: 1500;
 
 .dropdown {
   position: relative;
-  width: 8.75rem;
+  width: auto;
+  min-width: 6.25rem;
+  max-width: 12rem;
 }
 
 .select-wrapper {
@@ -381,12 +386,19 @@ $modal-z: 1500;
   -moz-appearance: none;
   background: none !important;
   border-left: 1px solid rgba($color-primary, 0.15);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  max-width: 100%;
+  width: auto;
 
   option {
     background-color: $color-bg-panel;
     color: $color-text-primary;
     padding: 0.5rem;
     font-size: $font-size-xs;
+    white-space: normal;
+    word-wrap: break-word;
 
     &:hover {
       background-color: rgba($color-primary, 0.3) !important;
@@ -508,18 +520,18 @@ $modal-z: 1500;
     rgba($color-bg-panel, 0.9) 50%,
     rgba($color-bg-primary, 0.9) 100%
   );
-  font-weight: 600;
+  font-weight: $header-font-weight;
   padding: 0.625rem 0.5rem;
-  border-bottom: 1px solid rgba($color-primary, 0.15);
+  border-bottom: $header-border-bottom;
   font-size: $font-size-xs;
   position: sticky;
   top: 0;
-  z-index: 5;
+  z-index: $header-z-index;
   margin-top: 2.375rem;
   color: $color-text-secondary;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  text-shadow: 0 0 0.5rem rgba($color-primary, 0.4);
+  text-transform: $header-text-transform;
+  letter-spacing: $header-letter-spacing;
+  text-shadow: $header-text-shadow;
   align-items: center;
   height: 2.5rem;
 
@@ -531,11 +543,15 @@ $modal-z: 1500;
     height: 100%;
 
     &.timestamp {
-      flex: 1.5;
+      flex: 1.8;
     }
 
     &.sensor-id {
       flex: 1;
+    }
+
+    &.measurement {
+      flex: 0.8;
     }
   }
 }
@@ -612,7 +628,7 @@ $modal-z: 1500;
   justify-content: center;
 
   &.timestamp {
-    flex: 1.5;
+    flex: 1.8;
     color: $color-text-secondary;
     font-family: 'Consolas', monospace;
     text-shadow: 0 0 0.3125rem $color-primary;
@@ -620,6 +636,10 @@ $modal-z: 1500;
 
   &.sensor-id {
     flex: 1;
+  }
+
+  &.measurement {
+    flex: 0.8;
   }
 }
 
@@ -918,5 +938,27 @@ $modal-z: 1500;
   .select-container {
     font-size: $font-size-xs;
     padding: 0.25rem 0.5rem;
+  }
+}
+
+// ===== 列文字颜色与阴影效果 =====
+// 根据列名为表格正文（非表头）提供不同的文字颜色与发光效果
+$column-text-styles: (
+  timestamp: $color-secondary,
+  // 时间戳列 – 绿色
+  region: color.adjust($color-primary, $lightness: 10%),
+  // 区域列 – 浅紫色
+  sensor_type: rgba(255, 206, 115, 1),
+  // 传感器类型列 – 琥珀色
+  measurement: rgba(90, 200, 250, 1),
+  // 测量量列 – 青蓝色
+  value: $color-danger, // 数值列 – 红色
+);
+
+@each $name, $txtColor in $column-text-styles {
+  .list-row .list-item.#{$name} {
+    color: $txtColor;
+    text-shadow: 0 0 6px rgba($txtColor, 0.6);
+    font-weight: 600;
   }
 }

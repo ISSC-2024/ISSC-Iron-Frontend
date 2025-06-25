@@ -68,18 +68,23 @@ onMounted(() => {
 
     <div class="logo">
       <div class="logo-icon">
-        <!-- Logo SVG -->
-        <svg viewBox="0 0 24 24" width="28" height="28">
+        <!-- 钢铁行业Logo SVG -->
+        <svg viewBox="0 0 24 24" width="32" height="32">
+          <!-- 钢铁厂/高炉图标 -->
           <path
             fill="currentColor"
-            d="M12,2L1,21H23L12,2M12,6L19.53,19H4.47L12,6M11,10V14H13V10H11M11,16V18H13V16H11Z"
+            d="M21,13v9H3V13H21m0-2H3a2,2 0 0,0 -2,2v9a2,2 0 0,0 2,2h18a2,2 0 0,0 2,-2v-9a2,2 0 0,0 -2,-2M6,15v2H4v-2H6m3,0v2H7v-2H9m3,0v2h-2v-2h2m3,0v2h-2v-2h2m3,0v2h-2v-2h2m3,0v2h-2v-2"
           />
+          <!-- 烟囱/冶炼效果 -->
+          <path fill="currentColor" d="M4,2H7a2,2 0 0,1 2,2v5h-2V4H4V2m7,2h3a1,1 0 0,1 1,1v4h-2V5h-2V4m6,0h4v2h-4" />
+          <!-- 钢铁流动效果 -->
+          <path fill="#ff5722" d="M8,12h8c0,-1 -2,-2 -4,-2s-4,1 -4,2z" />
         </svg>
         <!-- 添加光环效果 -->
         <div class="logo-halo"></div>
       </div>
       <div class="logo-text-container">
-        <span class="logo-text">全域互联的工业智能体协同平台</span>
+        <span class="logo-text">钢铁行业-全域互联的工业智能体协同平台</span>
         <span class="logo-shine"></span>
         <span class="logo-underline"></span>
         <div class="text-particles">
@@ -115,4 +120,28 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 @use '@/assets/styles/AppHeader.scss';
+
+/* 添加钢铁行业特征的CSS样式 */
+.logo-icon {
+  svg {
+    filter: drop-shadow(0 0 3px #ff5722);
+  }
+
+  /* 钢铁熔融效果动画 */
+  @keyframes melt {
+    0% {
+      opacity: 0.6;
+    }
+    50% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0.6;
+    }
+  }
+
+  svg path:nth-child(3) {
+    animation: melt 2s infinite;
+  }
+}
 </style>

@@ -21,8 +21,7 @@ export interface RequestConfig extends AxiosRequestConfig {
   returnRaw?: boolean
 }
 
-/**
- * HTTP 响应结构接口
+/** * HTTP 响应结构接口
  */
 export interface HttpResponse<T = any> {
   code: number

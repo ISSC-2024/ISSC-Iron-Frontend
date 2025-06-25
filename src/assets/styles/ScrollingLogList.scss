@@ -17,6 +17,11 @@ $log-shadow:
   0 4px 16px rgba(0, 0, 0, 0.3),
   0 0 20px rgba($color-primary, 0.15);
 $log-scrollbar-thumb: rgba($color-primary, 0.7);
+$color-info: rgba(82, 196, 26, 0.9);
+$color-warning: rgba(250, 173, 20, 0.9);
+$color-danger: rgba(245, 34, 45, 0.9);
+$scenario-title-color: rgba(100, 200, 255, 0.9);
+$scenario-label-color: rgba(180, 220, 255, 0.8);
 
 // =====================
 // 组件样式
@@ -51,19 +56,41 @@ $log-scrollbar-thumb: rgba($color-primary, 0.7);
     @include absolute-fill;
     pointer-events: none;
     @include tech-glow-background($color-primary, $color-secondary);
+    opacity: 0.05;
     z-index: 2;
+    background: linear-gradient(to bottom, transparent 50%, rgba($color-primary, 0.03) 50%);
+    background-size: 100% 4px;
   }
 
   &.expanded {
-    .scrolling-log-body,
+    .scrolling-log-body {
+      font-size: $font-size-md;
+      scrollbar-width: thin;
+      scrollbar-color: $log-scrollbar-thumb $color-bg-primary;
+      -ms-overflow-style: auto;
+
+      &::-webkit-scrollbar {
+        display: block;
+      }
+    }
+
     .log-time,
     .log-type,
-    .log-message {
+    .log-message,
+    .header-time,
+    .header-type,
+    .header-message {
       font-size: $font-size-md;
+      padding: 5px 0;
     }
+
     .header-time,
     .header-type {
       margin-left: 11px;
+    }
+
+    .log-type {
+      flex: 0 0 200px;
     }
   }
 
@@ -78,8 +105,9 @@ $log-scrollbar-thumb: rgba($color-primary, 0.7);
   }
 }
 
+// 时间列
 .log-time {
-  flex: 0 0 70px;
+  flex: 0 0 90px;
   color: rgba($color-primary, 0.8);
   font-family: 'Consolas', monospace;
   text-shadow: 0 0 5px rgba($color-primary, 0.3);
@@ -88,31 +116,50 @@ $log-scrollbar-thumb: rgba($color-primary, 0.7);
   align-items: center;
   justify-content: flex-start;
   gap: 5px;
+  padding-left: 5px;
+  height: 100%;
+  align-self: stretch;
 }
 
+// 区域列
 .log-type {
-  flex: 0 0 70px;
+  flex: 0 0 80px; // 减小宽度，限制显示内容
   font-weight: bold;
   letter-spacing: 0.5px;
-  text-transform: uppercase;
   font-size: $font-size-sm;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  @include flex-center;
-  gap: 5px;
-}
-
-.log-message {
-  flex: 1;
-  @include truncate(1);
-  max-width: 100%;
-  padding-left: 10px;
-  position: relative;
-  font-size: $font-size-sm;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 5px;
+  padding-left: 0;
+  margin-left: 15px;
+
+  span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: calc(100% - 25px); // 减去图标宽度
+  }
+}
+
+// 消息列
+.log-message {
+  flex: 1;
+  width: calc(100% - 185px);
+  padding-left: 0;
+  position: relative;
+  font-size: $font-size-sm;
+  @include flex-center;
+  gap: 5px;
+
+  .log-message-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 
   &.expanded {
     white-space: normal;
@@ -122,15 +169,22 @@ $log-scrollbar-thumb: rgba($color-primary, 0.7);
     height: auto;
     line-height: 1.5;
     font-size: $font-size-md;
+    .log-message-text {
+      white-space: normal;
+      word-wrap: break-word;
+    }
   }
 }
 
+// 表头消息
 .header-message {
   flex: 1;
+  width: calc(100% - 185px); // 与消息列保持一致
   @include flex-center;
   gap: 5px;
 }
 
+// 导出按钮
 .export-button {
   display: flex;
   align-items: center;
@@ -159,17 +213,18 @@ $log-scrollbar-thumb: rgba($color-primary, 0.7);
   }
 }
 
+// 表头
 .log-header {
-  @include flex-between;
+  display: flex;
   background: linear-gradient(90deg, $log-header-bg1 0%, $log-header-bg2 50%, $log-header-bg1 100%);
-  font-weight: 600;
+  font-weight: $header-font-weight;
   padding: $spacing-sm;
-  border-bottom: 1px solid rgba($color-primary, 0.15);
+  border-bottom: $header-border-bottom;
   font-size: $font-size-sm;
   color: $color-text-secondary;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  text-shadow: 0 0 8px rgba($color-primary, 0.4);
+  text-transform: $header-text-transform;
+  letter-spacing: $header-letter-spacing;
+  text-shadow: $header-text-shadow;
   position: relative;
   overflow: hidden;
 
@@ -184,21 +239,24 @@ $log-scrollbar-thumb: rgba($color-primary, 0.7);
   }
 }
 
+// 表头时间列
 .header-time {
-  flex: 0 0 70px;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  margin-left: 8px;
-}
-
-.header-type {
-  flex: 0 0 70px;
+  flex: 0 0 90px;
   @include flex-center;
   gap: 5px;
-  margin-left: 5px;
 }
 
+// 表头区域列
+.header-type {
+  flex: 0 0 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  margin-left: 15px;
+}
+
+// 日志正文区域
 .scrolling-log-body {
   flex: 1;
   height: calc(100% - 86px);
@@ -221,21 +279,20 @@ $log-scrollbar-thumb: rgba($color-primary, 0.7);
   }
 }
 
-.expanded-chart {
-  .log-type {
-    flex: 0 0 100px;
-  }
-}
-
+// 日志行（调整为纵向布局，方便场景详情定位）
 .log-row {
-  @include flex-between;
+  display: flex;
+  flex-wrap: wrap; // 允许换行，以便展开详情时正确显示
   padding: $spacing-sm;
   border-bottom: 1px solid rgba($color-primary, 0.1);
   @include transition(all, 0.25s);
+  align-items: flex-start; // 改为顶部对齐，让场景详情正确展示
   cursor: pointer;
+  background-color: rgba($color-bg-primary, 0.75);
   position: relative;
-  z-index: 3;
+  flex-direction: row; // 强制指定为行布局
 
+  // 创建一个主要内容行，包含时间、区域和消息
   &::before {
     content: '';
     position: absolute;
@@ -261,32 +318,51 @@ $log-scrollbar-thumb: rgba($color-primary, 0.7);
     background-color: $log-row-selected-bg !important;
     border-right: 1px solid $log-row-selected-border;
   }
+
+  // 为第一行子元素（时间、区域、消息）创建行布局
+  > .log-time,
+  > .log-type,
+  > .log-message {
+    align-self: center; // 第一行内容垂直居中
+  }
+
+  // 子元素占满整行
+  > .scenario-details {
+    flex-basis: 100%; // 占满整行
+    margin-left: 0; // 重置左边距
+    padding-left: 10px; // 左边距调整
+    margin-top: 10px;
+    order: 99; // 确保显示在最后
+  }
 }
 
+// 安全状态日志
 .log-info {
   &::before {
-    background: linear-gradient(to bottom, $color-secondary, rgba($color-secondary, 0.5));
-    box-shadow: 0 0 10px rgba($color-secondary, 0.8);
+    background: linear-gradient(to bottom, $color-info, rgba($color-info, 0.5));
+    box-shadow: 0 0 10px rgba($color-info, 0.8);
   }
 
   .anticon {
-    color: rgba($color-secondary, 0.9);
-    filter: drop-shadow(0 0 3px rgba($color-secondary, 0.4));
+    color: $color-info;
+    filter: drop-shadow(0 0 3px rgba($color-info, 0.4));
   }
 }
 
+// 警告状态日志
 .log-warning {
   &::before {
-    background: linear-gradient(to bottom, $log-warning, rgba($log-warning, 0.5));
-    box-shadow: 0 0 10px rgba($log-warning, 0.8);
+    background: linear-gradient(to bottom, $color-warning, rgba($color-warning, 0.5));
+    box-shadow: 0 0 10px rgba($color-warning, 0.8);
   }
 
   .anticon {
-    color: rgba($log-warning, 0.9);
-    filter: drop-shadow(0 0 3px rgba($log-warning, 0.4));
+    color: $color-warning;
+    filter: drop-shadow(0 0 3px rgba($color-warning, 0.4));
   }
 }
 
+// 危险状态日志
 .log-danger {
   &::before {
     background: linear-gradient(to bottom, $color-danger, rgba($color-danger, 0.5));
@@ -294,11 +370,12 @@ $log-scrollbar-thumb: rgba($color-primary, 0.7);
   }
 
   .anticon {
-    color: rgba($color-danger, 0.9);
+    color: $color-danger;
     filter: drop-shadow(0 0 3px rgba($color-danger, 0.4));
   }
 }
 
+// 加载状态和空数据状态
 .loading-indicator,
 .empty-data {
   @include flex-center;
@@ -309,12 +386,14 @@ $log-scrollbar-thumb: rgba($color-primary, 0.7);
   text-align: center;
 }
 
+// 加载更多触发器
 .load-more-trigger {
   padding: $spacing-md;
   text-align: center;
   color: rgba($color-primary, 0.7);
 }
 
+// 加载更多状态
 .loading-more {
   display: inline-flex;
   align-items: center;
@@ -322,8 +401,95 @@ $log-scrollbar-thumb: rgba($color-primary, 0.7);
   font-size: $font-size-sm;
 }
 
+// 无更多数据状态
 .no-more-data {
   font-size: $font-size-sm;
   color: $color-text-secondary;
   padding: $spacing-sm;
+}
+
+// 场景详情样式
+.scenario-details {
+  display: flex;
+  flex-direction: column;
+  width: 100%; // 占满整行宽度
+  margin-left: 0; // 取消左边距
+  margin-top: 10px;
+  padding: 5px 10px;
+  background: rgba($log-header-bg2, 0.3);
+  border-radius: $border-radius;
+  border-left: 3px solid rgba($color-primary, 0.5);
+}
+
+.scenario-item {
+  margin-bottom: 8px;
+  padding: 5px;
+  border-bottom: 1px dashed rgba($color-primary, 0.2);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.scenario-header {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 5px;
+}
+
+.scenario-title {
+  font-weight: bold;
+  color: $scenario-title-color;
+  text-align: left;
+}
+
+.scenario-content {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding-left: 10px;
+}
+
+.scenario-row {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 3px;
+}
+
+.scenario-label {
+  flex: 0 0 80px;
+  font-weight: 500;
+  color: $scenario-label-color;
+}
+
+.scenario-value {
+  flex: 1;
+  word-break: break-word;
+}
+
+// 文本换行显示
+.wrap-text {
+  white-space: normal;
+  word-break: break-word;
+  display: inline-block;
+  line-height: 1.2;
+}
+
+// 在展开状态下调整区域列宽度
+.scrolling-log-container.expanded {
+  .log-type {
+    flex: 0 0 200px;
+
+    span.wrap-text {
+      white-space: normal;
+      word-break: break-word;
+      display: inline-block;
+      line-height: 1.2;
+      max-width: calc(100% - 25px);
+    }
+  }
+
+  .header-type {
+    flex: 0 0 200px;
+  }
 }
