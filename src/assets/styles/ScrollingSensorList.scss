@@ -5,6 +5,7 @@
 
 @use 'variables' as *;
 @use 'mixins' as *;
+@use 'sass:color';
 
 // ===== 变量 =====
 $modal-z: 1500;
@@ -542,11 +543,15 @@ $modal-z: 1500;
     height: 100%;
 
     &.timestamp {
-      flex: 1.5;
+      flex: 1.8;
     }
 
     &.sensor-id {
       flex: 1;
+    }
+
+    &.measurement {
+      flex: 0.8;
     }
   }
 }
@@ -623,7 +628,7 @@ $modal-z: 1500;
   justify-content: center;
 
   &.timestamp {
-    flex: 1.5;
+    flex: 1.8;
     color: $color-text-secondary;
     font-family: 'Consolas', monospace;
     text-shadow: 0 0 0.3125rem $color-primary;
@@ -631,6 +636,10 @@ $modal-z: 1500;
 
   &.sensor-id {
     flex: 1;
+  }
+
+  &.measurement {
+    flex: 0.8;
   }
 }
 
@@ -929,5 +938,27 @@ $modal-z: 1500;
   .select-container {
     font-size: $font-size-xs;
     padding: 0.25rem 0.5rem;
+  }
+}
+
+// ===== 列文字颜色与阴影效果 =====
+// 根据列名为表格正文（非表头）提供不同的文字颜色与发光效果
+$column-text-styles: (
+  timestamp: $color-secondary,
+  // 时间戳列 – 绿色
+  region: color.adjust($color-primary, $lightness: 10%),
+  // 区域列 – 浅紫色
+  sensor_type: rgba(255, 206, 115, 1),
+  // 传感器类型列 – 琥珀色
+  measurement: rgba(90, 200, 250, 1),
+  // 测量量列 – 青蓝色
+  value: $color-danger, // 数值列 – 红色
+);
+
+@each $name, $txtColor in $column-text-styles {
+  .list-row .list-item.#{$name} {
+    color: $txtColor;
+    text-shadow: 0 0 6px rgba($txtColor, 0.6);
+    font-weight: 600;
   }
 }

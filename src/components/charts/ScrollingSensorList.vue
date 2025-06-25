@@ -215,7 +215,7 @@
                   d="M9,7V9H13V11H9V13H13V15H9V17H13A2,2 0 0,0 15,15V13.5A1.5,1.5 0 0,0 13.5,12A1.5,1.5 0 0,0 15,10.5V9A2,2 0 0,0 13,7H9M16,7V17H18V7H16Z"
                 />
               </svg>
-              <span>{{ sensor.value }}</span>
+              <span>{{ sensor.value.toFixed(2) }}</span>
             </div>
           </div>
         </div>

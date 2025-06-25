@@ -65,14 +65,6 @@ const nodeShapeMap = {
   4: 'triangle', // 警告
   5: 'star', // 危险
 }
-const nodeFontColorMap: Record<number, string> = {
-  0: '#1a237e',
-  1: '#4a148c',
-  2: '#006064',
-  3: '#1b5e20',
-  4: '#e65100',
-  5: '#b71c1c',
-}
 const nodeBorderColorMap = {
   0: '#90caf9',
   1: '#ce93d8',
@@ -391,12 +383,13 @@ const initChart = () => {
           position: 'right',
           fontWeight: 'bold',
           fontSize: 16,
-          color: (params: any) => nodeFontColorMap[params.data.category] || '#333',
-          textShadowColor: '#fff',
-          textShadowBlur: 4,
-          backgroundColor: 'rgba(255,255,255,0.8)',
-          padding: [4, 8],
+          color: '#212121',
+          backgroundColor: '#ffffff',
+          borderColor: '#e0e0e0',
+          borderWidth: 1,
           borderRadius: 4,
+          padding: [4, 8],
+          textShadowBlur: 0,
         },
         itemStyle: {
           borderColor: '#fff',

@@ -166,10 +166,6 @@ interface LogEntry {
   }> // 风险场景详情
 }
 
-// 定义有效区域常量
-const VALID_REGIONS = ['RMS', 'REA', 'SEP', 'PRO', 'UTL']
-const VALID_RISK_LEVELS = ['safe', 'warning', 'danger']
-
 // 从ChartContainer注入的扩展状态
 const isExpanded = inject('isChartExpanded', ref(false))
 
@@ -190,16 +186,6 @@ const hasMore = ref(true)
 const logBody = ref<HTMLElement | null>(null)
 let scrollObserver: IntersectionObserver | null = null
 const loadTriggerRef = ref<HTMLDivElement | null>(null)
-
-// 将API返回的数据转换为日志条目（保留但不使用，以后可能需要）
-// const convertToLogEntries = (results: AlgorithmResult[]): LogEntry[] => {
-//   return results.map((result) => ({
-//     timestamp: result.timestamp,
-//     region: result.region,
-//     risk_level: result.risk_level as 'safe' | 'warning' | 'danger',
-//     message: result.message,
-//   }))
-// }
 
 // 加载日志数据
 const loadLogData = async (reset = true) => {
@@ -386,39 +372,12 @@ const isLogSelected = (log: LogEntry): boolean => {
   return log.region === selectedLog.value.region
 }
 
-// 验证并确保日志数据有效性
-const validateLog = (log: LogEntry): { isValid: boolean; log: LogEntry } => {
-  // 创建副本防止修改原始数据
-  const validatedLog = { ...log }
-
-  // 验证区域
-  if (!VALID_REGIONS.includes(validatedLog.region)) {
-    console.warn(`非法区域值: ${validatedLog.region}，将使用默认值 RMS`)
-    validatedLog.region = 'RMS'
-  }
-
-  // 验证风险等级
-  if (!VALID_RISK_LEVELS.includes(validatedLog.risk_level)) {
-    console.warn(`非法风险等级: ${validatedLog.risk_level}，将使用默认值 safe`)
-    validatedLog.risk_level = 'safe'
-  }
-
-  return {
-    isValid: true,
-    log: validatedLog,
-  }
-}
-
 // 准备发送给Unity的数据
 const prepareUnityData = (log: LogEntry) => {
-  const { isValid, log: validatedLog } = validateLog(log)
-
-  if (!isValid) return null
-
   return {
-    region: validatedLog.region,
-    risk_level: validatedLog.risk_level,
-    message: validatedLog.message,
+    region: log.region,
+    risk_level: log.risk_level,
+    message: log.message,
   }
 }
 
