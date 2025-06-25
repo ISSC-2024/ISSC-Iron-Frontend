@@ -832,7 +832,7 @@ onUnmounted(() => {
 
 <template>
   <div class="knowledge-graph-container">
-    <GraphHeader :title="'工厂监控点知识图谱'">
+    <GraphHeader :title="'工厂监控点知识图谱'" :centered="true" :glow-effect="true">
       <template #icon>
         <svg viewBox="0 0 24 24" width="20" height="20">
           <path

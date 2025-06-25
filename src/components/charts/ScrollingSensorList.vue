@@ -13,7 +13,7 @@
    -->
   <div :class="{ 'scrolling-list-container expanded': isExpanded, 'scrolling-list-container': !isExpanded }">
     <!-- 标题栏 -->
-    <GraphHeader :title="'传感器数据实时监控'">
+    <GraphHeader :title="'传感器数据实时监控'" :centered="true" :glow-effect="true">
       <template #icon>
         <svg viewBox="0 0 24 24" width="20" height="20">
           <path

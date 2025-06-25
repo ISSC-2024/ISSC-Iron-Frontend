@@ -82,8 +82,8 @@ $ckg-focus-btn-focused-shadow:
   border-radius: $border-radius;
   box-shadow: $ckg-shadow;
   overflow: hidden;
-  outline: 2px solid rgba($color-primary, $ckg-opacity-medium);
-  outline-offset: 0px;
+  //outline: 2px solid rgba($color-primary, $ckg-opacity-medium);
+  //outline-offset: 0px;
 
   /* 已移除脉动边框动画效果，仅保留静态边框 */
 

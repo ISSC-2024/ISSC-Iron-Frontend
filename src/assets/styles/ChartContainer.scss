@@ -16,39 +16,48 @@
   position: relative;
   @include transition(all, $transition-fast);
   backdrop-filter: blur(5px);
-  outline: 2px solid rgba($color-primary, 0.25);
-  outline-offset: 0px;
+  
+  /* 使用k_1.png作为边框装饰 */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('/images/Border/k_1.png');
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    pointer-events: none;
+    z-index: 15;
+    opacity: 0.8;
+    //animation: border-pulse 4s ease-in-out infinite;
+  }
 
   /* 悬停效果 */
   &:hover {
-    outline-color: rgba($color-primary, 0.4);
     box-shadow:
       0 6px 20px rgba(0, 0, 0, 0.35),
       0 0 25px rgba($color-primary, 0.2);
+      
+    &::before {
+      opacity: 1;
+    }
   }
-
-  /* 脉动边框效果 */
-  animation: border-pulse 4s ease-in-out infinite;
 }
 
 @keyframes border-pulse {
   0% {
-    outline-color: rgba($color-primary, 0.25);
-    box-shadow:
-      0 4px 16px rgba(0, 0, 0, 0.3),
-      0 0 20px rgba($color-primary, 0.15);
+    opacity: 0.6;
+    filter: drop-shadow(0 0 8px rgba($color-primary, 0.3));
   }
   50% {
-    outline-color: rgba($color-secondary, 0.4);
-    box-shadow:
-      0 4px 16px rgba(0, 0, 0, 0.3),
-      0 0 25px rgba($color-secondary, 0.2);
+    opacity: 1;
+    filter: drop-shadow(0 0 15px rgba($color-secondary, 0.6));
   }
   100% {
-    outline-color: rgba($color-primary, 0.25);
-    box-shadow:
-      0 4px 16px rgba(0, 0, 0, 0.3),
-      0 0 20px rgba($color-primary, 0.15);
+    opacity: 0.6;
+    filter: drop-shadow(0 0 8px rgba($color-primary, 0.3));
   }
 }
 
@@ -91,94 +100,20 @@
   z-index: 2;
 }
 
-/* 角落边框特效 */
+/* 角落边框特效已被PNG图片替代，保留元素但隐藏 */
 .chart-border-effect {
-  position: absolute;
-  width: 16px;
-  height: 16px;
-  z-index: 10;
-  pointer-events: none;
-
-  &::after {
-    content: '';
-    position: absolute;
-    width: 3px;
-    height: 3px;
-    background-color: rgba($color-secondary, 0.7);
-    border-radius: 50%;
-    box-shadow: 0 0 6px 1px rgba($color-primary, 0.4);
-  }
-}
-
-.top-left {
-  top: 0;
-  left: 0;
-  background:
-    linear-gradient(45deg, transparent 50%, rgba($color-primary, 0.5) 50%) no-repeat 0 0 / 8px 8px,
-    linear-gradient(to right, rgba($color-primary, 0.5) 2px, transparent 2px) no-repeat 7px 0 / 10px 2px,
-    linear-gradient(to bottom, rgba($color-primary, 0.5) 2px, transparent 2px) no-repeat 0 7px / 2px 10px;
-  filter: drop-shadow(0 0 3px rgba($color-primary, 0.2));
-
-  &::after {
-    top: 0;
-    left: 0;
-  }
-}
-
-.top-right {
-  top: 0;
-  right: 0;
-  background:
-    linear-gradient(135deg, transparent 50%, rgba($color-primary, 0.5) 50%) no-repeat 100% 0 / 8px 8px,
-    linear-gradient(to left, rgba($color-primary, 0.5) 2px, transparent 2px) no-repeat 0 0 / 10px 2px,
-    linear-gradient(to bottom, rgba($color-primary, 0.5) 2px, transparent 2px) no-repeat 100% 7px / 2px 10px;
-  filter: drop-shadow(0 0 3px rgba($color-primary, 0.2));
-
-  &::after {
-    top: 0;
-    right: 0;
-  }
-}
-
-.bottom-left {
-  bottom: 0;
-  left: 0;
-  background:
-    linear-gradient(315deg, transparent 50%, rgba($color-primary, 0.5) 50%) no-repeat 0 100% / 8px 8px,
-    linear-gradient(to right, rgba($color-primary, 0.5) 2px, transparent 2px) no-repeat 7px 100% / 10px 2px,
-    linear-gradient(to top, rgba($color-primary, 0.5) 2px, transparent 2px) no-repeat 0 0 / 2px 10px;
-  filter: drop-shadow(0 0 3px rgba($color-primary, 0.2));
-
-  &::after {
-    bottom: 0;
-    left: 0;
-  }
-}
-
-.bottom-right {
-  bottom: 0;
-  right: 0;
-  background:
-    linear-gradient(225deg, transparent 50%, rgba($color-primary, 0.5) 50%) no-repeat 100% 100% / 8px 8px,
-    linear-gradient(to left, rgba($color-primary, 0.5) 2px, transparent 2px) no-repeat 0 100% / 10px 2px,
-    linear-gradient(to top, rgba($color-primary, 0.5) 2px, transparent 2px) no-repeat 100% 0 / 2px 10px;
-  filter: drop-shadow(0 0 3px rgba($color-primary, 0.2));
-
-  &::after {
-    bottom: 0;
-    right: 0;
-  }
+  display: none;
 }
 
 /* 头部样式 */
 .chart-header {
   display: flex;
   justify-content: flex-end;
-  padding: 10px;
+  padding: 15px 20px 10px 10px;
   position: absolute;
   top: 0;
   right: 0;
-  z-index: 15;
+  z-index: 16;
 }
 
 .expand-button {
@@ -209,12 +144,13 @@
 
 /* 内容区域 */
 .chart-content {
-  padding: 0;
+  padding: 15px 20px 15px 20px;
   flex: 1;
   display: flex;
   flex-direction: column;
   position: relative;
   z-index: 5;
+  margin: 8px;
 }
 
 /* 展开浮层样式 */
@@ -273,8 +209,6 @@
 /* 浮层容器 */
 .expanded-container {
   background: linear-gradient(135deg, rgba(20, 15, 35, 0.9), rgba(30, 25, 50, 0.9));
-  outline: 2px solid rgba($color-primary, 0.3);
-  outline-offset: 0px;
   border-radius: 10px;
   box-shadow:
     0 10px 30px rgba(0, 0, 0, 0.4),
@@ -289,28 +223,36 @@
   pointer-events: auto;
   overflow: hidden;
 
-  /* 恢复脉动边框动画，与非展开状态一致 */
-  animation: expanded-border-pulse 4s ease-in-out infinite;
+  /* 使用k_4.png作为展开状态的边框装饰 */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('/images/Border/k_4.png');
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    pointer-events: none;
+    z-index: 15;
+    opacity: 0.9;
+    //animation: expanded-border-pulse 4s ease-in-out infinite;
+  }
 }
 
 @keyframes expanded-border-pulse {
   0% {
-    outline-color: rgba($color-primary, 0.3);
-    box-shadow:
-      0 10px 30px rgba(0, 0, 0, 0.4),
-      0 0 30px rgba($color-primary, 0.15);
+    opacity: 0.7;
+    filter: drop-shadow(0 0 15px rgba($color-primary, 0.4));
   }
   50% {
-    outline-color: rgba($color-secondary, 0.5);
-    box-shadow:
-      0 10px 30px rgba(0, 0, 0, 0.4),
-      0 0 35px rgba($color-secondary, 0.25);
+    opacity: 1;
+    filter: drop-shadow(0 0 25px rgba($color-secondary, 0.7));
   }
   100% {
-    outline-color: rgba($color-primary, 0.3);
-    box-shadow:
-      0 10px 30px rgba(0, 0, 0, 0.4),
-      0 0 30px rgba($color-primary, 0.15);
+    opacity: 0.7;
+    filter: drop-shadow(0 0 15px rgba($color-primary, 0.4));
   }
 }
 
@@ -339,83 +281,9 @@
   z-index: 2;
 }
 
-/* 展开容器边框特效 */
+/* 展开容器边框特效已被PNG图片替代，保留元素但隐藏 */
 .expanded-border-effect {
-  position: absolute;
-  width: 30px;
-  height: 30px;
-  z-index: 3;
-  pointer-events: none;
-
-  &::after {
-    content: '';
-    position: absolute;
-    width: 4px;
-    height: 4px;
-    background-color: rgba($color-secondary, 0.7);
-    border-radius: 50%;
-    box-shadow: 0 0 8px 1px rgba($color-primary, 0.4);
-  }
-
-  &.top-left {
-    top: 0;
-    left: 0;
-    background:
-      linear-gradient(45deg, transparent 50%, rgba($color-primary, 0.5) 50%) no-repeat 0 0 / 12px 12px,
-      linear-gradient(to right, rgba($color-primary, 0.5) 2px, transparent 2px) no-repeat 10px 0 / 22px 2px,
-      linear-gradient(to bottom, rgba($color-primary, 0.5) 2px, transparent 2px) no-repeat 0 10px / 2px 22px;
-    filter: drop-shadow(0 0 4px rgba($color-primary, 0.2));
-
-    &::after {
-      top: 0;
-      left: 0;
-    }
-  }
-
-  &.top-right {
-    top: 0;
-    right: 0;
-    background:
-      linear-gradient(135deg, transparent 50%, rgba($color-primary, 0.5) 50%) no-repeat 100% 0 / 12px 12px,
-      linear-gradient(to left, rgba($color-primary, 0.5) 2px, transparent 2px) no-repeat 0 0 / 22px 2px,
-      linear-gradient(to bottom, rgba($color-primary, 0.5) 2px, transparent 2px) no-repeat 100% 10px / 2px 22px;
-    filter: drop-shadow(0 0 4px rgba($color-primary, 0.2));
-
-    &::after {
-      top: 0;
-      right: 0;
-    }
-  }
-
-  &.bottom-left {
-    bottom: 0;
-    left: 0;
-    background:
-      linear-gradient(315deg, transparent 50%, rgba($color-primary, 0.5) 50%) no-repeat 0 100% / 12px 12px,
-      linear-gradient(to right, rgba($color-primary, 0.5) 2px, transparent 2px) no-repeat 10px 100% / 22px 2px,
-      linear-gradient(to top, rgba($color-primary, 0.5) 2px, transparent 2px) no-repeat 0 0 / 2px 22px;
-    filter: drop-shadow(0 0 4px rgba($color-primary, 0.2));
-
-    &::after {
-      bottom: 0;
-      left: 0;
-    }
-  }
-
-  &.bottom-right {
-    bottom: 0;
-    right: 0;
-    background:
-      linear-gradient(225deg, transparent 50%, rgba($color-primary, 0.5) 50%) no-repeat 100% 100% / 12px 12px,
-      linear-gradient(to left, rgba($color-primary, 0.5) 2px, transparent 2px) no-repeat 0 100% / 22px 2px,
-      linear-gradient(to top, rgba($color-primary, 0.5) 2px, transparent 2px) no-repeat 100% 0 / 2px 22px;
-    filter: drop-shadow(0 0 4px rgba($color-primary, 0.2));
-
-    &::after {
-      bottom: 0;
-      right: 0;
-    }
-  }
+  display: none;
 }
 
 /* 头部样式 */
@@ -423,10 +291,11 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px 20px;
+  padding: 20px 25px 15px 25px;
   border-bottom: 1px solid rgba($color-primary, 0.1);
   position: relative;
-  z-index: 5;
+  z-index: 16;
+  margin: 15px 15px 0 15px;
 }
 
 .expanded-title {
@@ -472,12 +341,13 @@
 
 .expanded-content {
   flex: 1;
-  padding: 5px;
+  padding: 20px 25px 25px 25px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
   position: relative;
   z-index: 5;
+  margin: 15px;
 }
 
 /* 响应式样式 */
@@ -489,7 +359,7 @@
 
 @include respond-to(small) {
   .chart-header {
-    padding: $spacing-xs;
+    padding: 12px 15px 8px 8px;
   }
 
   .expand-button {
@@ -498,6 +368,17 @@
   }
 
   .expanded-header {
-    padding: $spacing-sm;
+    padding: 15px 20px 10px 20px;
+    margin: 10px 10px 0 10px;
+  }
+  
+  .chart-content {
+    padding: 12px 15px 12px 15px;
+    margin: 6px;
+  }
+  
+  .expanded-content {
+    padding: 15px 20px 20px 20px;
+    margin: 10px;
   }
 }
