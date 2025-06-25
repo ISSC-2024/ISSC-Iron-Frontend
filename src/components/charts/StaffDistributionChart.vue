@@ -74,10 +74,10 @@ const updateChartData = () => {
 const materialsData = {
   materials: {} as { [key: string]: { [key: string]: number } },
   colors: {
-    铁矿石: '#8B4513',
-    石灰石: '#D3D3D3',
-    煤炭: '#2F4F4F',
-    焦炭: '#696969',
+    铁矿石: '#FFB74D', // warm amber
+    石灰石: '#64B5F6', // cool light blue
+    煤炭: '#4DB6AC', // teal
+    焦炭: '#BA68C8', // violet
   },
 }
 
@@ -85,9 +85,9 @@ const materialsData = {
 const energyData = {
   energy: {} as { [key: string]: { [key: string]: number } },
   colors: {
-    电力: '#FFD700',
-    蒸汽: '#87CEEB',
-    天然气: '#FF6347',
+    电力: '#FFD54F', // warm yellow
+    蒸汽: '#4FC3F7', // cool cyan
+    天然气: '#FF8A65', // coral
   },
 }
 
@@ -308,7 +308,8 @@ const getSeriesData = () => {
             focus: 'series' as const,
           },
           itemStyle: {
-            color: typedMaterialsData.colors[type],
+            color: createGradient(typedMaterialsData.colors[type]),
+            borderRadius: [0, 6, 6, 0],
           },
           label: {
             position: 'inside' as const,
@@ -340,7 +341,8 @@ const getSeriesData = () => {
             focus: 'series' as const,
           },
           itemStyle: {
-            color: typedEnergyData.colors[type],
+            color: createGradient(typedEnergyData.colors[type]),
+            borderRadius: [0, 6, 6, 0],
           },
           label: {
             position: 'inside' as const,
@@ -365,6 +367,21 @@ const getSeriesData = () => {
     default:
       return []
   }
+}
+
+// 生成渐变颜色，提升科技感
+const createGradient = (color: string) => {
+  // 使用 echarts 自带的 graphic 生成水平渐变
+  return new echarts.graphic.LinearGradient(0, 0, 1, 0, [
+    {
+      offset: 0,
+      color: color,
+    },
+    {
+      offset: 1,
+      color: 'rgba(255, 255, 255, 0.1)',
+    },
+  ])
 }
 
 // 初始化图表
@@ -447,6 +464,7 @@ const updateChart = () => {
       axisLabel: {
         color: 'rgba(220, 230, 240, 0.8)', // 轴标签颜色
       },
+      axisTick: { show: false },
     },
     yAxis: {
       type: 'category',
@@ -460,6 +478,13 @@ const updateChart = () => {
         color: 'rgba(220, 230, 240, 0.8)', // 轴标签颜色
         fontSize: 12, // 增加字体大小
         fontWeight: 'bold', // 加粗
+        formatter: function (value: string) {
+          const maxLength = 3 // 超过此长度截断
+          if (!isExpanded.value && value.length > maxLength) {
+            return value.slice(0, maxLength) + '…'
+          }
+          return value
+        },
         rich: {
           a: {
             backgroundColor: 'rgba(20, 40, 80, 0.7)', // 轴标签背景色
@@ -469,8 +494,12 @@ const updateChart = () => {
           },
         },
       },
+      axisTick: { show: false },
     },
     series: getSeriesData(),
+    animationDuration: 800,
+    animationEasing: 'cubicOut',
+    backgroundColor: 'transparent',
   }
 
   // 使用类型守卫确保chartInstance不为null
@@ -588,254 +617,4 @@ onMounted(() => {
   <TextMessageDisplayBox />
 </template>
 
-<style scoped>
-.resource-distribution-chart-container {
-  width: 100%;
-  height: 100%;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  background: linear-gradient(135deg, rgba(15, 30, 60, 0.95), rgba(8, 15, 35, 0.95));
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow:
-    0 4px 20px rgba(0, 0, 0, 0.2),
-    0 0 30px rgba(32, 160, 255, 0.07);
-  border: 1px solid rgba(32, 160, 255, 0.15);
-}
-
-/* 标题栏 */
-.graph-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 16px;
-  background: linear-gradient(
-    90deg,
-    rgba(12, 24, 48, 0.95) 0%,
-    rgba(20, 40, 80, 0.95) 50%,
-    rgba(12, 24, 48, 0.95) 100%
-  );
-  border-bottom: 1px solid rgba(74, 144, 226, 0.2);
-  position: relative;
-  z-index: 5;
-}
-
-.graph-header::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 1px;
-  background: linear-gradient(90deg, rgba(32, 160, 255, 0), rgba(32, 160, 255, 0.5), rgba(32, 160, 255, 0));
-}
-
-.graph-title {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  color: rgba(220, 230, 240, 0.95);
-  font-weight: 600;
-  font-size: 16px;
-  text-shadow: 0 0 10px rgba(32, 160, 255, 0.3);
-  letter-spacing: 0.5px;
-}
-
-.title-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #20a0ff;
-  filter: drop-shadow(0 0 5px rgba(32, 160, 255, 0.5));
-}
-
-/* 图表区域 */
-.resource-distribution-chart {
-  width: 100%;
-  height: calc(100% - 100px);
-  margin-top: 5px;
-  position: relative;
-  backdrop-filter: blur(5px);
-  isolation: isolate;
-}
-
-/* 网格背景效果 */
-.resource-distribution-chart::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  pointer-events: none;
-  background-image:
-    linear-gradient(to bottom, transparent 49.5%, rgba(32, 160, 255, 0.03) 50%, transparent 50.5%),
-    linear-gradient(90deg, rgba(32, 160, 255, 0.01) 1px, transparent 1px),
-    linear-gradient(rgba(32, 160, 255, 0.01) 1px, transparent 1px);
-  background-size:
-    100% 6px,
-    20px 20px,
-    20px 20px;
-  z-index: -1;
-}
-
-/* 全息投影效果 */
-.resource-distribution-chart::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background:
-    radial-gradient(ellipse at 50% 0%, rgba(64, 120, 255, 0.05) 0%, rgba(64, 120, 255, 0) 70%),
-    radial-gradient(ellipse at 50% 100%, rgba(64, 120, 255, 0.05) 0%, rgba(64, 120, 255, 0) 70%);
-  pointer-events: none;
-  z-index: -1;
-}
-
-/* 按钮区域 */
-.chart-type-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  padding: 0 20px;
-  position: absolute;
-  bottom: 8px;
-  left: 0;
-  right: 0;
-  z-index: 5;
-}
-
-/* 按钮样式 */
-.chart-type-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 6px 12px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-  font-size: 12px;
-  background: rgba(20, 40, 80, 0.7);
-  color: rgba(220, 230, 240, 0.8);
-  backdrop-filter: blur(4px);
-  box-shadow:
-    0 2px 8px rgba(0, 0, 0, 0.2),
-    0 0 4px rgba(32, 160, 255, 0.1);
-  border: 1px solid rgba(32, 160, 255, 0.1);
-  position: relative;
-  overflow: hidden;
-}
-
-.chart-type-button:hover {
-  transform: translateY(-2px);
-  box-shadow:
-    0 4px 12px rgba(0, 0, 0, 0.25),
-    0 0 8px rgba(32, 160, 255, 0.2);
-  color: rgba(220, 230, 240, 1);
-  border-color: rgba(32, 160, 255, 0.3);
-}
-
-.chart-type-button.active {
-  background: linear-gradient(135deg, rgba(25, 118, 210, 0.8), rgba(30, 136, 229, 0.8));
-  color: white;
-  box-shadow:
-    0 3px 10px rgba(25, 118, 210, 0.3),
-    0 0 10px rgba(32, 160, 255, 0.3);
-  border-color: rgba(32, 160, 255, 0.4);
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-}
-
-.chart-type-button::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.1), transparent);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.chart-type-button:hover::before {
-  opacity: 1;
-}
-
-.chart-type-button.active::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 10%;
-  width: 80%;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
-}
-
-.button-icon {
-  margin-right: 5px;
-  font-size: 14px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.button-label {
-  font-weight: 500;
-  letter-spacing: 0.2px;
-}
-
-/* 过渡动画 */
-.fade-enter-active,
-.fade-leave-active {
-  transition:
-    opacity 0.5s ease,
-    transform 0.5s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-  transform: translateY(10px);
-}
-
-@media (max-width: 768px) {
-  .button-label {
-    font-size: 11px;
-  }
-
-  .button-icon {
-    font-size: 13px;
-  }
-
-  .chart-type-button {
-    padding: 5px 8px;
-  }
-}
-
-/* 高亮元素的悬停状态 */
-.chart-type-button:focus {
-  outline: none;
-  box-shadow: 0 0 0 2px rgba(32, 160, 255, 0.4);
-}
-
-/* echarts 工具提示样式 */
-:global(.staff-chart-tooltip:nth-of-type(2)) {
-  background: rgba(8, 20, 40, 0.9) !important;
-  backdrop-filter: blur(10px) !important;
-  border-radius: 6px !important;
-  border: 1px solid rgba(64, 169, 255, 0.5) !important;
-  box-shadow:
-    0 4px 20px rgba(0, 0, 0, 0.3),
-    0 0 15px rgba(32, 160, 255, 0.15) !important;
-  padding: 8px 12px !important;
-  color: rgba(255, 255, 255, 1) !important;
-  font-family: 'Inter', 'Roboto', sans-serif !important;
-  font-size: 14px !important;
-  font-weight: 500 !important;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4) !important;
-}
-</style>
+<style lang="scss" src="@/assets/styles/StaffDistributionChart.scss"></style>

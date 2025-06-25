@@ -110,11 +110,11 @@ const handleBackToEdit = () => {
         </div>
         <EvalFeatureSwitches />
         <div class="action-buttons">
-          <button class="submit-button" @click="() => handleSubmit().catch(console.error)" :disabled="isTransitioning">
+          <button class="submit-btn" @click="() => handleSubmit().catch(console.error)" :disabled="isTransitioning">
             <span class="button-icon">✓</span>
             提交
           </button>
-          <button class="reset-button" @click="handleReset" :disabled="isTransitioning">
+          <button class="reset-btn" @click="handleReset" :disabled="isTransitioning">
             <span class="button-icon">↺</span>
             重置
           </button>
@@ -209,24 +209,6 @@ const handleBackToEdit = () => {
     &:disabled {
       opacity: 0.6;
       cursor: not-allowed;
-    }
-  }
-  .submit-button {
-    background: rgba(0, 120, 212, 0.8);
-    color: white;
-    border: 1px solid rgba(0, 150, 255, 0.5);
-    &:hover:not(:disabled) {
-      background: rgba(0, 140, 230, 0.9);
-      box-shadow: 0 4px 12px rgba(0, 120, 212, 0.3);
-    }
-  }
-  .reset-button {
-    background: rgba(40, 50, 70, 0.7);
-    color: rgba(220, 240, 255, 0.9);
-    border: 1px solid rgba(100, 120, 150, 0.5);
-    &:hover:not(:disabled) {
-      background: rgba(50, 60, 80, 0.8);
-      box-shadow: 0 4px 12px rgba(20, 30, 50, 0.3);
     }
   }
 }
