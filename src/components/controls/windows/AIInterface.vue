@@ -167,7 +167,19 @@ const loadConversationMessages = async (conversationId: number) => {
         let modelValue: AIModelType | undefined = undefined
         if (msg.model) {
           // 检查model值是否为有效的AIModelType
-          if (['top-llm', 'sub-llm1', 'sub-llm2', 'sub-llm3', 'sub-llm4', 'sub-llm5'].includes(msg.model)) {
+          if (
+            [
+              'top-llm',
+              'sub-llm1',
+              'sub-llm2',
+              'sub-llm3',
+              'sub-llm4',
+              'sub-llm5',
+              'sub-llm6',
+              'sub-llm7',
+              'sub-llm8',
+            ].includes(msg.model)
+          ) {
             modelValue = msg.model as AIModelType
           }
         }
@@ -430,11 +442,14 @@ const clearInput = () => {
 // 使用API服务的模型选项
 const modelOptions = [
   { value: 'top-llm', label: '钢铁产业园区' },
-  { value: 'sub-llm1', label: '炼钢区' },
-  { value: 'sub-llm2', label: '成品储存区' },
-  { value: 'sub-llm3', label: '反应器区' },
-  { value: 'sub-llm4', label: '分离提纯区' },
-  { value: 'sub-llm5', label: '公用工程区' },
+  { value: 'sub-llm1', label: '原料区' },
+  { value: 'sub-llm2', label: '炼焦区' },
+  { value: 'sub-llm3', label: '烧结区' },
+  { value: 'sub-llm4', label: '炼铁区' },
+  { value: 'sub-llm5', label: '炼钢区' },
+  { value: 'sub-llm6', label: '连铸区' },
+  { value: 'sub-llm7', label: '轧制区' },
+  { value: 'sub-llm8', label: '热处理区' },
 ]
 
 // 获取模型友好名称
@@ -825,6 +840,12 @@ const getModelIcon = (modelType: string | undefined) => {
       return FilterOutlined
     case 'sub-llm5':
       return SettingOutlined
+    case 'sub-llm6':
+      return BoxPlotOutlined
+    case 'sub-llm7':
+      return FilterOutlined
+    case 'sub-llm8':
+      return ExperimentOutlined
     default:
       return GlobalOutlined
   }
@@ -847,6 +868,12 @@ const getModelColor = (modelType: string | undefined) => {
       return '#722ed1'
     case 'sub-llm5':
       return '#13c2c2'
+    case 'sub-llm6':
+      return '#eb2f96'
+    case 'sub-llm7':
+      return '#fa8c16'
+    case 'sub-llm8':
+      return '#a0d911'
     default:
       return '#1890ff'
   }
@@ -1085,11 +1112,11 @@ onMounted(async () => {
                 <div class="empty-suggestions">
                   <p>试试这些问题:</p>
                   <ul>
-                    <li @click="fillQuestion('炼钢区最危险的传感器')">
-                      <span class="suggestion-tag">风险</span> 炼钢区最危险的传感器
+                    <li @click="fillQuestion('当前区域最危险的传感器')">
+                      <span class="suggestion-tag">风险</span> 当前区域最危险的传感器
                     </li>
-                    <li @click="fillQuestion('炼钢区当前人力配置情况')">
-                      <span class="suggestion-tag">资源</span> 炼钢区当前人力配置情况
+                    <li @click="fillQuestion('当前区域人力配置情况')">
+                      <span class="suggestion-tag">资源</span> 当前区域人力配置情况
                     </li>
                     <li @click="fillQuestion('对厂区资源重新进行调度')">
                       <span class="suggestion-tag">操作</span> 对厂区资源重新进行调度
