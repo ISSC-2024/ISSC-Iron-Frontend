@@ -32,8 +32,8 @@ const handleLogout = async () => {
   try {
     // 等待登出操作完成
     await AuthService.logout()
-    // 登出完成后跳转
-    window.location.href = '/login'
+    // 登出完成后刷新页面回到仪表盘
+    window.location.href = '/dashboard'
   } catch (error) {
     console.error('登出失败:', error)
   }

@@ -429,8 +429,8 @@ const clearInput = () => {
 
 // 使用API服务的模型选项
 const modelOptions = [
-  { value: 'top-llm', label: '化工产业园区' },
-  { value: 'sub-llm1', label: '原料储存区' },
+  { value: 'top-llm', label: '钢铁产业园区' },
+  { value: 'sub-llm1', label: '炼钢区' },
   { value: 'sub-llm2', label: '成品储存区' },
   { value: 'sub-llm3', label: '反应器区' },
   { value: 'sub-llm4', label: '分离提纯区' },
@@ -908,7 +908,7 @@ onMounted(async () => {
                 <circle cx="16.5" cy="14.5" r="1.5"></circle>
               </svg>
             </div>
-            <h2>化工AI助手</h2>
+            <h2>钢铁AI助手</h2>
           </div>
 
           <button class="close-button" @click.stop="close" aria-label="关闭窗口">
@@ -1075,7 +1075,7 @@ onMounted(async () => {
                 </div>
                 <div class="empty-text">准备就绪</div>
                 <div class="empty-desc">
-                  您的化工AI助手可以回答<span
+                  您的钢铁AI助手可以回答<span
                     class="model-name-highlight"
                     :style="{ color: getModelColor(selectedModel) }"
                   >
@@ -1085,11 +1085,11 @@ onMounted(async () => {
                 <div class="empty-suggestions">
                   <p>试试这些问题:</p>
                   <ul>
-                    <li @click="fillQuestion('原料储存区最危险的传感器')">
-                      <span class="suggestion-tag">风险</span> 原料储存区最危险的传感器
+                    <li @click="fillQuestion('炼钢区最危险的传感器')">
+                      <span class="suggestion-tag">风险</span> 炼钢区最危险的传感器
                     </li>
-                    <li @click="fillQuestion('原料存储区当前人力配置情况')">
-                      <span class="suggestion-tag">资源</span> 原料存储区当前人力配置情况
+                    <li @click="fillQuestion('炼钢区当前人力配置情况')">
+                      <span class="suggestion-tag">资源</span> 炼钢区当前人力配置情况
                     </li>
                     <li @click="fillQuestion('对厂区资源重新进行调度')">
                       <span class="suggestion-tag">操作</span> 对厂区资源重新进行调度
