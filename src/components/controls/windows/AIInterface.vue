@@ -20,6 +20,8 @@ import ConversationAPI, {
   type CreateMessageRequest,
 } from '@/apis/Conversation'
 import { useAlgorithmStore, AlgorithmType, ModuleType } from '@/stores/algorithmStore'
+// 导入演示配置
+import { checkDemoQuestion, handleDemoQuestion } from '@/config/demo-config'
 
 import {
   GlobalOutlined,
@@ -739,8 +741,24 @@ const sendMessage = async () => {
   messages.value.push(assistantTempMessage)
 
   try {
-    // 调用API获取响应
-    const { response, thinking } = await AIInterfaceAPI.queryLLM(selectedModel.value, content)
+    // 检查是否为演示问题
+    const demoConfig = checkDemoQuestion(content)
+    let response: string
+    let thinking: string
+
+    if (demoConfig) {
+      // 处理演示问题
+      const demoResult = await handleDemoQuestion(content, demoConfig, (thinkingMsg) => {
+        messages.value[thinkingMessageIndex].thinking = thinkingMsg
+      })
+      response = demoResult.response
+      thinking = demoResult.thinking
+    } else {
+      // 调用API获取响应
+      const apiResult = await AIInterfaceAPI.queryLLM(selectedModel.value, content)
+      response = apiResult.response
+      thinking = apiResult.thinking || '已完成思考'
+    }
 
     // 更新对话标题（新对话）（截取部分前缀）
     if (currentConversation.value && currentConversation.value.title === '新对话') {
@@ -752,17 +770,22 @@ const sendMessage = async () => {
     messages.value[thinkingMessageIndex].thinking = thinking || '已完成思考'
     messages.value[thinkingMessageIndex].isThinkingExpanded = false
 
-    // 检查是否为特殊算法关键词
-    const specialAlgorithms = ['TimeMixer', 'KonwledgeGraph', 'DQN', 'MAPPO']
-
+    // 检查是否为特殊算法关键词（仅在非演示模式下）
     let contentToDisplay = ''
 
-    if (specialAlgorithms.includes(response.trim())) {
-      //! 如果是特殊算法关键词，使用特殊处理函数生成响应
-      const algorithm = response.trim()
-      contentToDisplay = await handleSpecialAlgorithm(algorithm)
+    if (!demoConfig) {
+      const specialAlgorithms = ['TimeMixer', 'KonwledgeGraph', 'DQN', 'MAPPO']
+
+      if (specialAlgorithms.includes(response.trim())) {
+        //! 如果是特殊算法关键词，使用特殊处理函数生成响应
+        const algorithm = response.trim()
+        contentToDisplay = await handleSpecialAlgorithm(algorithm)
+      } else {
+        // 正常响应
+        contentToDisplay = response
+      }
     } else {
-      // 正常响应
+      // 演示模式直接使用响应内容
       contentToDisplay = response
     }
 
@@ -1112,11 +1135,11 @@ onMounted(async () => {
                 <div class="empty-suggestions">
                   <p>试试这些问题:</p>
                   <ul>
-                    <li @click="fillQuestion('当前区域最危险的传感器')">
-                      <span class="suggestion-tag">风险</span> 当前区域最危险的传感器
+                    <li @click="fillQuestion('炼钢区最危险的传感器')">
+                      <span class="suggestion-tag">风险</span> 炼钢区最危险的传感器
                     </li>
-                    <li @click="fillQuestion('当前区域人力配置情况')">
-                      <span class="suggestion-tag">资源</span> 当前区域人力配置情况
+                    <li @click="fillQuestion('炼钢区人力配置情况')">
+                      <span class="suggestion-tag">资源</span> 炼钢区人力配置情况
                     </li>
                     <li @click="fillQuestion('对厂区资源重新进行调度')">
                       <span class="suggestion-tag">操作</span> 对厂区资源重新进行调度
