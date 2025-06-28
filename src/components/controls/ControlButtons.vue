@@ -249,9 +249,10 @@ $hover-bg-gradient: linear-gradient(135deg, rgba(40, 30, 70, 0.9), rgba(30, 20, 
 
 .control-btn {
   position: relative;
-  background: $bg-gradient;
+  background: url('/images/button/bnt.png') no-repeat center center;
+  background-size: cover;
   color: $text-color;
-  border: 1px solid $border-color;
+  border: none;
   border-radius: 8px;
   padding: 10px 20px;
   font-size: 14px;
@@ -267,8 +268,8 @@ $hover-bg-gradient: linear-gradient(135deg, rgba(40, 30, 70, 0.9), rgba(30, 20, 
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 
   &:hover {
-    background: $hover-bg-gradient;
-    border-color: rgba(138, 43, 226, 0.5);
+    background: url('/images/button/bntactive.png') no-repeat center center;
+    background-size: cover;
     transform: translateY(-2px);
     @include hover-shadow;
 
@@ -290,6 +291,8 @@ $hover-bg-gradient: linear-gradient(135deg, rgba(40, 30, 70, 0.9), rgba(30, 20, 
   }
 
   &:active {
+    background: url('/images/button/bntactive.png') no-repeat center center;
+    background-size: cover;
     transform: translateY(0);
     box-shadow:
       0 2px 8px rgba(0, 0, 0, 0.2),

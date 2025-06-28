@@ -316,7 +316,7 @@ const chartStyle = computed(() => {
 <template>
   <div class="event-response-radar-container">
     <!-- 标题栏 -->
-    <GraphHeader :title="'KPI指标性能分析'">
+    <GraphHeader :title="'KPI指标性能分析'" :centered="true" :glow-effect="true">
       <template #icon>
         <svg viewBox="0 0 24 24" width="20" height="20">
           <path
