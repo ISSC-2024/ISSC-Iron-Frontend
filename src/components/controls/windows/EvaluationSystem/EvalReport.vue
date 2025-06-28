@@ -81,6 +81,7 @@ const exportMarkdown = () => {
     .eval-actions {
       display: flex;
       gap: 12px;
+
       .back-edit-button,
       .export-button {
         background: rgba(64, 169, 255, 0.15);
@@ -94,26 +95,85 @@ const exportMarkdown = () => {
         transition: all 0.2s ease;
         display: flex;
         align-items: center;
+        position: relative;
+        overflow: hidden;
+        min-width: 120px;
+        height: 40px;
+        justify-content: center;
+
         .button-icon {
           margin-right: 6px;
           font-size: 16px;
+          transition: transform 0.2s ease;
         }
+
+        &::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+          transition: left 0.5s ease;
+        }
+
         &:hover:not(:disabled) {
           background: rgba(64, 169, 255, 0.35);
           transform: translateY(-2px);
           box-shadow: 0 4px 12px rgba(64, 169, 255, 0.2);
+          border-color: rgba(64, 169, 255, 0.5);
+
+          &::before {
+            left: 100%;
+          }
+
+          .button-icon {
+            transform: scale(1.1);
+          }
         }
+
+        &:active:not(:disabled) {
+          transform: translateY(0);
+          box-shadow: 0 2px 6px rgba(64, 169, 255, 0.3);
+        }
+
         &:disabled {
           opacity: 0.5;
           cursor: not-allowed;
+          background: rgba(64, 169, 255, 0.05);
+          border-color: rgba(64, 169, 255, 0.1);
+
+          &:hover {
+            transform: none;
+            box-shadow: none;
+          }
         }
       }
+
       .export-button {
         background: rgba(0, 150, 136, 0.15);
         border-color: rgba(0, 150, 136, 0.3);
+
+        &::before {
+          background: linear-gradient(90deg, transparent, rgba(0, 150, 136, 0.2), transparent);
+        }
+
         &:hover:not(:disabled) {
           background: rgba(0, 150, 136, 0.35);
           box-shadow: 0 4px 12px rgba(0, 150, 136, 0.2);
+          border-color: rgba(0, 150, 136, 0.5);
+          transform: translateY(-2px);
+        }
+
+        &:active:not(:disabled) {
+          transform: translateY(0);
+          box-shadow: 0 2px 6px rgba(0, 150, 136, 0.3);
+        }
+
+        &:disabled {
+          background: rgba(0, 150, 136, 0.05);
+          border-color: rgba(0, 150, 136, 0.1);
         }
       }
     }

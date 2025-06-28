@@ -9,6 +9,8 @@ import { useEvaluationStore } from '@/stores/evaluationStore'
 import EvaluationSystemAPI from '@/apis/EvaluationSystem'
 import EvalReport from './EvaluationSystem/EvalReport.vue'
 import EvaluationConfigFlow from './EvaluationSystem/EvaluationConfigFlow.vue'
+// 导入演示配置
+import { checkEvaluationDemoCondition, handleEvaluationDemo } from '@/config/demo-config'
 
 // 定义组件向外发出的事件
 const emit = defineEmits(['close'])
@@ -39,21 +41,33 @@ const startEvaluation = async (evaluationData: any) => {
   evalResultMarkdown.value = ''
   evalError.value = ''
   abortController.value = new AbortController()
+
   try {
-    await EvaluationSystemAPI.evalLLMStream(
-      evaluationData,
-      (msg: any) => {
-        console.log('msg', msg)
-        if (msg?.type === 'expert_response') {
-          evalResultMarkdown.value += `\n**专家：${msg.expert_name}**（第${msg.round}轮）\n\n${msg.response}\n\n---\n`
-        } else if (msg?.type === 'summary') {
-          evalResultMarkdown.value += `\n## 🏁 最终报告\n\n${msg.content}\n\n`
-        } else if (msg?.content) {
-          evalResultMarkdown.value += msg.content
-        }
-      },
-      { signal: abortController.value.signal },
-    )
+    // 检查是否满足演示条件
+    const demoConfig = checkEvaluationDemoCondition(evaluationData)
+
+    if (demoConfig) {
+      // 演示模式
+      console.log('启动评估体系演示模式')
+      const demoResult = await handleEvaluationDemo(evaluationData, demoConfig)
+      evalResultMarkdown.value = demoResult.evalResultMarkdown
+    } else {
+      // 正常模式
+      await EvaluationSystemAPI.evalLLMStream(
+        evaluationData,
+        (msg: any) => {
+          console.log('msg', msg)
+          if (msg?.type === 'expert_response') {
+            evalResultMarkdown.value += `\n**专家：${msg.expert_name}**（第${msg.round}轮）\n\n${msg.response}\n\n---\n`
+          } else if (msg?.type === 'summary') {
+            evalResultMarkdown.value += `\n## 🏁 最终报告\n\n${msg.content}\n\n`
+          } else if (msg?.content) {
+            evalResultMarkdown.value += msg.content
+          }
+        },
+        { signal: abortController.value.signal },
+      )
+    }
   } catch (err: any) {
     if (err?.name === 'AbortError') {
       evalError.value = '已中断评估。'

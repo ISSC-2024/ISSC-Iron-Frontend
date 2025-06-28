@@ -3,7 +3,16 @@ import { http } from './AxiosClient'
 /**
  * AI模型类型
  */
-export type AIModelType = 'top-llm' | 'sub-llm1' | 'sub-llm2' | 'sub-llm3' | 'sub-llm4' | 'sub-llm5'
+export type AIModelType =
+  | 'top-llm'
+  | 'sub-llm1'
+  | 'sub-llm2'
+  | 'sub-llm3'
+  | 'sub-llm4'
+  | 'sub-llm5'
+  | 'sub-llm6'
+  | 'sub-llm7'
+  | 'sub-llm8'
 
 /**
  * AI响应接口
