@@ -22,8 +22,8 @@ import type { Ref } from 'vue'
 import * as echarts from 'echarts'
 import GraphHeader from '../common/GraphHeader.vue'
 
-// 导入优化结果数据
-import optimizationResult from '@/mock/model4output/optimization_result_2025-05-17_00-00-00.json'
+// 优化结果数据
+const optimizationResult = ref(null as any)
 
 // KPI指标定义
 const kpiIndicators = [
@@ -40,21 +40,55 @@ const kpiIndicators = [
 ]
 
 // 准备KPI指标数据
-const kpiData = {
+const kpiData = ref({
   indicators: kpiIndicators.map((indicator) => ({
     name: indicator.name,
     max: indicator.max,
   })),
   data: [
     {
-      name: optimizationResult.timestamp,
-      values: kpiIndicators.map((indicator) => {
-        const value = (optimizationResult as any).kpi_metrics?.[indicator.key] || 0
-        return value
-      }),
+      name: '',
+      values: kpiIndicators.map(() => 0),
       color: '#00E5FF', // 亮青色，高对比
     },
   ],
+})
+
+// 加载优化结果数据
+const loadOptimizationData = async () => {
+  try {
+    const response = await fetch('/mock/model4output/optimization_result_2025-05-17_00-00-00.json')
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+    }
+    const data = await response.json()
+    optimizationResult.value = data
+
+    // 更新KPI数据
+    kpiData.value = {
+      indicators: kpiIndicators.map((indicator) => ({
+        name: indicator.name,
+        max: indicator.max,
+      })),
+      data: [
+        {
+          name: data.timestamp,
+          values: kpiIndicators.map((indicator) => {
+            const value = data.kpi_metrics?.[indicator.key] || 0
+            return value
+          }),
+          color: '#00E5FF', // 亮青色，高对比
+        },
+      ],
+    }
+
+    // 数据加载完成后更新图表
+    updateChart()
+  } catch (error) {
+    console.error('加载优化结果数据失败:', error)
+    // 使用空数据作为fallback
+    optimizationResult.value = null
+  }
 }
 
 // 注入展开状态
@@ -95,7 +129,7 @@ const updateChart = () => {
   if (!chartInstance) return
 
   const option: echarts.EChartsOption = {
-    color: kpiData.data.map((item) => item.color),
+    color: kpiData.value.data.map((item) => item.color),
     tooltip: {
       trigger: 'item',
       confine: false,
@@ -103,7 +137,7 @@ const updateChart = () => {
       className: 'event-radar-tooltip',
       formatter: (params: any) => {
         const { name, value } = params
-        const indicators = kpiData.indicators
+        const indicators = kpiData.value.indicators
         let result = `<div style="font-weight:bold;margin-bottom:8px;font-size:14px;color:#ffffff;">${name}</div>`
         result += '<div style="display:table;width:100%;">'
         value.forEach((val: number, index: number) => {
@@ -127,7 +161,7 @@ const updateChart = () => {
         'border-radius: 8px; backdrop-filter: blur(6px); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3), 0 0 15px rgba(32, 160, 255, 0.15);',
     },
     legend: {
-      data: kpiData.data.map((item) => item.name),
+      data: kpiData.value.data.map((item) => item.name),
       bottom: isExpanded.value ? 15 : 10,
       itemWidth: isExpanded.value ? 12 : 10,
       itemHeight: isExpanded.value ? 12 : 10,
@@ -143,7 +177,7 @@ const updateChart = () => {
       borderWidth: 1,
     },
     radar: {
-      indicator: kpiData.indicators.map((indicator) => ({
+      indicator: kpiData.value.indicators.map((indicator) => ({
         name: indicator.name,
         max: indicator.max,
       })),
@@ -190,7 +224,7 @@ const updateChart = () => {
       {
         type: 'radar',
         symbolSize: isExpanded.value ? 8 : 6,
-        data: kpiData.data.map((item) => ({
+        data: kpiData.value.data.map((item) => ({
           value: item.values,
           name: item.name,
           symbol: 'circle',
@@ -276,8 +310,12 @@ watch(isExpanded, () => {
 })
 
 // 组件挂载时初始化图表
-onMounted(() => {
+onMounted(async () => {
   addGlobalStyle()
+
+  // 加载数据
+  await loadOptimizationData()
+
   initChart()
 
   // 添加窗口大小变化监听

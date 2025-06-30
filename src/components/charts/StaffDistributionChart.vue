@@ -21,14 +21,29 @@ import { useMessageStore } from '@/stores/messageStore'
 import TextMessageDisplayBox from '../controls/windows/TextMessageDisplayBox.vue'
 import GraphHeader from '../common/GraphHeader.vue'
 
-// 导入优化结果数据
-import optimizationResult from '@/mock/model4output/optimization_result_2025-05-17_00-00-00.json'
-
 // 当前使用的报告数据
-const reportData = ref(optimizationResult as any)
+const reportData = ref(null as any)
 
 // 获取消息store
 const messageStore = useMessageStore()
+
+// 加载优化结果数据
+const loadOptimizationData = async () => {
+  try {
+    const response = await fetch('/mock/model4output/optimization_result_2025-05-17_00-00-00.json')
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+    }
+    const data = await response.json()
+    reportData.value = data
+    // 数据加载完成后更新图表
+    updateChartData()
+  } catch (error) {
+    console.error('加载优化结果数据失败:', error)
+    // 使用空数据作为fallback
+    reportData.value = null
+  }
+}
 
 // 更新图表数据
 const updateChartData = () => {
@@ -219,7 +234,7 @@ const showPipeFlow = (params: any) => {
   unityService.sendMessageToUnity('Scripts', 'ReceiveDataFromJS', JSON.stringify(pipeData))
   // 构建文本框显示数据
   const displayData = {
-    timestamp: optimizationResult.timestamp,
+    timestamp: reportData.value?.timestamp || new Date().toISOString(),
     resource_type: resourceType,
     from_workshop: fromWorkshop,
     to_workshop: toWorkshop,
@@ -251,7 +266,7 @@ const showPipeFlow = (params: any) => {
     },
     {
       source: COMPONENT_SOURCE,
-      title: `${resourceTitles[currentChartType.value]} - ${optimizationResult.timestamp}`,
+      title: `${resourceTitles[currentChartType.value]} - ${reportData.value?.timestamp || new Date().toISOString()}`,
     },
   )
 }
@@ -528,8 +543,8 @@ onMounted(async () => {
   // 文本框
   chartRef.value?.addEventListener('mouseleave', hidePipeFlow)
 
-  // 初始化数据
-  updateChartData()
+  // 加载数据
+  await loadOptimizationData()
 
   // 初始化图表
   initChart()
