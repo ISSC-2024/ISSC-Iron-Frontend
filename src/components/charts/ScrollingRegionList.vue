@@ -204,7 +204,7 @@ const getRiskLevelKey = (riskLevel: string): 'safe' | 'warning' | 'danger' => {
 const parseCSVData = async (): Promise<Region[]> => {
   try {
     // 读取完整的CSV文件
-    const response = await fetch('/src/mock/steel_anomaly_decision_results.csv')
+    const response = await fetch('/mock/steel_anomaly_decision_results.csv')
     const csvData = await response.text()
 
     const lines = csvData.split('\n').filter((line) => line.trim())

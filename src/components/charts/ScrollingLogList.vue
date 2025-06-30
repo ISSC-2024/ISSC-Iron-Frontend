@@ -215,7 +215,7 @@ const loadLogData = async (reset = true) => {
 const loadCsvData = async (reset = true) => {
   try {
     // 获取CSV文件
-    const response = await fetch('/src/mock/steel_anomaly_decision_results.csv')
+    const response = await fetch('/mock/steel_anomaly_decision_results.csv')
     const csvText = await response.text()
     // 使用Papa Parse解析CSV
     const results = window.Papa.parse(csvText, {
@@ -440,7 +440,7 @@ const handleLogClick = (log: LogEntry) => {
 const handleExport = async () => {
   try {
     // 直接获取CSV文件并下载
-    const response = await fetch('/src/mock/steel_anomaly_decision_results.csv')
+    const response = await fetch('/mock/steel_anomaly_decision_results.csv')
     const blobData = await response.blob()
 
     // 创建下载链接并触发下载

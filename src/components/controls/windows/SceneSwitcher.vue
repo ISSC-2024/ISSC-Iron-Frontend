@@ -23,7 +23,7 @@ const industries = [
     name: '化工',
     description: '化工行业智能监控与决策系统',
     icon: '🧪',
-    route: 'http://localhost:5173/dashboard/chemical', // 跳转到5173端口
+    route: 'http://150.158.82.42:5173/dashboard/chemical', // 跳转到5173端口
   },
   {
     id: 'steel',
@@ -37,14 +37,14 @@ const industries = [
     name: '新能源',
     description: '新能源发电监控与管理系统',
     icon: '⚡',
-    route: 'http://localhost:5173/dashboard/newEnergy', // 跳转到5173端口
+    route: 'http://150.158.82.42:5173/dashboard/newEnergy', // 跳转到5173端口
   },
   {
     id: 'pharmaceutical',
     name: '制药',
     description: '制药行业质量控制与生产管理系统',
     icon: '💊',
-    route: 'http://localhost:5173/dashboard/pharmaceutical', // 跳转到5173端口
+    route: 'http://150.158.82.42:5173/dashboard/pharmaceutical', // 跳转到5173端口
   },
 ]
 

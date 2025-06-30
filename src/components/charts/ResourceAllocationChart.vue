@@ -14,7 +14,8 @@
 import { ref, onMounted, inject, computed, watch, onBeforeUnmount } from 'vue'
 import type { Ref } from 'vue'
 import * as echarts from 'echarts'
-import optimizationReport from '@/mock/optimization_report.json'
+// 优化报告数据
+const optimizationReport = ref(null as any)
 
 // 注入展开状态
 const isExpanded = inject<Ref<boolean>>('isChartExpanded', ref(false))
@@ -44,44 +45,87 @@ interface ResourceData {
 }
 
 interface ResourceAllocationData {
-  [key: string]: {
+  personnel: {
+    title: string
+    data: ResourceData[]
+  }
+  materials: {
+    title: string
+    data: ResourceData[]
+  }
+  electricity: {
     title: string
     data: ResourceData[]
   }
 }
 
+// 加载优化报告数据
+const loadOptimizationReport = async () => {
+  try {
+    const response = await fetch('/mock/optimization_report.json')
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+    }
+    const data = await response.json()
+    optimizationReport.value = data
+
+    // 更新资源数据
+    typedResourceData.value = {
+      personnel: {
+        title: data.resource_allocation.personnel.title,
+        data: data.resource_allocation.personnel.data.map((item: any) => ({
+          name: item.name,
+          value: item.value,
+          color: item.color,
+        })),
+      },
+      materials: {
+        title: data.resource_allocation.materials.title,
+        data: data.resource_allocation.materials.data.map((item: any) => ({
+          name: item.name,
+          value: item.value,
+          color: item.color,
+        })),
+      },
+      electricity: {
+        title: data.resource_allocation.electricity.title,
+        data: data.resource_allocation.electricity.data.map((item: any) => ({
+          name: item.name,
+          value: item.value,
+          color: item.color,
+        })),
+      },
+    }
+
+    // 数据加载完成后更新图表
+    updateChart()
+  } catch (error) {
+    console.error('加载优化报告数据失败:', error)
+    // 使用空数据作为fallback
+    optimizationReport.value = null
+  }
+}
+
 // 类型断言
-const typedResourceData = {
+const typedResourceData = ref<ResourceAllocationData>({
   personnel: {
-    title: optimizationReport.resource_allocation.personnel.title,
-    data: optimizationReport.resource_allocation.personnel.data.map((item) => ({
-      name: item.name,
-      value: item.value,
-      color: item.color,
-    })),
+    title: '',
+    data: [],
   },
   materials: {
-    title: optimizationReport.resource_allocation.materials.title,
-    data: optimizationReport.resource_allocation.materials.data.map((item) => ({
-      name: item.name,
-      value: item.value,
-      color: item.color,
-    })),
+    title: '',
+    data: [],
   },
   electricity: {
-    title: optimizationReport.resource_allocation.electricity.title,
-    data: optimizationReport.resource_allocation.electricity.data.map((item) => ({
-      name: item.name,
-      value: item.value,
-      color: item.color,
-    })),
+    title: '',
+    data: [],
   },
-} as ResourceAllocationData
+})
 
 // 根据当前索引获取数据
 const currentData = computed(() => {
   const type = resourceTypes[currentResourceIndex.value]
-  return typedResourceData[type].data
+  return typedResourceData.value[type].data
 })
 
 // 根据当前索引获取标题
@@ -248,8 +292,12 @@ watch(isExpanded, () => {
 })
 
 // 组件挂载时初始化图表
-onMounted(() => {
+onMounted(async () => {
   addGlobalStyle()
+
+  // 加载数据
+  await loadOptimizationReport()
+
   initChart()
   const timer = startAutoRotate()
 
